@@ -28,8 +28,8 @@ public class MainWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        creationSujet1 = new View.CreationSujet();
-        creationExercice1 = new View.CreationExercice();
+        creationSujet1 = new View.CreationSujetView();
+        creationExercice1 = new View.CreationExerciceView();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
@@ -141,8 +141,8 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private View.CreationExercice creationExercice1;
-    private View.CreationSujet creationSujet1;
+    private View.CreationExerciceView creationExercice1;
+    private View.CreationSujetView creationSujet1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

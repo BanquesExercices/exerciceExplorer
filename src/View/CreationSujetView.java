@@ -9,12 +9,12 @@ package View;
  *
  * @author mbrebion
  */
-public class CreationSujet extends javax.swing.JPanel {
+public class CreationSujetView extends javax.swing.JPanel {
 
     /**
      * Creates new form CreationSujet
      */
-    public CreationSujet() {
+    public CreationSujetView() {
         initComponents();
     }
 

@@ -9,12 +9,12 @@ package View;
  *
  * @author mbrebion
  */
-public class CreationExercice extends javax.swing.JPanel {
+public class CreationExerciceView extends javax.swing.JPanel {
 
     /**
      * Creates new form CreationExercice
      */
-    public CreationExercice() {
+    public CreationExerciceView() {
         initComponents();
     }
 
