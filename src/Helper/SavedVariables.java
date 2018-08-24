@@ -5,38 +5,67 @@
  */
 package Helper;
 
+import java.util.prefs.Preferences;
+
 /**
  *
  * @author mbrebion
  */
 public class SavedVariables {
-    
-    protected static String texModelsPaths;
-    protected static String mainGitDir;
 
-    public static void initSavedVariables() {
-        setMainGitDir("/Users/mbrebion/PCSI/commun_PCSI");
-        setTexModelsPaths("/Users/mbrebion/PCSI/exerciceWriterUtils");
-        
+    public static Preferences prefs;
+
+    public static String getOpenCmd() {
+
+        if (prefs != null) {
+            return prefs.get("open", "");
+        } else {
+            return "";
+        }
     }
 
-    
+    public static void setOpenCmd(String openCmd) {
+        prefs.put("open", openCmd);
+    }
+
+    public static String getPdflatexCmd() {
+
+        if (prefs != null) {
+            return prefs.get("pdflatex", "");
+        } else {
+            return "";
+        }
+    }
+
+    public static void setPdflatexCmd(String pdflatexCmd) {
+        prefs.put("pdflatex", pdflatexCmd);
+    }
+
     public static String getTexModelsPaths() {
-        return texModelsPaths;
+        
+        
+        if (prefs != null) {
+            return prefs.get("templates", "");
+        } else {
+            return "";
+        }
     }
 
     public static void setTexModelsPaths(String in) {
-        texModelsPaths = in;
+        prefs.put("templates", in);
     }
 
     public static String getMainGitDir() {
-        return mainGitDir;
+
+        if (prefs != null) {
+            return prefs.get("mainGit", "");
+        } else {
+            return "";
+        }
     }
 
     public static void setMainGitDir(String in) {
-        mainGitDir = in;
+        prefs.put("mainGit", in);
     }
- 
-    
-    
+
 }

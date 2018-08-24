@@ -22,7 +22,7 @@
                   <Group type="102" attributes="0">
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jComboBox1" min="-2" max="-2" attributes="0"/>
+                      <Component id="outputTypes" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -63,17 +63,17 @@
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
               <Component id="jScrollPane4" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-              <Component id="jScrollPane3" min="-2" pref="111" max="-2" attributes="0"/>
+              <Component id="jScrollPane3" pref="111" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jComboBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="outputTypes" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="jScrollPane1" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="115" max="32767" attributes="0"/>
               <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -82,7 +82,7 @@
   <SubComponents>
     <Component class="javax.swing.JSeparator" name="jSeparator1">
     </Component>
-    <Component class="javax.swing.JComboBox" name="jComboBox1">
+    <Component class="javax.swing.JComboBox" name="outputTypes">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">
@@ -94,7 +94,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="outputTypesActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
@@ -109,19 +109,20 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JList" name="jList1">
+        <Component class="javax.swing.JList" name="listeExercices">
           <Properties>
+            <Property name="selectionMode" type="int" value="0"/>
             <Property name="visibleRowCount" type="int" value="7"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="jList1.setDragEnabled(true);&#xa;jList1.setModel(selectedExericesModel);&#xa;jList1.setDropMode(DropMode.INSERT);&#xa;jList1.setTransferHandler(new ListTransferHandler(selectedExericesModel));&#xa;"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="listeExercices.setDragEnabled(true);&#xa;listeExercices.setModel(selectedExericesModel);&#xa;listeExercices.setDropMode(DropMode.INSERT);&#xa;listeExercices.setTransferHandler(new ListTransferHandler(selectedExericesModel));&#xa;"/>
           </AuxValues>
         </Component>
       </SubComponents>
     </Container>
     <Component class="javax.swing.JButton" name="jButton1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Cr&#xe9;er"/>
+        <Property name="text" type="java.lang.String" value="Editer"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
@@ -180,14 +181,15 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JList" name="jList3">
+        <Component class="javax.swing.JList" name="choixExercice">
           <Properties>
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="CreationSujetView.this.ef.getListModel()" type="code"/>
             </Property>
+            <Property name="selectionMode" type="int" value="0"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="jList3.setDragEnabled(true);&#xa;jList3.setTransferHandler(new ListTransferHandler(selectedExericesModel));&#xa;"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="choixExercice.setDragEnabled(true);&#xa;choixExercice.setTransferHandler(new ListTransferHandler(selectedExericesModel));&#xa;"/>
           </AuxValues>
         </Component>
       </SubComponents>
@@ -234,15 +236,9 @@
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="filler2" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="filler4" min="-2" max="-2" attributes="0"/>
-                          <Component id="filler3" min="-2" max="-2" attributes="0"/>
-                          <Component id="filler1" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="filler4" min="-2" max="-2" attributes="0"/>
+                  <Component id="filler3" min="-2" max="-2" attributes="0"/>
+                  <Component id="filler1" min="-2" max="-2" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>

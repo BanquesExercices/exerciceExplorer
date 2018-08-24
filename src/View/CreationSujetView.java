@@ -6,17 +6,20 @@
 package View;
 
 import Helper.ListTransferHandler;
-import TexRessources.DSWriter;
+import TexRessources.TexWriter;
 import exerciceexplorer.Exercice;
 import exerciceexplorer.ExerciceFinder;
 import exerciceexplorer.KeyWords;
 import java.awt.FlowLayout;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ComboBoxCellEditor;
 
@@ -34,53 +37,104 @@ public class CreationSujetView extends javax.swing.JPanel {
     protected List<KeyWordView> selectedKeyWords;
     protected DefaultListModel<Exercice> selectedExericesModel;
     protected MainWindow mw;
-    
+    protected List<String> currentCompo = null;
+
     public CreationSujetView() {
         ef = new ExerciceFinder();
         kw = new KeyWords();
-        selectedKeyWords=new ArrayList<>();
-        selectedExericesModel= new DefaultListModel<>();
+        selectedKeyWords = new ArrayList<>();
+        selectedExericesModel = new DefaultListModel<>();
         initComponents();
+
+        choixExercice.addListSelectionListener((ListSelectionEvent e) -> {
+            if (choixExercice.getSelectedValue() != null) {
+                this.displayReadme(((Exercice) choixExercice.getSelectedValue()).getReadme());
+            }
+        });
+
+        listeExercices.addFocusListener(new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (currentCompo != null) {
+                    CreationSujetView.this.displayComposition(currentCompo);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+
+            }
+        });
+    }
+    public Exercice getSelectedExercice(){
+        return (Exercice)choixExercice.getSelectedValue();
+    }
+    
+    public void updateCurrentCompo(String text) {
+        String[] split = text.split("\n");
+        currentCompo.clear();
+        for (String s : split) {
+            currentCompo.add(s);
+        }
+    }
+
+    public void displayComposition(List<String> output) {
+        this.mw.setCompositionMode();
+        this.displayText(output);
+    }
+
+    public void displayReadme(List<String> output) {
+        this.mw.setReadmeMode();
+        this.displayText(output);
+    }
+
+    public void displayText(List<String> output) {
+        String outString = "";
+        for (String line : output) {
+            outString = outString + line + "\n";
+        }
+        this.mw.getjTextPane1().setText(outString);
     }
 
     public void setMw(MainWindow mw) {
         this.mw = mw;
     }
 
-    
-    public void removeKeyword(KeyWordView kwv){
+    public void removeKeyword(KeyWordView kwv) {
         selectedKeyWords.remove(kwv);
         keyWordsHolder.remove(kwv);
         keyWordsHolder.revalidate();
         keyWordsHolder.repaint();
         this.updateModel();
     }
-    
 
-    public void updateModel(){
-            List<String> kws = new ArrayList<>();
-            for (KeyWordView kwv : selectedKeyWords){
-                kws.add(kwv.nameString);
-            }
-            
-            switch (this.jComboBox2.getSelectedIndex()){
+    public void updateModel() {
+        List<String> kws = new ArrayList<>();
+        for (KeyWordView kwv : selectedKeyWords) {
+            kws.add(kwv.nameString);
+        }
+
+        switch (this.jComboBox2.getSelectedIndex()) {
             case 0: // all kind
-                jList3.setModel(this.ef.getListModel(kws));
+                choixExercice.setModel(this.ef.getListModel(kws));
                 break;
-                
+
             case 1: // DS
-                jList3.setModel(this.ef.getListModel(kws,Exercice.DS));
+                choixExercice.setModel(this.ef.getListModel(kws, Exercice.DS));
                 break;
-                
+
             case 2: // Colle
-                jList3.setModel(this.ef.getListModel(kws,Exercice.Colle));
+                choixExercice.setModel(this.ef.getListModel(kws, Exercice.Colle));
                 break;
-                
+
             case 3: // TD
-                jList3.setModel(this.ef.getListModel(kws,Exercice.TD));
+                choixExercice.setModel(this.ef.getListModel(kws, Exercice.TD));
                 break;
         }
-    };
+    }
+
+    ;
     
     
     /**
@@ -93,14 +147,14 @@ public class CreationSujetView extends javax.swing.JPanel {
     private void initComponents() {
 
         jSeparator1 = new javax.swing.JSeparator();
-        jComboBox1 = new javax.swing.JComboBox();
+        outputTypes = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jList1.setDragEnabled(true);
-        jList1.setModel(selectedExericesModel);
-        jList1.setDropMode(DropMode.INSERT);
-        jList1.setTransferHandler(new ListTransferHandler(selectedExericesModel));
+        listeExercices = new javax.swing.JList();
+        listeExercices.setDragEnabled(true);
+        listeExercices.setModel(selectedExericesModel);
+        listeExercices.setDropMode(DropMode.INSERT);
+        listeExercices.setTransferHandler(new ListTransferHandler(selectedExericesModel));
         jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -126,9 +180,9 @@ public class CreationSujetView extends javax.swing.JPanel {
         editor.addCellEditorListener(listener);
         jLabel4 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList3 = new javax.swing.JList();
-        jList3.setDragEnabled(true);
-        jList3.setTransferHandler(new ListTransferHandler(selectedExericesModel));
+        choixExercice = new javax.swing.JList();
+        choixExercice.setDragEnabled(true);
+        choixExercice.setTransferHandler(new ListTransferHandler(selectedExericesModel));
         jScrollPane4 = new javax.swing.JScrollPane();
         keyWordsHolder = new javax.swing.JPanel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 45), new java.awt.Dimension(0, 45), new java.awt.Dimension(32767, 45));
@@ -136,19 +190,20 @@ public class CreationSujetView extends javax.swing.JPanel {
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 70), new java.awt.Dimension(0, 70), new java.awt.Dimension(32767, 70));
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 55), new java.awt.Dimension(0, 55), new java.awt.Dimension(32767, 55));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "DS", "DM", "Colle", "TD" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        outputTypes.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "DS", "DM", "Colle", "TD" }));
+        outputTypes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                outputTypesActionPerformed(evt);
             }
         });
 
         jLabel1.setText("Type");
 
-        jList1.setVisibleRowCount(7);
-        jScrollPane1.setViewportView(jList1);
+        listeExercices.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        listeExercices.setVisibleRowCount(7);
+        jScrollPane1.setViewportView(listeExercices);
 
-        jButton1.setText("Créer");
+        jButton1.setText("Editer");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -176,8 +231,9 @@ public class CreationSujetView extends javax.swing.JPanel {
 
         jLabel4.setText("Mot clef");
 
-        jList3.setModel(CreationSujetView.this.ef.getListModel());
-        jScrollPane3.setViewportView(jList3);
+        choixExercice.setModel(CreationSujetView.this.ef.getListModel());
+        choixExercice.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane3.setViewportView(choixExercice);
 
         jScrollPane4.setBorder(null);
         jScrollPane4.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -204,13 +260,9 @@ public class CreationSujetView extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, keyWordsHolderLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(filler2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(keyWordsHolderLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(keyWordsHolderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(filler4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(filler3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, 0))
+            .addComponent(filler4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(filler3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         jScrollPane4.setViewportView(keyWordsHolder);
@@ -226,7 +278,7 @@ public class CreationSujetView extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(outputTypes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1))
                     .addGroup(layout.createSequentialGroup()
@@ -260,28 +312,23 @@ public class CreationSujetView extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(outputTypes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
                     .addComponent(jButton1))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
                 .addGap(8, 8, 8))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        List<String> output = DSWriter.writeTexFile(selectedExericesModel.elements(), (String)jComboBox1.getSelectedItem());
-        String outString="";
-        for (String line : output){
-            outString=outString+line+"\n";
-        }
-        this.mw.getjTextPane1().setText(outString);
+        currentCompo = TexWriter.outputTexFile(selectedExericesModel.elements(), (String) outputTypes.getSelectedItem());
+        this.displayComposition(currentCompo);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
@@ -291,30 +338,30 @@ public class CreationSujetView extends javax.swing.JPanel {
     private void keywordPickerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keywordPickerActionPerformed
     }//GEN-LAST:event_keywordPickerActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    private void outputTypesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outputTypesActionPerformed
+        
+    }//GEN-LAST:event_outputTypesActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList choixExercice;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPanel keyWordsHolder;
     private javax.swing.JComboBox keywordPicker;
+    private javax.swing.JList listeExercices;
+    private javax.swing.JComboBox outputTypes;
     // End of variables declaration//GEN-END:variables
 }

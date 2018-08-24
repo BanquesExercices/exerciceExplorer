@@ -4,8 +4,15 @@
  * and open the template in the editor.
  */
 package View;
+
 import Helper.SavedVariables;
+import TexRessources.TexWriter;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.prefs.Preferences;
 import javax.swing.JTextPane;
+
 /**
  *
  * @author mbrebion
@@ -15,20 +22,52 @@ public class MainWindow extends javax.swing.JFrame {
     /**
      * Creates new form MainWindow
      */
+    public static final int modeReadme = 1, modeComposition = 2, modeNone = 0;
+    protected int mode;
+
     public MainWindow() {
-        SavedVariables.initSavedVariables();
-        
+        SavedVariables.prefs = Preferences.userNodeForPackage(this.getClass());
+
         initComponents();
+        this.setNoneMode();
         this.creationSujetView1.setMw(this);
-        
+
     }
 
     public JTextPane getjTextPane1() {
         return jTextPane1;
     }
 
-    
-    
+    public void setReadmeMode() {
+        if (mode == modeComposition) {
+            this.creationSujetView1.updateCurrentCompo(jTextPane1.getText());
+        }
+
+        mode = modeReadme;
+        jPanel1.setVisible(true);
+        this.setMinimumSize(new Dimension(670, 400));
+        //this.revalidate();
+        //this.repaint();
+
+        jLabel1.setText("Readme.txt");
+        jButton1.setText("sauver");
+    }
+
+    public void setCompositionMode() {
+        mode = modeComposition;
+        jPanel1.setVisible(true);
+        this.setMinimumSize(new Dimension(670, 400));
+        jLabel1.setText("sujet.tex");
+        jButton1.setText("compiler");
+    }
+
+    public void setNoneMode() {
+        mode = modeNone;
+        jPanel1.setVisible(false);
+        jLabel1.setText("");
+        jButton1.setText("");
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -40,40 +79,20 @@ public class MainWindow extends javax.swing.JFrame {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         creationSujetView1 = new View.CreationSujetView();
-        creationExercice1 = new View.CreationExerciceView();
-        jSplitPane1 = new javax.swing.JSplitPane();
+        options1 = new View.Options();
+        jPanel2 = new javax.swing.JPanel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        jPanel1 = new javax.swing.JPanel();
+        jPanel1.setVisible(false);
+        jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTabbedPane1.addTab("Composition", creationSujetView1);
-        jTabbedPane1.addTab("Création", creationExercice1);
-
-        jSplitPane1.setDividerLocation(200);
-        jSplitPane1.setDividerSize(7);
-        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-
-        jScrollPane1.setViewportView(jTextPane1);
-
-        jSplitPane1.setBottomComponent(jScrollPane1);
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 328, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 198, Short.MAX_VALUE)
-        );
-
-        jSplitPane1.setLeftComponent(jPanel1);
+        jTabbedPane1.addTab("Options", options1);
 
         jPanel2.setBackground(new java.awt.Color(0, 153, 0));
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -90,30 +109,106 @@ public class MainWindow extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jPanel1.setMinimumSize(new java.awt.Dimension(220, 0));
+
+        jLabel1.setText("          ");
+
+        jButton1.setText("Compiler");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jTextPane1.setDragEnabled(false);
+        jTextPane1.setDropMode(javax.swing.DropMode.INSERT);
+        jScrollPane1.setViewportView(jTextPane1);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addGap(0, 0, 0))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 174, Short.MAX_VALUE)
+                        .addComponent(jButton1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(8, 8, 8)
+                .addComponent(jScrollPane1)
+                .addGap(6, 6, 6)
+                .addComponent(jButton1)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
-                .addGap(6, 6, 6)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSplitPane1)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE))
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29))
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String[] split = jTextPane1.getText().split("\n");
+        List<String> lines = new ArrayList<>();
+        for (String s : split) {
+            lines.add(s);
+        }
+
+        switch (mode) {
+
+            case modeComposition:
+                TexWriter.writeTexFile(lines);
+                creationSujetView1.currentCompo=lines;
+                if (TexWriter.latexToPdf()){
+                    TexWriter.openPdf();
+                }else{
+                jTextPane1.setText("pdflatex n'a pas pu compiler le fichier latex \n \n - Essayer de corriger ce fichier ici\n - ou bien en ouvrant ce dernier avec un editeur tex pour corriger ce problème");
+                }
+
+                break;
+
+            case modeReadme:
+                TexWriter.writeToFile(lines, creationSujetView1.getSelectedExercice().getPath()+"/readme.txt");
+                break;
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -151,13 +246,15 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private View.CreationExerciceView creationExercice1;
     private View.CreationSujetView creationSujetView1;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextPane jTextPane1;
+    private View.Options options1;
     // End of variables declaration//GEN-END:variables
 }

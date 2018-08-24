@@ -17,7 +17,6 @@ import javax.swing.DefaultListModel;
  */
 public final class ExerciceFinder {
 
-
     /**
      * Array containing all known exercices
      */
@@ -28,71 +27,75 @@ public final class ExerciceFinder {
         this.updateList();
     }
 
-    
     public void updateList() {
         this.exercices.clear();
         String[] dirs = {Exercice.DS, Exercice.TD, Exercice.Colle};
         for (String elem : dirs) {
-            SavedVariables.initSavedVariables();
             String locPath = SavedVariables.getMainGitDir() + "/exercices/" + elem + "/";
-            
+
             File folder = new File(locPath);
-            File[] listOfFiles = folder.listFiles();
-            for (File file : listOfFiles) {
-                if (file.isFile()) {
-                    System.out.println(" File " + file.getName() + " should not be present in " + elem + " directory");
-                } else if (file.isDirectory()) {
-                    this.exercices.add(new Exercice(file.getName(), file.getAbsolutePath(), elem));
+            try {
+
+                File[] listOfFiles = folder.listFiles();
+                for (File file : listOfFiles) {
+                    if (file.isFile()) {
+                        System.out.println(" File " + file.getName() + " should not be present in " + elem + " directory");
+                    } else if (file.isDirectory()) {
+                        this.exercices.add(new Exercice(file.getName(), file.getAbsolutePath(), elem));
+                    }
                 }
+            } catch (NullPointerException e) {
+                System.err.println("main git dir does not contain exercices. Check its path");
             }
+
         }
 
     }
 
-    public void showExercices(){
+    public void showExercices() {
         exercices.stream().forEach((ex) -> {
-            System.out.println(ex.getName()+"  |  "+ex.getKind());
+            System.out.println(ex.getName() + "  |  " + ex.getKind());
         });
     }
-    
-    public DefaultListModel<Exercice> getListModel(){
-    DefaultListModel<Exercice> out = new DefaultListModel<>();
-    exercices.stream().forEach((ex) -> {
-        out.addElement(ex);
-    });
-    return out;
-    }
-    
-    public DefaultListModel<Exercice> getListModel(String kind){
-    DefaultListModel<Exercice> out = new DefaultListModel<>();
-    exercices.stream().forEach((ex) -> {
-        if (ex.getKind().equals(kind)){
+
+    public DefaultListModel<Exercice> getListModel() {
+        DefaultListModel<Exercice> out = new DefaultListModel<>();
+        exercices.stream().forEach((ex) -> {
             out.addElement(ex);
-        }
-    });
-    return out;
+        });
+        return out;
     }
-    
-    public DefaultListModel<Exercice> getListModel(List<String> keywords,String kind){
-    DefaultListModel<Exercice> out = new DefaultListModel<>();
-    exercices.stream().forEach((ex) -> {
-        if (ex.getKind().equals(kind) && ex.containsKeyWords(keywords)){
-            out.addElement(ex);
-        }
-    });
-    return out;
+
+    public DefaultListModel<Exercice> getListModel(String kind) {
+        DefaultListModel<Exercice> out = new DefaultListModel<>();
+        exercices.stream().forEach((ex) -> {
+            if (ex.getKind().equals(kind)) {
+                out.addElement(ex);
+            }
+        });
+        return out;
     }
-    
-    public DefaultListModel<Exercice> getListModel(List<String> keywords){
-    DefaultListModel<Exercice> out = new DefaultListModel<>();
-    exercices.stream().forEach((ex) -> {
-        if ( ex.containsKeyWords(keywords)){
-            out.addElement(ex);
-        }
-    });
-    return out;
+
+    public DefaultListModel<Exercice> getListModel(List<String> keywords, String kind) {
+        DefaultListModel<Exercice> out = new DefaultListModel<>();
+        exercices.stream().forEach((ex) -> {
+            if (ex.getKind().equals(kind) && ex.containsKeyWords(keywords)) {
+                out.addElement(ex);
+            }
+        });
+        return out;
     }
-    
+
+    public DefaultListModel<Exercice> getListModel(List<String> keywords) {
+        DefaultListModel<Exercice> out = new DefaultListModel<>();
+        exercices.stream().forEach((ex) -> {
+            if (ex.containsKeyWords(keywords)) {
+                out.addElement(ex);
+            }
+        });
+        return out;
+    }
+
     /**
      * @return the exercices
      */
