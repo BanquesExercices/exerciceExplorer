@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -41,7 +43,7 @@ public class TexWriter {
 
     public static boolean latexToPdf() {
         String[] out = ExecCommand.execo(new String[]{SavedVariables.getPdflatexCmd(), "-halt-on-error", "-output-directory=" + System.getProperty("user.dir") + "/output", "output/output.tex"}, 0);
-        if (!out[0].equals("0")){
+        if (!out[0].equals("0")) {
             System.err.println("pdflatex could not latexize the texfile");
         }
         return out[0].equals("0");
@@ -98,6 +100,29 @@ public class TexWriter {
         }
 
         return output;
+    }
+
+    public static List<String> readFile(String path) {
+        ArrayList<String> out= new ArrayList<>();
+        File f = new File(path);
+        BufferedReader b;
+        try {
+            b = new BufferedReader(new FileReader(f));
+        } catch (FileNotFoundException ex) {
+            System.out.println(path+"  not found");
+            return out;
+        }
+
+        String readLine = "";
+        try {
+            while ((readLine = b.readLine()) != null) {
+                out.add(readLine);
+            }
+        } catch (IOException ex) {
+            return out;
+        }
+        return out;
+
     }
 
     public static boolean writeToFile(List<String> in, String path) {

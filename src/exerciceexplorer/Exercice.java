@@ -7,7 +7,6 @@ package exerciceexplorer;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -136,6 +135,14 @@ public class Exercice {
 
     public String getPath() {
         return path;
+    }
+    
+    public String getKeywordsPath(){
+        return path+"/mots_clefs.txt";
+    }
+    
+    public String getReadmePath(){
+        return path+"/readme.txt";
     }
 
     public void setName(String name) {

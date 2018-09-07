@@ -37,18 +37,16 @@ public class CreationSujetView extends javax.swing.JPanel {
     protected List<KeyWordView> selectedKeyWords;
     protected DefaultListModel<Exercice> selectedExericesModel;
     protected MainWindow mw;
-    protected List<String> currentCompo = null;
 
     public CreationSujetView() {
         ef = new ExerciceFinder();
-        kw = new KeyWords();
         selectedKeyWords = new ArrayList<>();
         selectedExericesModel = new DefaultListModel<>();
         initComponents();
 
         choixExercice.addListSelectionListener((ListSelectionEvent e) -> {
             if (choixExercice.getSelectedValue() != null) {
-                this.displayReadme(((Exercice) choixExercice.getSelectedValue()).getReadme());
+                this.mw.setExerciceDisplay((Exercice)choixExercice.getSelectedValue());
             }
         });
 
@@ -56,9 +54,7 @@ public class CreationSujetView extends javax.swing.JPanel {
 
             @Override
             public void focusGained(FocusEvent e) {
-                if (currentCompo != null) {
-                    CreationSujetView.this.displayComposition(currentCompo);
-                }
+                CreationSujetView.this.mw.focusToComposition();
             }
 
             @Override
@@ -71,31 +67,6 @@ public class CreationSujetView extends javax.swing.JPanel {
         return (Exercice)choixExercice.getSelectedValue();
     }
     
-    public void updateCurrentCompo(String text) {
-        String[] split = text.split("\n");
-        currentCompo.clear();
-        for (String s : split) {
-            currentCompo.add(s);
-        }
-    }
-
-    public void displayComposition(List<String> output) {
-        this.mw.setCompositionMode();
-        this.displayText(output);
-    }
-
-    public void displayReadme(List<String> output) {
-        this.mw.setReadmeMode();
-        this.displayText(output);
-    }
-
-    public void displayText(List<String> output) {
-        String outString = "";
-        for (String line : output) {
-            outString = outString + line + "\n";
-        }
-        this.mw.getjTextPane1().setText(outString);
-    }
 
     public void setMw(MainWindow mw) {
         this.mw = mw;
@@ -222,7 +193,7 @@ public class CreationSujetView extends javax.swing.JPanel {
             }
         });
 
-        keywordPicker.setModel(kw.getDefaultComboBoxModelModel());
+        keywordPicker.setModel(KeyWords.getDefaultComboBoxModelModel());
         keywordPicker.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 keywordPickerActionPerformed(evt);
@@ -327,8 +298,8 @@ public class CreationSujetView extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        currentCompo = TexWriter.outputTexFile(selectedExericesModel.elements(), (String) outputTypes.getSelectedItem());
-        this.displayComposition(currentCompo);
+        List<String> cc = TexWriter.outputTexFile(selectedExericesModel.elements(), (String) outputTypes.getSelectedItem());
+        this.mw.setSubjectDisplay(cc);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed

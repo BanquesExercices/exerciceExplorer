@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 
 /**
  *
@@ -23,22 +22,50 @@ import javax.swing.DefaultListModel;
 public class KeyWords {
 
     protected List<String> keywords;
+    protected static KeyWords instance=null;
 
-    public KeyWords() {
+    public static void updateKeywordsList() {
+        try {
+            getInstance().updateKeyWords();
+        } catch (IOException ex) {
+            System.err.println("global keyword file not found");
+        }
+
+    }
+
+    public static DefaultComboBoxModel<String> getDefaultComboBoxModelModel() {
+        DefaultComboBoxModel<String> out = new DefaultComboBoxModel<>();
+        getInstance();
+        getInstance().keywords.stream().forEach((kw) -> {
+            out.addElement(kw);
+        });
+        return out;
+    }
+    
+     /**
+     * @return the keywords
+     */
+    public static List<String> getKeywords() {
+        return getInstance().keywords;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    
+    
+    protected static KeyWords getInstance() {
+        if (instance == null) {
+            instance = new KeyWords();
+        }
+        return instance;
+    }
+
+    protected KeyWords() {
         this.keywords = new ArrayList<>();
         try {
             this.updateKeyWords();
         } catch (IOException ex) {
             System.err.println("global keyword file not found");
         }
-    }
-
-    public DefaultComboBoxModel <String> getDefaultComboBoxModelModel() {
-        DefaultComboBoxModel<String> out = new DefaultComboBoxModel<>();
-        keywords.stream().forEach((kw) -> {
-            out.addElement(kw);
-        });
-        return out;
     }
 
     public void updateKeyWords() throws FileNotFoundException, IOException {
@@ -54,18 +81,7 @@ public class KeyWords {
         }
     }
 
-    /**
-     * @return the keywords
-     */
-    public List<String> getKeywords() {
-        return keywords;
-    }
 
-    /**
-     * @param keywords the keywords to set
-     */
-    public void setKeywords(List<String> keywords) {
-        this.keywords = keywords;
-    }
 
+   
 }
