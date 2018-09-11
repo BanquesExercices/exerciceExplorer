@@ -5,40 +5,58 @@
  */
 package View;
 
+import Helper.ObservableInterface;
 import TexRessources.TexWriter;
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 /**
  *
  * @author mbrebion
  */
-public class TextEditorBinded extends javax.swing.JPanel {
+public class TextEditorBinded extends javax.swing.JPanel implements ObservableInterface {
 
     /**
      * Creates new form TextEditorBinded
      */
-    File f;
-    StyledDocument doc;
+    public final static int exerciceFile = 1, texFile = 2, textFile = 0; // used for syntax coloration
+    protected int syntaxStyle = textFile; // default choice : no color
 
+    protected HashMap<String, SimpleAttributeSet> corresp = new HashMap<>();
+    SimpleAttributeSet blackSet = new SimpleAttributeSet();
+    
+    protected File f;
+    protected StyledDocument doc;
+    protected List<Observer> obs;
+    protected Observable myObs = new Observable();
+    protected DocumentListener docList;
+    
     public TextEditorBinded() {
         initComponents();
         
-        
+        StyleConstants.setItalic(blackSet, true);
+        StyleConstants.setForeground(blackSet, Color.black);
+        obs = new ArrayList<>();
         doc = jTextPane1.getStyledDocument();
-        doc.addDocumentListener(new DocumentListener() {
-
+        docList = new DocumentListener() {
+            
             @Override
             public void insertUpdate(DocumentEvent e) {
                 if (TextEditorBinded.this.jCheckBox1.isSelected()) {
@@ -46,8 +64,16 @@ public class TextEditorBinded extends javax.swing.JPanel {
                 } else {
                     TextEditorBinded.this.jButton1.setFont(TextEditorBinded.this.jButton1.getFont().deriveFont(Font.BOLD));
                 }
+                
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        processChangedLines(e.getDocument(), e.getOffset(), e.getLength());
+                    }
+                });
+                
+                notifyAllObservers();
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent e) {
                 if (TextEditorBinded.this.jCheckBox1.isSelected()) {
@@ -55,8 +81,9 @@ public class TextEditorBinded extends javax.swing.JPanel {
                 } else {
                     TextEditorBinded.this.jButton1.setFont(TextEditorBinded.this.jButton1.getFont().deriveFont(Font.BOLD));
                 }
+                notifyAllObservers();
             }
-
+            
             @Override
             public void changedUpdate(DocumentEvent e) {
                 if (TextEditorBinded.this.jCheckBox1.isSelected()) {
@@ -64,10 +91,13 @@ public class TextEditorBinded extends javax.swing.JPanel {
                 } else {
                     TextEditorBinded.this.jButton1.setFont(TextEditorBinded.this.jButton1.getFont().deriveFont(Font.BOLD));
                 }
+                notifyAllObservers();
             }
-        });
+        };
+        
+        doc.addDocumentListener(docList);
     }
-
+    
     public List<String> getText() {
         String[] split = jTextPane1.getText().split("\n");
         ArrayList<String> out = new ArrayList<>();
@@ -76,24 +106,39 @@ public class TextEditorBinded extends javax.swing.JPanel {
         }
         return out;
     }
-
+    
+    public void addObserver(Observer ob) {
+        this.obs.add(ob);
+    }
+    
+    public void removeObserver(Observer ob) {
+        this.obs.remove(ob);
+    }
+    
     public void bindToFile(String path) {
+        // set syntax color mode according to file kind.
+        if (path.endsWith("sujet.tex")) {
+            this.syntaxStyle = exerciceFile;
+        } else if (path.endsWith(".tex")) {
+            this.syntaxStyle = texFile;
+        }
+        this.setCorresp();
         f = new File(path);
         this.updateView();
     }
-
+    
     protected void SaveFile() {
         TexWriter.writeToFile(getText(), f.getAbsolutePath());
     }
-
+    
     public void updateView() {
         List<String> lines = TexWriter.readFile(f.getAbsolutePath());
         for (String line : lines) {
             append(line);
         }
-
+        
     }
-
+    
     public void append(String s) {
         try {
             if (doc.getLength() == 0) {
@@ -101,7 +146,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
             } else {
                 doc.insertString(doc.getLength(), "\n" + s, null);
             }
-
+            
         } catch (BadLocationException ex) {
             Logger.getLogger(TextEditorBinded.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -194,4 +239,84 @@ public class TextEditorBinded extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void notifyAllObservers() {
+        for (Observer ob : this.obs) {
+            ob.update(myObs, ob);
+        }
+    }
+
+    ///////////////// Syntax coloration
+    protected void processChangedLines(Document doc, int offset, int length) {
+        Element rootElement = doc.getDefaultRootElement();
+        int startLine = rootElement.getElementIndex(offset);
+        int endLine = rootElement.getElementIndex(offset + length);
+        
+        for (int i = startLine; i <= endLine; i++) {
+            try {
+                int lineStart = rootElement.getElement(i).getStartOffset();
+                int lineEnd = rootElement.getElement(i).getEndOffset() - 1;
+                String lineText = doc.getText(lineStart, lineEnd - lineStart);
+                applyHighlighting(doc, lineText, lineStart);
+                
+            } catch (BadLocationException ex) {
+                Logger.getLogger(TextEditorBinded.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    protected void applyHighlighting(Document doc, String text, int offset) {
+        boolean toBeColored = false;
+        for (String s : corresp.keySet()) {
+            if (text.contains(s)) {
+                toBeColored = true;
+            }
+        }
+        if (!toBeColored) {
+            return;
+        }
+        // if here, at least one word must be colored
+        doc.removeDocumentListener(docList); // prevent infinite loop 
+        
+        try {
+            // we first put normal color everywhere in the line : 
+            doc.remove(offset, text.length());
+            doc.insertString(offset, text, blackSet);
+            
+            // we then check syntax words 
+            for (String s : corresp.keySet()) {
+                int begin = text.indexOf(s);
+                
+                if (begin > -1) {
+                    System.out.println(begin);
+                    doc.remove(begin + offset, s.length());
+                    doc.insertString(begin + offset, s, corresp.get(s));
+                }
+            }
+            
+        } catch (BadLocationException ex) {
+            System.err.println(ex.getMessage() + " | " + ex.offsetRequested());
+        }
+        doc.addDocumentListener(docList);
+    }
+    
+    protected void setCorresp() {
+        if (this.syntaxStyle == exerciceFile) {
+            this.corresp.clear();
+            SimpleAttributeSet redset = new SimpleAttributeSet();
+            StyleConstants.setItalic(redset, true);
+            StyleConstants.setForeground(redset, Color.red);
+            
+            SimpleAttributeSet blueset = new SimpleAttributeSet();
+            StyleConstants.setItalic(blueset, true);
+            StyleConstants.setForeground(blueset, Color.blue);
+            
+            this.corresp.put("\\addQ", redset);
+            this.corresp.put("\\partie", blueset);
+            this.corresp.put("\\sousPartie", blueset);
+            this.corresp.put("\\enonce", blueset);
+            
+        }
+    }
 }

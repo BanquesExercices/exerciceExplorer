@@ -77,11 +77,24 @@ public class Exercice {
         return out;
     }
 
+    
+    public void NotifyKeyWordsChanged(){
+        this.updateKeywords();
+    }
+    
+    public void NotifyReadmeChanged(){
+    
+    }
+    
+    public void NotifySubjectChanged(){
+    
+    }
+    
     protected void updateKeywords() {
 
         try {
             this.keywords.clear();
-            File f = new File(this.path + "/mots_clefs.txt");
+            File f = new File(this.getKeywordsPath());
             BufferedReader b = new BufferedReader(new FileReader(f));
             String readLine = "";
             while ((readLine = b.readLine()) != null) {
@@ -96,7 +109,7 @@ public class Exercice {
     protected void updateReadme() {
         try {
             this.readme.clear();
-            File f = new File(this.path + "/readme.txt");
+            File f = new File(this.getReadmePath());
             BufferedReader b = new BufferedReader(new FileReader(f));
             String readLine = "";
             while ((readLine = b.readLine()) != null) {
@@ -137,6 +150,10 @@ public class Exercice {
         return path;
     }
     
+        public String getSubjectPath(){
+        return path+"/sujet.tex";
+    }
+    
     public String getKeywordsPath(){
         return path+"/mots_clefs.txt";
     }
@@ -145,26 +162,12 @@ public class Exercice {
         return path+"/readme.txt";
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
 
     /**
      * @return the kind
      */
     public String getKind() {
         return kind;
-    }
-
-    /**
-     * @param kind the kind to set
-     */
-    public void setKind(String kind) {
-        this.kind = kind;
     }
 
     /**

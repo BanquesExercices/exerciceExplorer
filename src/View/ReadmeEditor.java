@@ -6,12 +6,14 @@
 package View;
 
 import exerciceexplorer.Exercice;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  *
  * @author mbrebion
  */
-public class ReadmeEditor extends javax.swing.JPanel {
+public class ReadmeEditor extends javax.swing.JPanel implements Observer{
 
     /**
      * Creates new form SubjectEditor
@@ -26,6 +28,7 @@ public class ReadmeEditor extends javax.swing.JPanel {
         initComponents();
         this.ex=ex;
         this.textEditorBinded1.bindToFile(ex.getReadmePath());
+        this.textEditorBinded1.addObserver(this);
     }
 
     
@@ -49,4 +52,9 @@ public class ReadmeEditor extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private View.TextEditorBinded textEditorBinded1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void update(Observable o, Object arg) {
+        ex.NotifyReadmeChanged();
+    }
 }

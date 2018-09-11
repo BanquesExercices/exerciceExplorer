@@ -5,64 +5,34 @@
  */
 package View;
 
-import TexRessources.TexWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledDocument;
+import exerciceexplorer.Exercice;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  *
  * @author mbrebion
  */
-public class SubjectEditor extends javax.swing.JPanel {
-
-    StyledDocument doc;
+public class SubjectEditor extends javax.swing.JPanel implements Observer{
 
     /**
      * Creates new form SubjectEditor
      */
+    protected Exercice ex;
+    
     public SubjectEditor() {
         initComponents();
     }
 
-    public SubjectEditor(List<String> lines) {
+    public SubjectEditor(Exercice ex) {
         initComponents();
-        this.doc = jTextPane1.getStyledDocument();
-        this.setText(lines);
+        this.ex=ex;
+        this.textEditorBinded1.bindToFile(ex.getSubjectPath());
+        this.textEditorBinded1.addObserver(this);
     }
 
-    protected void setText(List<String> lines) {
-        jTextPane1.setText("");
-        for (String line : lines) {
-            this.append(line);
-        }
-    }
-
-    protected void append(String s) {
-        try {
-            if (doc.getLength() == 0) {
-                doc.insertString(0, s, null);
-            } else {
-                doc.insertString(doc.getLength(), "\n" + s, null);
-            }
-
-        } catch (BadLocationException ex) {
-            Logger.getLogger(TextEditorBinded.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    protected List<String> getLines() {
-        String[] split = jTextPane1.getText().split("\n");
-        List<String> lines = new ArrayList<>();
-        for (String s : split) {
-            lines.add(s);
-        }
-        return lines;
-    }
-
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -72,67 +42,19 @@ public class SubjectEditor extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        textEditorBinded1 = new View.TextEditorBinded();
 
-        jScrollPane1.setViewportView(jTextPane1);
-
-        jButton1.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        jButton1.setText("Compiler");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        jButton2.setText("Générer");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addGap(0, 0, 0))
-        );
+        setLayout(new java.awt.BorderLayout());
+        add(textEditorBinded1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        List<String> lines = this.getLines();
-
-        TexWriter.writeTexFile(lines);
-        if (TexWriter.latexToPdf()) {
-            TexWriter.openPdf();
-        } else {
-            jTextPane1.setText("pdflatex n'a pas pu compiler le fichier latex \n \n - Essayer de corriger ce fichier ici\n - ou bien en ouvrant ce dernier avec un editeur tex pour corriger ce problème");
-        }
-
-
-    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextPane jTextPane1;
+    private View.TextEditorBinded textEditorBinded1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void update(Observable o, Object arg) {
+        ex.NotifySubjectChanged();
+    }
 }

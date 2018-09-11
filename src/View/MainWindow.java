@@ -29,6 +29,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     ReadmeEditor re = null;
     KeywordsEditor ke = null;
+    CompoEditor ce = null;
     SubjectEditor se = null;
 
     public MainWindow() {
@@ -46,27 +47,33 @@ public class MainWindow extends javax.swing.JFrame {
         if (ke != null) {
             this.editorTabbedPane.remove(ke);
         }
-        re = new ReadmeEditor(ex);
-        ke = new KeywordsEditor(ex);
-
-        this.editorTabbedPane.insertTab("Mots clés", null, ke, "", 0);
-        this.editorTabbedPane.insertTab("Readme", null, re, "", 0);
-        this.editorTabbedPane.setSelectedComponent(re);
-        
-    }
-
-    public void focusToComposition(){
-    if (se!=null){
-        this.editorTabbedPane.setSelectedComponent(se);
-    }
-    }
-    
-    public void setSubjectDisplay(List<String> lines) {
         if (se != null) {
             this.editorTabbedPane.remove(se);
         }
-        se = new SubjectEditor(lines);
-        this.editorTabbedPane.insertTab("Composition", null, se, "", 0);
+        
+        re = new ReadmeEditor(ex);
+        ke = new KeywordsEditor(ex);
+        se = new SubjectEditor(ex);
+
+        this.editorTabbedPane.insertTab("sujet.tex", null, se, "", 0);
+        this.editorTabbedPane.insertTab("Mots clés", null, ke, "", 0);
+        this.editorTabbedPane.insertTab("Readme", null, re, "", 0);
+        this.editorTabbedPane.setSelectedComponent(re);
+
+    }
+
+    public void focusToComposition() {
+        if (ce != null) {
+            this.editorTabbedPane.setSelectedComponent(ce);
+        }
+    }
+
+    public void setSubjectDisplay(List<String> lines) {
+        if (ce != null) {
+            this.editorTabbedPane.remove(ce);
+        }
+        ce = new CompoEditor(lines);
+        this.editorTabbedPane.insertTab("Composition", null, ce, "", 0);
         this.editorTabbedPane.setSelectedIndex(0);
     }
 
@@ -117,14 +124,14 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editorTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
+                .addComponent(editorTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
-            .addComponent(editorTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
+            .addComponent(editorTabbedPane)
         );
 
         editorTabbedPane.getAccessibleContext().setAccessibleName("");

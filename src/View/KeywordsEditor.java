@@ -8,6 +8,8 @@ package View;
 import exerciceexplorer.Exercice;
 import exerciceexplorer.KeyWords;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -17,7 +19,7 @@ import org.jdesktop.swingx.autocomplete.ComboBoxCellEditor;
  *
  * @author mbrebion
  */
-public class KeywordsEditor extends javax.swing.JPanel {
+public class KeywordsEditor extends javax.swing.JPanel implements Observer{
 
     /**
      * Creates new form SubjectEditor
@@ -32,6 +34,7 @@ public class KeywordsEditor extends javax.swing.JPanel {
         initComponents();
         this.ex=ex;
         this.textEditorBinded1.bindToFile(ex.getKeywordsPath());
+        this.textEditorBinded1.addObserver(this);
     }
 
     private boolean contains(String name){
@@ -117,5 +120,10 @@ public class KeywordsEditor extends javax.swing.JPanel {
     private javax.swing.JComboBox keywordPicker;
     private View.TextEditorBinded textEditorBinded1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void update(Observable o, Object arg) {
+        ex.NotifyKeyWordsChanged();
+    }
 
 }

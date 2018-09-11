@@ -41,10 +41,13 @@ public class TexWriter {
         }
     }
 
+    public static String latexLog="";
+    
     public static boolean latexToPdf() {
         String[] out = ExecCommand.execo(new String[]{SavedVariables.getPdflatexCmd(), "-halt-on-error", "-output-directory=" + System.getProperty("user.dir") + "/output", "output/output.tex"}, 0);
         if (!out[0].equals("0")) {
             System.err.println("pdflatex could not latexize the texfile");
+            latexLog=out[1];
         }
         return out[0].equals("0");
     }
