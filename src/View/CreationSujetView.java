@@ -39,6 +39,7 @@ public class CreationSujetView extends javax.swing.JPanel {
     protected MainWindow mw;
 
     public CreationSujetView() {
+
         ef = new ExerciceFinder();
         selectedKeyWords = new ArrayList<>();
         selectedExericesModel = new DefaultListModel<>();
@@ -46,7 +47,7 @@ public class CreationSujetView extends javax.swing.JPanel {
 
         choixExercice.addListSelectionListener((ListSelectionEvent e) -> {
             if (choixExercice.getSelectedValue() != null) {
-                this.mw.setExerciceDisplay((Exercice)choixExercice.getSelectedValue());
+                this.mw.setExerciceDisplay((Exercice) choixExercice.getSelectedValue());
             }
         });
 
@@ -63,10 +64,16 @@ public class CreationSujetView extends javax.swing.JPanel {
             }
         });
     }
-    public Exercice getSelectedExercice(){
-        return (Exercice)choixExercice.getSelectedValue();
+
+    public void updateDataBase() {
+        ef.updateList();
+        this.updateModel();
+        
     }
-    
+
+    public Exercice getSelectedExercice() {
+        return (Exercice) choixExercice.getSelectedValue();
+    }
 
     public void setMw(MainWindow mw) {
         this.mw = mw;
@@ -310,7 +317,7 @@ public class CreationSujetView extends javax.swing.JPanel {
     }//GEN-LAST:event_keywordPickerActionPerformed
 
     private void outputTypesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outputTypesActionPerformed
-        
+
     }//GEN-LAST:event_outputTypesActionPerformed
 
 

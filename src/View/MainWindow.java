@@ -37,7 +37,14 @@ public class MainWindow extends javax.swing.JFrame {
 
         initComponents();
         this.creationSujetView1.setMw(this);
+        this.options1.setMw(this);
 
+    }
+    
+    
+    public void updateDatabase(){
+        this.creationSujetView1.updateDataBase();
+        // should we do more here ? (removing oppened tabs ?)
     }
 
     public void setExerciceDisplay(Exercice ex) {

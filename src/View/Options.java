@@ -6,7 +6,6 @@
 package View;
 
 import Helper.SavedVariables;
-import java.util.prefs.Preferences;
 
 /**
  *
@@ -17,13 +16,15 @@ public class Options extends javax.swing.JPanel {
     /**
      * Creates new form Options
      */
-    
-    
+    protected MainWindow mw;
+
     public Options() {
         initComponents();
 
-        
+    }
 
+    public void setMw(MainWindow mw) {
+        this.mw = mw;
     }
 
     /**
@@ -45,6 +46,7 @@ public class Options extends javax.swing.JPanel {
         gitFolderInput = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         templatesFolderInput = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 20)); // NOI18N
         jLabel3.setText("Options");
@@ -86,29 +88,44 @@ public class Options extends javax.swing.JPanel {
             }
         });
 
+        jButton1.setText("Actualiser");
+        jButton1.setToolTipText("mettre à jour la base des exercices");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(templatesFolderInput, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(gitFolderInput, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(openInput, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(pdflatexInput, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(templatesFolderInput, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(gitFolderInput, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(openInput, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(pdflatexInput, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(129, 129, 129)
+                                .addComponent(jLabel3))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap(110, Short.MAX_VALUE)
+                                .addComponent(jButton1)))
+                        .addGap(0, 110, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(129, 129, 129)
-                .addComponent(jLabel3)
-                .addGap(157, 157, 157))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -133,7 +150,9 @@ public class Options extends javax.swing.JPanel {
                     .addComponent(templatesFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(274, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addComponent(jButton1)
+                .addContainerGap(245, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -153,9 +172,16 @@ public class Options extends javax.swing.JPanel {
         SavedVariables.setOpenCmd(openInput.getText());
     }//GEN-LAST:event_openInputActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    if (mw!= null){
+        this.mw.updateDatabase();
+    }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField gitFolderInput;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
