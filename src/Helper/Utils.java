@@ -6,6 +6,7 @@
 package Helper;
 
 import java.awt.Frame;
+import java.text.Normalizer;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -24,5 +25,9 @@ public class Utils {
         JOptionPane.showMessageDialog(frame, scrollPane);
     }
     
-    
+    public static String stripAccents(String s) 
+{
+    String out  = Normalizer.normalize(s, Normalizer.Form.NFD);
+    return out.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+}
 }

@@ -21,10 +21,10 @@ public class KeyWordView extends javax.swing.JPanel {
      * @param nameString : name of the keyword
      */
     String nameString;
-    CreationSujetView csv;
+    CreationCompoView csv;
 
      
-    public KeyWordView(String nameString, CreationSujetView csv) {
+    public KeyWordView(String nameString, CreationCompoView csv) {
         this.nameString=nameString;
         this.csv=csv;
         
