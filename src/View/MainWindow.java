@@ -48,9 +48,11 @@ public class MainWindow extends javax.swing.JFrame {
 
     public void setExerciceDisplay(Exercice ex) {
         if (re != null) {
+            re.saveFile();
             this.editorTabbedPane.remove(re);
         }
         if (ke != null) {
+            
             this.editorTabbedPane.remove(ke);
         }
         if (se != null) {

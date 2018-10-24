@@ -19,35 +19,37 @@ import org.jdesktop.swingx.autocomplete.ComboBoxCellEditor;
  *
  * @author mbrebion
  */
-public class KeywordsEditor extends javax.swing.JPanel implements Observer{
+public class KeywordsEditor extends javax.swing.JPanel implements Observer {
 
     /**
      * Creates new form SubjectEditor
      */
     protected Exercice ex;
-    
+
     public KeywordsEditor() {
         initComponents();
     }
-    
-    public KeywordsEditor(Exercice ex){
+
+    public KeywordsEditor(Exercice ex) {
         initComponents();
-        this.ex=ex;
+        this.ex = ex;
         this.textEditorBinded1.bindToFile(ex.getKeywordsPath());
         this.textEditorBinded1.addObserver(this);
     }
 
-    private boolean contains(String name){
-        boolean out=false;
+    private boolean contains(String name) {
+        boolean out = false;
         List<String> split = textEditorBinded1.getText();
         for (String s : split) {
-            if (s.trim().equals(name)){out=true;}
-        }    
+            if (s.trim().equals(name)) {
+                out = true;
+            }
+        }
         return out;
     }
-    
+
     private void appendKeyword(String name) {
-        if (!contains(name)){
+        if (!contains(name)) {
             textEditorBinded1.append(name);
         }
     }
@@ -124,6 +126,10 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer{
     @Override
     public void update(Observable o, Object arg) {
         ex.NotifyKeyWordsChanged();
+    }
+
+    public void saveFile() {
+        this.textEditorBinded1.SaveFile();
     }
 
 }

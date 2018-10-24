@@ -57,4 +57,8 @@ public class SubjectEditor extends javax.swing.JPanel implements Observer{
     public void update(Observable o, Object arg) {
         ex.NotifySubjectChanged();
     }
+    
+    public void saveFile(){
+        this.textEditorBinded1.SaveFile();
+    }
 }

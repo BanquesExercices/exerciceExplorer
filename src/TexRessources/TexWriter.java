@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -31,23 +29,28 @@ public class TexWriter {
         ExecCommand.execo(new String[]{SavedVariables.getOpenCmd(), "output/output.pdf"}, 0);
     }
 
-    protected static void getExercicestoTex(Enumeration<Exercice> exercices, List<String> output, List<String> imports) {
+    protected static void getExercicestoTex(Enumeration<Exercice> exercices, List<String> output, List<String> imports, boolean localLinks) {
         while (exercices.hasMoreElements()) {
             Exercice element = exercices.nextElement();
             output.add("\\resetQ");
-            output.add("\\subimport{" + element.getPath() + "/}{sujet.tex}");
+            if (localLinks) {
+                output.add("\\subimport{./" + element.getName() + "/}{sujet.tex}");
+            } else {
+                output.add("\\subimport{" + element.getPath() + "/}{sujet.tex}");
+            }
+
             output.add("");
             imports.addAll(element.getImports());
         }
     }
 
-    public static String latexLog="";
-    
+    public static String latexLog = "";
+
     public static boolean latexToPdf() {
         String[] out = ExecCommand.execo(new String[]{SavedVariables.getPdflatexCmd(), "-halt-on-error", "-output-directory=" + System.getProperty("user.dir") + "/output", "output/output.tex"}, 0);
         if (!out[0].equals("0")) {
             System.err.println("pdflatex could not latexize the texfile");
-            latexLog=out[1];
+            latexLog = out[1];
         }
         return out[0].equals("0");
     }
@@ -63,7 +66,7 @@ public class TexWriter {
         return writeToFile(in, "output/output.tex");
     }
 
-    public static List<String> outputTexFile(Enumeration<Exercice> exercices, String kind) {
+    public static List<String> outputTexFile(Enumeration<Exercice> exercices, String kind, boolean localLinks) {
         List<String> output = new ArrayList<>(); // main file
         List<String> imports = new ArrayList<>(); // packages required by a specific exercice
 
@@ -92,7 +95,7 @@ public class TexWriter {
         try {
             while ((readLine = b.readLine()) != null) {
                 if (readLine.trim().equals("****")) {
-                    getExercicestoTex(exercices, output, imports);
+                    getExercicestoTex(exercices, output, imports,localLinks);
                     continue;
                 }
                 output.add(readLine);
@@ -106,13 +109,13 @@ public class TexWriter {
     }
 
     public static List<String> readFile(String path) {
-        ArrayList<String> out= new ArrayList<>();
+        ArrayList<String> out = new ArrayList<>();
         File f = new File(path);
         BufferedReader b;
         try {
             b = new BufferedReader(new FileReader(f));
         } catch (FileNotFoundException ex) {
-            System.out.println(path+"  not found");
+            System.out.println(path + "  not found");
             return out;
         }
 

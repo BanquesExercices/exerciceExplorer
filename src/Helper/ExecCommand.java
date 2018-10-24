@@ -41,7 +41,7 @@ public class ExecCommand {
 
     public static String[] execo(String[] command, double delay) {
         /**
-         * This function can only be called after previous calls hae been
+         * This function can only be called after previous calls has been
          * terminated.
          */
 

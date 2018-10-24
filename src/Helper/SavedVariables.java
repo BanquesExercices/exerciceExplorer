@@ -28,6 +28,34 @@ public class SavedVariables {
         prefs.put("open", openCmd);
     }
 
+    public static void setOutputDir(String output) {
+        prefs.put("outputDir", output);
+    }
+
+    public static String getOutputDir() {
+        if (prefs != null) {
+            return prefs.get("outputDir", "");
+        } else {
+            return "";
+        }
+    }
+
+    public static boolean getAutoSave() {
+        if (prefs != null) {
+            return prefs.get("autoSave", "") == "true";
+        } else {
+            return false;
+        }
+    }
+
+    public static void setAutoSave(boolean as) {
+        if (as) {
+            prefs.put("autoSave", "true");
+        } else {
+            prefs.put("autoSave", "false");
+        }
+    }
+
     public static String getPdflatexCmd() {
 
         if (prefs != null) {
@@ -42,8 +70,7 @@ public class SavedVariables {
     }
 
     public static String getTexModelsPaths() {
-        
-        
+
         if (prefs != null) {
             return prefs.get("templates", "");
         } else {

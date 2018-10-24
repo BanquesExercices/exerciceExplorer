@@ -48,6 +48,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
     protected List<Observer> obs;
     protected Observable myObs = new Observable();
     protected DocumentListener docList;
+    protected boolean hasChanged = false;
 
     public TextEditorBinded() {
         initComponents();
@@ -60,12 +61,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
 
             @Override
             public void insertUpdate(DocumentEvent e) {
-                if (TextEditorBinded.this.jCheckBox1.isSelected()) {
-                    TextEditorBinded.this.SaveFile();
-                } else {
-                    TextEditorBinded.this.jButton1.setEnabled(true);
-                }
-
+                changeOccured();
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         processChangedLines(e.getDocument(), e.getOffset(), e.getLength());
@@ -77,26 +73,31 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                if (TextEditorBinded.this.jCheckBox1.isSelected()) {
-                    TextEditorBinded.this.SaveFile();
-                } else {
-                    TextEditorBinded.this.jButton1.setEnabled(true);
-                }
+                changeOccured();
                 notifyAllObservers();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                if (TextEditorBinded.this.jCheckBox1.isSelected()) {
-                    TextEditorBinded.this.SaveFile();
-                } else {
-                    TextEditorBinded.this.jButton1.setEnabled(true);
-                }
+                changeOccured();
                 notifyAllObservers();
             }
         };
 
         doc.addDocumentListener(docList);
+    }
+
+    protected void changeOccured() {
+        hasChanged = true;
+        if (!jCheckBox1.isSelected()) {
+            jButton1.setEnabled(true);
+        }else{
+            SaveFile();
+        }
+    }
+
+    public boolean hasChanged() {
+        return hasChanged;
     }
 
     public List<String> getText() {
@@ -128,10 +129,15 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
 
         this.updateView();
         this.jButton1.setEnabled(false); // no need to save when text loaded from file
+        TextEditorBinded.this.hasChanged = false;
     }
 
     protected void SaveFile() {
-        TexWriter.writeToFile(getText(), f.getAbsolutePath());
+        if (hasChanged) { // prevent intempestive saving
+            TexWriter.writeToFile(getText(), f.getAbsolutePath());
+            hasChanged = false;
+            jButton1.setEnabled(false);
+        }
     }
 
     public void updateView() {
@@ -139,6 +145,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
         for (String line : lines) {
             append(line);
         }
+        hasChanged=false;
 
     }
 
@@ -153,6 +160,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
         } catch (BadLocationException ex) {
             Logger.getLogger(TextEditorBinded.class.getName()).log(Level.SEVERE, null, ex);
         }
+        changeOccured();
     }
 
     /**
@@ -251,6 +259,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.SaveFile();
         this.jButton1.setEnabled(false);
+        TextEditorBinded.this.hasChanged = false;
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
