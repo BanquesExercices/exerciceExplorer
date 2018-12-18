@@ -25,6 +25,14 @@ public class Utils {
         JOptionPane.showMessageDialog(frame, scrollPane);
     }
     
+    public static void showShortTextMessageInDialog(String longMessage, Frame frame) {
+        JTextArea textArea = new JTextArea(4, 50);
+        textArea.setText(longMessage);
+        textArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        JOptionPane.showMessageDialog(frame, scrollPane);
+    }
+    
     public static String stripAccents(String s) 
 {
     String out  = Normalizer.normalize(s, Normalizer.Form.NFD);

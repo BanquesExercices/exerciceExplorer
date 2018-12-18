@@ -86,7 +86,7 @@ public class TexWriter {
         try {
             b = new BufferedReader(new FileReader(f));
         } catch (FileNotFoundException ex) {
-            System.out.println("DSmodel.txt file not found. Please create this file and edit its path");
+            System.err.println("DSmodel.txt file not found. Please create this file and edit its path");
             return null;
         }
 
@@ -102,7 +102,7 @@ public class TexWriter {
             }
             output.addAll(1, imports);
         } catch (IOException ex) {
-            System.out.println("Problem occured while reading DSmodel.txt");
+            System.err.println("Problem occured while reading DSmodel.txt");
         }
 
         return output;
@@ -115,7 +115,7 @@ public class TexWriter {
         try {
             b = new BufferedReader(new FileReader(f));
         } catch (FileNotFoundException ex) {
-            System.out.println(path + "  not found");
+            System.err.println(path + "  not found");
             return out;
         }
 

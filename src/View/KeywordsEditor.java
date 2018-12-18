@@ -7,9 +7,11 @@ package View;
 
 import exerciceexplorer.Exercice;
 import exerciceexplorer.KeyWords;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.JOptionPane;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -125,6 +127,26 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        if (arg == this) {
+            return;
+        }
+        List<String> typedKeywords = this.textEditorBinded1.getText();
+        // check for new keywords
+        List<String> newKeywords = new ArrayList<>();
+        for (String st : typedKeywords) {
+            if (!KeyWords.exists(st)) {
+                newKeywords.add(st);
+            }
+        }
+        if (newKeywords.size() > 0) {
+            // new elements to add
+            int output = JOptionPane.showConfirmDialog(null, "il y a " + newKeywords.size()+" nouveaux mots clefs.", "Ajout des nouveaux mots clefs ?", JOptionPane.YES_NO_OPTION);
+            if (output == JOptionPane.YES_OPTION) {
+                KeyWords.addNewKeywords(newKeywords);
+                KeyWords.updateKeywordsList();
+            }
+        }
+
         ex.NotifyKeyWordsChanged();
     }
 

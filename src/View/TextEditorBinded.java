@@ -6,11 +6,12 @@
 package View;
 
 import Helper.ExecCommand;
-import Helper.ObservableInterface;
 import Helper.SavedVariables;
+import Helper.Utils;
 import TexRessources.TexWriter;
 import java.awt.Color;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -32,7 +34,8 @@ import javax.swing.text.StyledDocument;
  *
  * @author mbrebion
  */
-public class TextEditorBinded extends javax.swing.JPanel implements ObservableInterface {
+@SuppressWarnings("serial")
+public class TextEditorBinded extends javax.swing.JPanel {
 
     /**
      * Creates new form TextEditorBinded
@@ -49,9 +52,11 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
     protected Observable myObs = new Observable();
     protected DocumentListener docList;
     protected boolean hasChanged = false;
+    protected long lastUpdate;
 
     public TextEditorBinded() {
         initComponents();
+        
 
         StyleConstants.setItalic(blackSet, true);
         StyleConstants.setForeground(blackSet, Color.black);
@@ -62,25 +67,23 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
             @Override
             public void insertUpdate(DocumentEvent e) {
                 changeOccured();
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        processChangedLines(e.getDocument(), e.getOffset(), e.getLength());
-                    }
+                SwingUtilities.invokeLater(() -> {
+                    processChangedLines(e.getDocument(), e.getOffset(), e.getLength());
                 });
 
-                notifyAllObservers();
+                notifyAllObserver();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 changeOccured();
-                notifyAllObservers();
+                notifyAllObserver();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
                 changeOccured();
-                notifyAllObservers();
+                notifyAllObserver();
             }
         };
 
@@ -90,7 +93,9 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
     protected void changeOccured() {
         hasChanged = true;
         if (!jCheckBox1.isSelected()) {
-            jButton1.setEnabled(true);
+            if (checkSafe()){
+                jButton1.setEnabled(true);
+            }
         }else{
             SaveFile();
         }
@@ -103,8 +108,9 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
     public List<String> getText() {
         String[] split = jTextPane1.getText().split("\n");
         ArrayList<String> out = new ArrayList<>();
+        Charset charset = Charset.forName("UTF-8"); // ensure only utf8 character
         for (String s : split) {
-            out.add(s);
+            out.add(charset.decode(charset.encode(s)).toString());
         }
         return out;
     }
@@ -130,22 +136,49 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
         this.updateView();
         this.jButton1.setEnabled(false); // no need to save when text loaded from file
         TextEditorBinded.this.hasChanged = false;
+        
     }
 
-    protected void SaveFile() {
+    protected boolean checkSafe(){
+        // check that file as not been modified elesewhere
+        boolean status = f.lastModified() <= (this.lastUpdate+100);
+        reloadButton.setVisible(!status);
+        return status;
+    }
+            
+    protected boolean SaveFile() {
+        
         if (hasChanged) { // prevent intempestive saving
+            
+            if (!this.checkSafe()){
+                String out="Fichier "+f.getAbsolutePath()+ " modifié depuis l'exterieur. Impossible de sauvegarder";
+                System.err.println(out);
+                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                Utils.showShortTextMessageInDialog(out, topFrame);
+                return false;
+            }
+            
+            this.lastUpdate=System.currentTimeMillis();
             TexWriter.writeToFile(getText(), f.getAbsolutePath());
             hasChanged = false;
             jButton1.setEnabled(false);
+            notifyAllObserver("save");
+            return true;
         }
+        return false;
     }
 
     public void updateView() {
         List<String> lines = TexWriter.readFile(f.getAbsolutePath());
+        this.lastUpdate=System.currentTimeMillis();
+        this.clearDisplay();
+        this.checkSafe();
+        
         for (String line : lines) {
             append(line);
         }
         hasChanged=false;
+        jButton1.setEnabled(false);
 
     }
 
@@ -161,6 +194,10 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
             Logger.getLogger(TextEditorBinded.class.getName()).log(Level.SEVERE, null, ex);
         }
         changeOccured();
+    }
+    
+    protected void clearDisplay(){
+        jTextPane1.setText("");
     }
 
     /**
@@ -178,6 +215,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
         jButton2 = new javax.swing.JButton();
+        reloadButton = new javax.swing.JButton();
 
         setMinimumSize(new java.awt.Dimension(50, 50));
         setPreferredSize(new java.awt.Dimension(364, 100));
@@ -231,17 +269,25 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
             }
         });
 
+        reloadButton.setText("Recharger");
+        reloadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reloadButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jCheckBox1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 178, Short.MAX_VALUE)
+                .addGap(27, 27, 27)
+                .addComponent(reloadButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -249,7 +295,9 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jCheckBox1)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jCheckBox1)
+                        .addComponent(reloadButton))
                     .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(0, 0, 0))
@@ -258,8 +306,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.SaveFile();
-        this.jButton1.setEnabled(false);
-        TextEditorBinded.this.hasChanged = false;
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
@@ -274,6 +321,12 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
         ExecCommand.execo(new String[]{SavedVariables.getOpenCmd(), f.getAbsolutePath()}, 0);
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void reloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reloadButtonActionPerformed
+        // force a update to the text file (usefull if an external change has been observed. 
+        // In this case, it is not possible to save the file anymore
+        this.updateView();
+    }//GEN-LAST:event_reloadButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -282,10 +335,16 @@ public class TextEditorBinded extends javax.swing.JPanel implements ObservableIn
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JButton reloadButton;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void notifyAllObservers() {
+    public void notifyAllObserver(Object mess) {
+        for (Observer ob : this.obs) {
+            ob.update(myObs, mess);
+        }
+    }
+    
+    public void notifyAllObserver() {
         for (Observer ob : this.obs) {
             ob.update(myObs, ob);
         }

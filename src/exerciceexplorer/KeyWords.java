@@ -7,12 +7,17 @@ package exerciceexplorer;
 
 import Helper.SavedVariables;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -22,7 +27,7 @@ import javax.swing.DefaultComboBoxModel;
 public class KeyWords {
 
     protected List<String> keywords;
-    protected static KeyWords instance=null;
+    protected static KeyWords instance = null;
 
     public static void updateKeywordsList() {
         try {
@@ -41,8 +46,16 @@ public class KeyWords {
         });
         return out;
     }
-    
-     /**
+
+    public static boolean exists(String key) {
+        return getInstance().keywords.contains(key);
+    }
+
+    public static void addNewKeywords(List<String> keys) {
+        getInstance().addKeywords(keys);
+    }
+
+    /**
      * @return the keywords
      */
     public static List<String> getKeywords() {
@@ -50,8 +63,6 @@ public class KeyWords {
     }
 
     /////////////////////////////////////////////////////////////////////////////
-    
-    
     protected static KeyWords getInstance() {
         if (instance == null) {
             instance = new KeyWords();
@@ -68,6 +79,31 @@ public class KeyWords {
         }
     }
 
+    public void addKeywords(List<String> keys) {
+        BufferedWriter b = null;
+        try {
+            File f = new File(SavedVariables.getMainGitDir() + "/fichiers_utiles/mots_clefs.txt");
+            b = new BufferedWriter(new FileWriter(f, true));
+            PrintWriter out = new PrintWriter(b);
+            for (String st : keys) {
+                if (!keywords.contains(st)) {
+                    out.println(st);
+                }
+            }
+            out.flush();
+
+        } catch (IOException ex) {
+            Logger.getLogger(KeyWords.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                b.close();
+            } catch (IOException ex) {
+                Logger.getLogger(KeyWords.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }
+
     public void updateKeyWords() throws FileNotFoundException, IOException {
         this.keywords.clear();
         File f = new File(SavedVariables.getMainGitDir() + "/fichiers_utiles/mots_clefs.txt");
@@ -81,7 +117,4 @@ public class KeyWords {
         }
     }
 
-
-
-   
 }
