@@ -14,8 +14,6 @@ import exerciceexplorer.Exercice;
 import exerciceexplorer.ExerciceFinder;
 import exerciceexplorer.KeyWords;
 import java.awt.FlowLayout;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
@@ -24,6 +22,7 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.JOptionPane;
+import javax.swing.ListModel;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
@@ -51,13 +50,17 @@ public class CreationCompoView extends javax.swing.JPanel {
         selectedKeyWords = new ArrayList<>();
         selectedExericesModel = new DefaultListModel<>();
         initComponents();
-
+        this.updateModel();
+        
+        jLabel1.setText("1");
         choixExercice.addListSelectionListener((ListSelectionEvent e) -> {
             if (choixExercice.getSelectedValue() != null) {
                 this.mw.setExerciceDisplay((Exercice) choixExercice.getSelectedValue());
                 this.listeExercices.clearSelection();
+                this.jLabel1.setText(String.valueOf(choixExercice.getSelectedIndex()+1));
             }
         });
+        
 
         listeExercices.addListSelectionListener((ListSelectionEvent e) -> {
             if (listeExercices.getSelectedValue() != null) {
@@ -91,33 +94,34 @@ public class CreationCompoView extends javax.swing.JPanel {
         this.updateModel();
     }
 
-    @SuppressWarnings("unchecked")
+    
     public void updateModel() {
         List<String> kws = new ArrayList<>();
         for (KeyWordView kwv : selectedKeyWords) {
             kws.add(kwv.nameString);
         }
-
+        ListModel lm=null;
         switch (this.jComboBox2.getSelectedIndex()) {
             case 0: // all kind
-                choixExercice.setModel(this.ef.getListModel(kws));
+                lm= this.ef.getListModel(kws);
                 break;
 
             case 1: // DS
-                choixExercice.setModel(this.ef.getListModel(kws, Exercice.DS));
+                lm=this.ef.getListModel(kws, Exercice.DS);
                 break;
 
             case 2: // Colle
-                choixExercice.setModel(this.ef.getListModel(kws, Exercice.Colle));
+                lm=this.ef.getListModel(kws, Exercice.Colle);
                 break;
 
             case 3: // TD
-                choixExercice.setModel(this.ef.getListModel(kws, Exercice.TD));
+                lm=this.ef.getListModel(kws, Exercice.TD);
                 break;
         }
+        this.jLabel7.setText(String.valueOf(lm.getSize()));
+        choixExercice.setModel(lm);
     }
-
-    ;
+    
     
     
     /**
@@ -177,6 +181,9 @@ public class CreationCompoView extends javax.swing.JPanel {
         jComboBox3 = new javax.swing.JComboBox();
         jButton2 = new javax.swing.JButton();
         exportButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         jSeparator1.setPreferredSize(new java.awt.Dimension(0, 8));
 
@@ -219,7 +226,6 @@ public class CreationCompoView extends javax.swing.JPanel {
 
         jLabel4.setText("Mot clef");
 
-        choixExercice.setModel(CreationCompoView.this.ef.getListModel());
         choixExercice.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane3.setViewportView(choixExercice);
 
@@ -291,6 +297,16 @@ public class CreationCompoView extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setText("----");
+        jLabel1.setMaximumSize(new java.awt.Dimension(42, 16));
+        jLabel1.setMinimumSize(new java.awt.Dimension(42, 16));
+
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("----");
+
+        jLabel8.setText("   /");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -298,37 +314,41 @@ public class CreationCompoView extends javax.swing.JPanel {
             .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jScrollPane4)
             .addComponent(jScrollPane1)
-            .addComponent(jScrollPane3)
             .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
+                .addComponent(jLabel5)
+                .addGap(8, 8, 8)
+                .addComponent(jLabel2)
+                .addGap(2, 2, 2)
+                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(jLabel4)
+                .addGap(2, 2, 2)
+                .addComponent(keywordPicker, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jLabel6)
+                .addGap(6, 6, 6)
+                .addComponent(outputTypes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(editButton)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(exportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addGap(8, 8, 8)
-                        .addComponent(jLabel2)
-                        .addGap(2, 2, 2)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(8, 8, 8)
-                        .addComponent(jLabel4)
-                        .addGap(2, 2, 2)
-                        .addComponent(keywordPicker, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(6, 6, 6)
-                        .addComponent(outputTypes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editButton)
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(exportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)))
-                .addContainerGap())
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel7))))
+                .addGap(4, 4, 4))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -350,9 +370,16 @@ public class CreationCompoView extends javax.swing.JPanel {
                     .addComponent(keywordPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -413,7 +440,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         for (File file : fList) {
             maxValue= Math.max(maxValue, Integer.parseInt(file.getName().replace(kind,"")));
         }
-        int compoNumber=maxValue+1; // on créé le prochain sujet
+        int compoNumber=maxValue+1; // on crée le prochain sujet
         File compoDir= new File(outDir+"/"+kind+compoNumber);
         compoDir.mkdir();
         
@@ -441,11 +468,14 @@ public class CreationCompoView extends javax.swing.JPanel {
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox jComboBox2;
     private javax.swing.JComboBox jComboBox3;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;

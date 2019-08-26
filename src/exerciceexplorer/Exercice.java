@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author mbrebion
  */
-public class Exercice {
+public class Exercice implements Comparable<Exercice>{
 
     public static final String DS = "DS", TD = "TD", Colle = "Colle";
 
@@ -186,6 +186,11 @@ public class Exercice {
     public List<String> getContent() {
         this.updateContent();
         return content;
+    }
+
+    @Override
+    public int compareTo(Exercice o) {
+        return this.name.compareToIgnoreCase(o.name);
     }
 
 }
