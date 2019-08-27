@@ -6,6 +6,7 @@
 package Helper;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -32,14 +33,26 @@ public class ExecCommand {
     
     public static String[] execo(String[] command) {
 
-        return new String[]{"", ""};
-    }
+       return execo(command, 1.0,".");
+    };
+    
+    public static String[] execo(String[] command,String location) {
 
-    ;
+       return execo(command, 1.0,location);
+    };
+    
+    public static String[] execo(String[] command, double delay) {
+
+       return execo(command, delay,".");
+    };
+    
+   
+    
+    
     static String output = "";
     static String outputErr = "";
 
-    public static String[] execo(String[] command, double delay) {
+    public static String[] execo(String[] command, double delay,String location) {
         /**
          * This function can only be called after previous calls has been
          * terminated.
@@ -50,7 +63,7 @@ public class ExecCommand {
         int out=-1;
         Runtime runtime = Runtime.getRuntime();
         try {
-            final Process process = runtime.exec(command);
+            final Process process = runtime.exec(command, null, new File(location));
 
 // Consommation de la sortie standard de l'application externe dans un Thread separe
             new Thread() {

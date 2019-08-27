@@ -305,7 +305,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("----");
 
-        jLabel8.setText("   /");
+        jLabel8.setText(" sur");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

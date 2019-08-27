@@ -16,44 +16,77 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jSeparator1" alignment="1" max="32767" attributes="0"/>
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-          </Group>
+          <Component id="jSeparator2" alignment="1" max="32767" attributes="0"/>
           <Group type="102" attributes="0">
-              <EmptySpace min="-2" pref="129" max="-2" attributes="0"/>
-              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="140" max="32767" attributes="0"/>
-          </Group>
-          <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="129" max="-2" attributes="0"/>
+                              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="statusButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" pref="23" max="32767" attributes="0"/>
+                              <Component id="commitButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" pref="23" max="32767" attributes="0"/>
+                              <Component id="pushButton" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="templatesFolderInput" alignment="1" pref="212" max="32767" attributes="0"/>
-                          <Component id="gitFolderInput" alignment="1" max="32767" attributes="0"/>
-                          <Component id="openInput" alignment="1" max="32767" attributes="0"/>
-                          <Component id="pdflatexInput" alignment="1" max="32767" attributes="0"/>
-                      </Group>
+                      <EmptySpace type="unrelated" pref="35" max="32767" attributes="0"/>
+                      <Component id="pullButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
-                      <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
-                      <Component id="outputDirInput" pref="212" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="templatesFolderInput" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="gitFolderInput" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="openInput" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="pdflatexInput" alignment="1" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
+                              <Component id="outputDirInput" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="jSeparator1" alignment="0" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                                      <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
               </Group>
+              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+          </Group>
+          <Group type="102" attributes="0">
+              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -63,7 +96,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+              <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="pdflatexInput" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -88,12 +123,29 @@
                   <Component id="outputDirInput" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
               <Component id="jSeparator1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jCheckBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-              <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="194" max="32767" attributes="0"/>
-              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+              <Component id="jSeparator2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+              <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="commitButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="pushButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="pullButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="statusButton" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="97" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -119,6 +171,7 @@
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="SavedVariables.getPdflatexCmd()&#xa;" type="code"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Chemin d&apos;acces (absolu) vers l&apos;executable pdflatex"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pdflatexInputActionPerformed"/>
@@ -134,6 +187,7 @@
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="SavedVariables.getOpenCmd()" type="code"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Chemin d&apos;acces (absolu) vers la commande open"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="openInputActionPerformed"/>
@@ -149,6 +203,7 @@
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="SavedVariables.getMainGitDir()" type="code"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Chemin d&apos;acces (absolu) vers le dossier contenant le repository git local"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gitFolderInputActionPerformed"/>
@@ -164,6 +219,7 @@
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="SavedVariables.getTexModelsPaths()" type="code"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Chemin d&apos;acces (absolu) vers le dossier contenant les templates latex :&#xa;&lt;ul&gt;&#xa;    &lt;li&gt; DSModel.txt  &lt;/li&gt;&#xa;    &lt;li&gt; DMModel.txt  &lt;/li&gt;&#xa;    &lt;li&gt; ColleModel.txt  &lt;/li&gt;&#xa;    &lt;li&gt; TDModel.txt  &lt;/li&gt;&#xa;&lt;/ul&gt;&#xa;Ces documents servent doivent inclure le fichier fichiers_utiles/raccourcis_communs.sty et contenir une ligne : &lt;br&gt;&#xa;****&#xa;&lt;br&gt; &#xa;qui sera remplac&#xe9;e par l&apos;import des exercice lors de l&apos;&#xe9;dition d&apos;une composition.&#xa;&lt;/html&gt;"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="templatesFolderInputActionPerformed"/>
@@ -172,7 +228,7 @@
     <Component class="javax.swing.JButton" name="jButton1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Actualiser"/>
-        <Property name="toolTipText" type="java.lang.String" value="mettre &#xe0; jour la base des exercices"/>
+        <Property name="toolTipText" type="java.lang.String" value="Mettre &#xe0; jour la base des exercices dans l&apos;interface graphique"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
@@ -181,7 +237,7 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBox1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Sauvegarde auto"/>
-        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Les fichiers sont automatiquement sauvegard&#xe9;s quand les onglets sont cach&#xe9;s&#xa;&lt;br&gt;&#xa;Cela peut arriver lorsque vous selectionnez un nouvel exercice (l&apos;ancien disparait)&#xa;&lt;/html&gt;"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Les fichiers sont &lt;em&gt;automatiquement&lt;/em&gt; sauvegard&#xe9;s quand les onglets sont cach&#xe9;s.&#xa;&lt;br&gt;&#xa;Cela peut &#xea;tre utile lorsque vous selectionnez un nouvel exercice (l&apos;ancien disparait).&#xa;&lt;/html&gt;"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox1ActionPerformed"/>
@@ -195,12 +251,95 @@
     <Component class="javax.swing.JTextField" name="outputDirInput">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="SavedVariables.getTexModelsPaths()" type="code"/>
+          <Connection code="SavedVariables.getOutputDir()" type="code"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Chemin d&apos;acces (absolu) vers le dossier contenant vos DS/DM de l&apos;ann&#xe9;e en cours. &lt;br&gt;&#xa;Ce dossier doit contenir un sous dossier nomm&#xe9; DM et un autre nomm&#xe9; DS. &lt;br&gt;&#xa;Ainsi, une composition type DS export&#xe9;e sera plac&#xe9; dans le sous dossier DS de mani&#xe8;re incr&#xe9;mentielle (exemple DS5 si un dossier DS4 est d&#xe9;j&#xe0; pr&#xe9;sent).&#xa;&lt;/html&gt;"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="outputDirInputActionPerformed"/>
       </Events>
     </Component>
+    <Component class="javax.swing.JSeparator" name="jSeparator2">
+    </Component>
+    <Component class="javax.swing.JButton" name="commitButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Commit"/>
+        <Property name="toolTipText" type="java.lang.String" value="R&#xe9;alise un commit du repo git. Les fichiers existant et modifi&#xe9;s sont automatiqument ajout&#xe9;s."/>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="commitButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="pushButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Push"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Envoie le dernier commit sur le serveur. &#xa;&lt;br&gt;&#xa;Les conflits n&apos;&#xe9;tant pas g&#xe9;r&#xe9;s &#xe0; partir de l&apos;interface graphique. Il faudra dans ce cas utiliser un logiciel d&#xe9;di&#xe9; ou bien le terminal.&#xa;&lt;/html&gt;"/>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pushButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="pullButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Pull"/>
+        <Property name="toolTipText" type="java.lang.String" value="R&#xe9;ccup&#xe8;re les nouvelles donn&#xe9;es depuis le serveur."/>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pullButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel7">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Lucida Grande" size="13" style="3"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Git :"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel8">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Lucida Grande" size="13" style="3"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Chemins d&apos;acc&#xe8;s :"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel9">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Lucida Grande" size="13" style="3"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Actions :"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="statusButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Status"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="statusButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTextArea" name="outputView">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ee" green="ee" id="ProgressBar.background" palette="3" red="ee" type="palette"/>
+            </Property>
+            <Property name="columns" type="int" value="16"/>
+            <Property name="rows" type="int" value="5"/>
+            <Property name="tabSize" type="int" value="4"/>
+            <Property name="text" type="java.lang.String" value="click on status to update"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
   </SubComponents>
 </Form>

@@ -28,6 +28,8 @@ public class SavedVariables {
         prefs.put("open", openCmd);
     }
 
+    
+    
     public static void setOutputDir(String output) {
         prefs.put("outputDir", output);
     }
@@ -40,6 +42,8 @@ public class SavedVariables {
         }
     }
 
+    
+    
     public static boolean getAutoSave() {
         if (prefs != null) {
             return prefs.get("autoSave", "") == "true";
@@ -56,6 +60,9 @@ public class SavedVariables {
         }
     }
 
+    
+    
+    
     public static String getPdflatexCmd() {
 
         if (prefs != null) {
@@ -69,6 +76,8 @@ public class SavedVariables {
         prefs.put("pdflatex", pdflatexCmd);
     }
 
+    
+    
     public static String getTexModelsPaths() {
 
         if (prefs != null) {
@@ -82,6 +91,9 @@ public class SavedVariables {
         prefs.put("templates", in);
     }
 
+    
+    
+    
     public static String getMainGitDir() {
 
         if (prefs != null) {
@@ -95,4 +107,6 @@ public class SavedVariables {
         prefs.put("mainGit", in);
     }
 
+    
+    
 }
