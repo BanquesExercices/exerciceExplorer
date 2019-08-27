@@ -21,7 +21,7 @@ public class GitWrapper {
 
     public static String commit() {
         String commitMessage = "\"" + JOptionPane.showInputDialog("commentaire du commit") + "\"";
-        String output = ExecCommand.execo(new String[]{"git", "add", "exercices"}, SavedVariables.getMainGitDir())[1];
+        String output = ExecCommand.execo(new String[]{"git", "add", "."}, SavedVariables.getMainGitDir())[1];
         output += " \n  " + ExecCommand.execo(new String[]{"git", "commit", "-a", "-m", commitMessage}, SavedVariables.getMainGitDir())[1];
         //JOptionPane.showMessageDialog(null, output);
         return output;
