@@ -100,7 +100,7 @@ public class Options extends javax.swing.JPanel {
         jLabel5.setText("dossier modèles");
 
         templatesFolderInput.setText(SavedVariables.getTexModelsPaths());
-        templatesFolderInput.setToolTipText("<html>\nChemin d'acces (absolu) vers le dossier contenant les templates latex :\n<ul>\n    <li> DSModel.txt  </li>\n    <li> DMModel.txt  </li>\n    <li> ColleModel.txt  </li>\n    <li> TDModel.txt  </li>\n</ul>\nCes documents servent doivent inclure le fichier fichiers_utiles/raccourcis_communs.sty et contenir une ligne : <br>\n****\n<br> \nqui sera remplacée par l'import des exercice lors de l'édition d'une composition.\n</html>");
+        templatesFolderInput.setToolTipText("<html>\nChemin d'acces (absolu) vers le dossier contenant les templates latex :\n<ul>\n    <li> DSModel.tex  </li>\n    <li> DMModel.tex  </li>\n    <li> ColleModel.tex  </li>\n    <li> TDModel.tex  </li>\n</ul>\nCes documents servent de template pour l'unclusion des exercices et doivent inclure le fichier fichiers_utiles/raccourcis_communs.sty et contenir une ligne : <br>\n****\n<br> \nqui sera remplacée par l'import des exercice lors de l'édition d'une composition.\n<br>\n<br>\nUn exemple de fichier se trouve dans le répertoire path/To/Git/Dir/fichiers_utiles/defaultLatexTemplates\n</html>");
         templatesFolderInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 templatesFolderInputActionPerformed(evt);

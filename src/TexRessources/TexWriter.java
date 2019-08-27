@@ -70,13 +70,19 @@ public class TexWriter {
         List<String> output = new ArrayList<>(); // main file
         List<String> imports = new ArrayList<>(); // packages required by a specific exercice
 
-        String fileName = "/DSmodel.txt";
+        String fileName = "/DSmodel.tex";
         switch (kind) {
             case "DS":
-                fileName = "/DSmodel.txt";
+                fileName = "/DSmodel.tex";
                 break;
             case "DM":
-                fileName = "/DMmodel.txt";
+                fileName = "/DMmodel.tex";
+                break;
+            case "TD":
+                fileName = "/TDmodel.tex";
+                break;
+            case "Colle":
+                fileName = "/Collemodel.tex";
                 break;
 
         }
@@ -86,7 +92,7 @@ public class TexWriter {
         try {
             b = new BufferedReader(new FileReader(f));
         } catch (FileNotFoundException ex) {
-            System.err.println("DSmodel.txt file not found. Please create this file and edit its path");
+            System.err.println(SavedVariables.getTexModelsPaths()+fileName+" file not found. Please create this file and edit its path");
             return null;
         }
 
