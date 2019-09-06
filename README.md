@@ -9,4 +9,3 @@ Lors de la première utilisation, vous devrez impérativement aller dans l'ongle
 
 - Le dossier git est le dossier "commun_PCSI" qui contient les fichiers d'exercices
 - Le dossier modèles doit contenir les fichiers DMModel.txt, DSModel.tx, COLLEModel.txt et TDModel.txt qui seront utilisés comme base par le logiciel lors de l'édition d'un sujet.
-- 
