@@ -102,13 +102,22 @@ public class TexWriter {
             while ((readLine = b.readLine()) != null) {
                 if (readLine.trim().equals("****")) {
                     getExercicestoTex(exercices, output, imports,localLinks);
-                    continue;
+                }else{
+                    output.add(readLine);
                 }
-                output.add(readLine);
             }
-            output.addAll(1, imports);
+            // imports must be added after \documentclass
+            boolean found=false;
+            int count=0;
+            while (! found){
+                found= output.get(count).contains("documentclass");
+                count+=1;
+                
+            }
+            output.addAll(count, imports);
+            
         } catch (IOException ex) {
-            System.err.println("Problem occured while reading DSmodel.txt");
+            System.err.println("Problem occured while reading **model.tex");
         }
 
         return output;
