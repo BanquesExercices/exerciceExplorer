@@ -452,6 +452,8 @@ public class CreationCompoView extends javax.swing.JPanel {
             Exercice exo = exercices.nextElement();
             ExecCommand.execo(new String[]{"cp","-r",exo.getPath(),compoDir+"/" }, 100);
         }
+        // copie du fichier raccourcis commun : 
+        ExecCommand.execo(new String[]{"cp","-r",SavedVariables.getMainGitDir()+"/fichiers_utiles/raccourcis_communs.sty" ,compoDir+"/" }, 100);
         
         
     }//GEN-LAST:event_exportButtonActionPerformed
