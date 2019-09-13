@@ -30,15 +30,34 @@ public class TexWriter {
     }
 
     protected static void getExercicestoTex(Enumeration<Exercice> exercices, List<String> output, List<String> imports, boolean localLinks) {
+        List<String> dummy = new ArrayList<>();
+        TexWriter.getExercicestoTex(exercices,output,imports,localLinks,dummy,dummy);
+    }
+    
+    protected static void getExercicestoTex(Enumeration<Exercice> exercices, List<String> output, List<String> imports, boolean localLinks,List<String> before, List<String>after) {
+        int count=0;
         while (exercices.hasMoreElements()) {
+            count++;
             Exercice element = exercices.nextElement();
+            
+            
             output.add("\\resetQ");
+            
+            for (String s : before){
+                output.add(s.replace("##", String.valueOf(count)));
+            }
+            
             if (localLinks) {
                 output.add("\\subimport{./" + element.getName() + "/}{sujet.tex}");
             } else {
                 output.add("\\subimport{" + element.getPath() + "/}{sujet.tex}");
             }
+            
+            for (String s : after){
+                output.add(s.replace("##", String.valueOf(count)));
+            }
 
+            output.add("");
             output.add("");
             imports.addAll(element.getImports());
         }
@@ -92,19 +111,46 @@ public class TexWriter {
         try {
             b = new BufferedReader(new FileReader(f));
         } catch (FileNotFoundException ex) {
-            System.err.println(SavedVariables.getTexModelsPaths()+fileName+" file not found. Please create this file and edit its path");
-            return null;
+            String errorMsg = SavedVariables.getTexModelsPaths()+fileName+" file not found. Please create this file and edit its path";
+            System.err.println(errorMsg);
+            output.clear();
+            output.add(errorMsg);
+            return output;
         }
 
         String readLine = "";
+        boolean blockTokenFound=false;
 
         try {
             while ((readLine = b.readLine()) != null) {
-                if (readLine.trim().equals("****")) {
-                    getExercicestoTex(exercices, output, imports,localLinks);
-                }else{
-                    output.add(readLine);
+                if (readLine.trim().equals("[[")){
+                    // we need to store whats before ****, whats after **** and then send tp getExercicetoTex
+                    String nextLine;
+                    
+                    List<String> before = new ArrayList<>();
+                    List<String> after = new ArrayList<>();
+                    nextLine = b.readLine();
+                    while (!nextLine.trim().equals("****")) {
+                        before.add(nextLine);
+                        nextLine = b.readLine();
+                    }
+                    nextLine = b.readLine();
+                    while(!nextLine.trim().equals("]]") ) {
+                        after.add(nextLine);
+                        nextLine = b.readLine();
+                    }
+                    getExercicestoTex(exercices, output, imports,localLinks,before,after);
+                    continue;
                 }
+                
+                if (readLine.trim().equals("****") && !blockTokenFound) {
+                    getExercicestoTex(exercices, output, imports,localLinks);
+                    continue;
+                }
+                
+                
+                output.add(readLine);
+                
             }
             // imports must be added after \documentclass
             boolean found=false;
@@ -117,7 +163,11 @@ public class TexWriter {
             output.addAll(count, imports);
             
         } catch (IOException ex) {
-            System.err.println("Problem occured while reading **model.tex");
+            String errorMsg = "Problem occured while parsing **model.tex";
+            System.err.println(errorMsg);
+            output.clear();
+            output.add(errorMsg);
+            System.err.println();
         }
 
         return output;

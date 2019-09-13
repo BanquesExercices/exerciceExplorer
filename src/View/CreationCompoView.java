@@ -394,8 +394,8 @@ public class CreationCompoView extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
-        List<String> cc = TexWriter.outputTexFile(selectedExericesModel.elements(), (String) outputTypes.getSelectedItem(),false);
-        this.mw.setSubjectDisplay(cc);
+            List<String> cc = TexWriter.outputTexFile(selectedExericesModel.elements(), (String) outputTypes.getSelectedItem(),false);
+            this.mw.setSubjectDisplay(cc);
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
