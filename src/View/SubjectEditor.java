@@ -8,12 +8,13 @@ package View;
 import exerciceexplorer.Exercice;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.JMenuBar;
 
 /**
  *
  * @author mbrebion
  */
-public class SubjectEditor extends javax.swing.JPanel implements Observer{
+public class SubjectEditor extends javax.swing.JPanel implements Observer {
 
     /**
      * Creates new form SubjectEditor
@@ -23,17 +24,23 @@ public class SubjectEditor extends javax.swing.JPanel implements Observer{
     public SubjectEditor() {
         initComponents();
     }
-
+    
     public SubjectEditor(Exercice ex) {
         initComponents();
-        this.ex=ex;
+        this.ex = ex;
         this.textEditorBinded1.bindToFile(ex.getSubjectPath());
         this.textEditorBinded1.addObserver(this);
-        //this.textEditorBinded1.updateColoring();
+        
+    }
+    
+    public void updateColoring() {
+        this.textEditorBinded1.updateColoring();
+    }
+    
+    public void setMenuBar(JMenuBar jmb) {
+        this.textEditorBinded1.setMenuBar(jmb);
     }
 
-    
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -44,6 +51,12 @@ public class SubjectEditor extends javax.swing.JPanel implements Observer{
     private void initComponents() {
 
         textEditorBinded1 = new View.TextEditorBinded();
+
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -62,6 +75,9 @@ public class SubjectEditor extends javax.swing.JPanel implements Observer{
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+    }//GEN-LAST:event_formFocusGained
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private View.TextEditorBinded textEditorBinded1;
@@ -73,7 +89,11 @@ public class SubjectEditor extends javax.swing.JPanel implements Observer{
         
     }
     
-    public void saveFile(){
+    public void updateMenuBarView() {
+        this.textEditorBinded1.updateMenuBarView();
+    }
+    
+    public void saveFile() {
         this.textEditorBinded1.saveFile();
     }
 }

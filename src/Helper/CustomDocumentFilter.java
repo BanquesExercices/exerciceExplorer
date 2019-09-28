@@ -20,6 +20,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.StyleContext;
 import javax.swing.text.AttributeSet;
+import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants;
 
@@ -29,8 +30,9 @@ public class CustomDocumentFilter extends DocumentFilter {
     private final JTextPane jtp;
     private final TextEditorBinded teb;
     private final Timer timer;
-    private final int delay = 600;
+    private final int delay = 500;
 
+    public final ArrayList<Integer> questionLocations = new ArrayList<>();
     public final ArrayList<String> versionTags = new ArrayList<>();
     private String selectedVersion = "original";
     private final StyleContext styleContext = StyleContext.getDefaultStyleContext();
@@ -39,11 +41,13 @@ public class CustomDocumentFilter extends DocumentFilter {
     private final AttributeSet blackAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, Color.BLACK);
     private final AttributeSet grayAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, Color.LIGHT_GRAY);
 
+    DefaultHighlighter.DefaultHighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
+
     // list to store the new color locations
     private final List<Integer> blueList = new ArrayList<>();
     private final List<Integer> greyList = new ArrayList<>();
     private final List<Integer> redList = new ArrayList<>();
-    
+
     // Use a regular expression to find the words you are looking for
     Pattern pattern = buildPattern();
 
@@ -130,24 +134,23 @@ public class CustomDocumentFilter extends DocumentFilter {
     }
 
     public void updateTextStyles(int offset, boolean tagUpdate) {
-        
+
         this.teb.unRegisterUndoableManager(); //  no undoes for coloring
-        
+
         // if offset >0 : only a portion around offset of the text is parsed 
         // if offset<0 : the whole text is parsed
         int begin, end;
         if (offset < 0) {
             begin = 0;
             end = jtp.getText().length();
+            questionLocations.clear();
             if (tagUpdate) {
                 versionTags.clear();  // remove all known tags
             }
         } else {
-            begin = Math.max(offset - 50, 0); // maybe lokking for a few \n would be safer
-            end = Math.min(jtp.getText().length(), offset + 50);
+            begin = Math.max(offset - 80, 0); // maybe lokking for a few \n would be safer
+            end = Math.min(jtp.getText().length(), offset + 80);
         }
-        // Clear existing styles
-        styledDocument.setCharacterAttributes(begin, end, blackAttributeSet, true);
 
         int count = 0;
         // Look for tokens and highlight them
@@ -211,35 +214,93 @@ public class CustomDocumentFilter extends DocumentFilter {
                     qEnd++;
                 }
                 /////////////////////// displaying
+                this.redList.add(matcher.start() + begin);
+                this.redList.add(matcher.end() - matcher.start());
+
                 if (display) {
                     count++; // one more question
+                    questionLocations.add(matcher.start() + begin);
                     // normal mode : addQ tag and corresponding { and } are colored.
-                    styledDocument.setCharacterAttributes(matcher.start() + begin, matcher.end() - matcher.start(), redAttributeSet, false);
+
                     indices.stream().forEach((i) -> {
-                        styledDocument.setCharacterAttributes(i + begin, 1, redAttributeSet, false);
+                        this.redList.add(i + begin);
+                        this.redList.add(1);
                     });
                 } else {
                     // hidden mode : question and answer in light grey
-                    styledDocument.setCharacterAttributes(matcher.start() + begin, qEnd - matcher.start(), grayAttributeSet, false);
-                    styledDocument.setCharacterAttributes(matcher.start() + begin, matcher.end() - matcher.start(), redAttributeSet, false);
+                    this.greyList.add(matcher.start() + begin);
+                    this.greyList.add(qEnd - matcher.start());
                 }
 
             } else {
                 // other keywords : blue coloring
-                styledDocument.setCharacterAttributes(matcher.start() + begin, matcher.end() - matcher.start(), blueAttributeSet, true);
+                this.blueList.add(matcher.start() + begin);
+                this.blueList.add(matcher.end() - matcher.start());
             }
-
         }
-        if (offset < 0 ) {
+
+        // Clear existing styles
+        styledDocument.setCharacterAttributes(begin, end - begin, blackAttributeSet, true);
+
+        // applying colors 
+        for (int i = 0; i < this.blueList.size(); i += 2) {
+            styledDocument.setCharacterAttributes(this.blueList.get(i), this.blueList.get(i + 1), blueAttributeSet, true);
+        }
+        this.blueList.clear();
+        for (int i = 0; i < this.redList.size(); i += 2) {
+            styledDocument.setCharacterAttributes(this.redList.get(i), this.redList.get(i + 1), redAttributeSet, true);
+        }
+        this.redList.clear();
+        for (int i = 0; i < this.greyList.size(); i += 2) {
+            styledDocument.setCharacterAttributes(this.greyList.get(i), this.greyList.get(i + 1), grayAttributeSet, true);
+        }
+        this.greyList.clear();
+
+        if (offset < 0) {
             // if the whole document is parsed
             this.teb.setQuestionAmount(count);
-            if (tagUpdate){
+            if (tagUpdate) {
                 this.teb.updateVersionTags();
             }
         }
-        
+
         this.teb.registerUndoableManager();
 
+    }
+
+    public int getQuestionNumber(int offset) {
+        int out = 0;
+        for (int i : questionLocations) {
+            if (i > offset) {
+                break;
+            }
+            out++;
+        }
+        return out;
+    }
+
+    public int getNextOffset(int offset) {
+        int out = 0;
+        for (int i : questionLocations) {
+            out = i;
+            if (i > offset) {
+                break;
+            }
+
+        }
+        return out;
+    }
+
+    public int getPreviousOffset(int offset) {
+        int out = 0;
+        for (int i : questionLocations) {
+
+            if (i > offset) {
+                break;
+            }
+            out = i;
+        }
+        return out;
     }
 
     public void setSelectedVersion(String version) {

@@ -11,7 +11,6 @@ import Helper.SavedVariables;
 import Helper.Utils;
 import Helper.CustomDocumentFilter;
 import TexRessources.TexWriter;
-import java.awt.Color;
 import java.awt.Event;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -30,8 +29,13 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
@@ -39,7 +43,6 @@ import javax.swing.event.UndoableEditListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
@@ -71,6 +74,11 @@ public class TextEditorBinded extends javax.swing.JPanel {
     private UndoManager undoManager;
     protected UndoableEditListener uel;
 
+    // menu bar
+    protected AbstractAction previous, next, undo, redo, save;
+    protected JMenu edition, source;
+    protected JMenuBar menuBar;
+
     // speficic to tex files
     protected int questionAmount;
     protected ArrayList<String> previousTags = new ArrayList<>();
@@ -85,61 +93,18 @@ public class TextEditorBinded extends javax.swing.JPanel {
             }
         };
 
-        StyleConstants.setItalic(blackSet, true);
-        StyleConstants.setForeground(blackSet, Color.black);
         obs = new ArrayList<>();
 
         undoManager = new UndoManager();
         doc = jTextPane1.getStyledDocument();
 
-        InputMap im = jTextPane1.getInputMap(JComponent.WHEN_FOCUSED);
-        ActionMap am = jTextPane1.getActionMap();
-
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "Undo");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "Save");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | Event.SHIFT_MASK), "Redo");
-
-        am.put("Undo", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if (undoManager.canUndo()) {
-                        undoManager.undo();
-                    }
-                } catch (CannotUndoException exp) {
-                    exp.printStackTrace();
-                }
-            }
-        });
-
-        am.put("Save", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TextEditorBinded.this.saveFile();
-            }
-        });
-
-        am.put("Redo", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if (undoManager.canRedo()) {
-                        undoManager.redo();
-                    }
-                } catch (CannotUndoException exp) {
-                    exp.printStackTrace();
-                }
-            }
-        });
+        createMenuBar();
 
         docList = new DocumentListener() {
 
             @Override
             public void insertUpdate(DocumentEvent e) {
                 changeOccured();
-                SwingUtilities.invokeLater(() -> {
-                    //processChangedLines(e.getDocument(), e.getOffset(), e.getLength());
-                });
 
                 notifyAllObserver();
             }
@@ -152,17 +117,24 @@ public class TextEditorBinded extends javax.swing.JPanel {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                changeOccured();
-                notifyAllObserver();
+
+                //changeOccured();
+                //notifyAllObserver();
             }
         };
 
         doc.addDocumentListener(docList);
+
     }
 
     protected void changeOccured() {
         hasChanged = true;
         jButton1.setEnabled(true);
+    }
+
+    protected void resetHasChanged() {
+        hasChanged = false;
+        jButton1.setEnabled(false);
     }
 
     public boolean hasChanged() {
@@ -194,12 +166,10 @@ public class TextEditorBinded extends javax.swing.JPanel {
         } else if (path.endsWith(".tex")) {
             this.syntaxStyle = texFile;
         }
-        //this.setCorresp();
         f = new File(path);
 
         this.updateView();
-        this.jButton1.setEnabled(false); // no need to save when text loaded from file
-        TextEditorBinded.this.hasChanged = false;
+        this.resetHasChanged();
         this.registerUndoableManager();
 
     }
@@ -233,8 +203,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
 
             this.lastUpdate = System.currentTimeMillis();
             TexWriter.writeToFile(getText(), f.getAbsolutePath());
-            hasChanged = false;
-            jButton1.setEnabled(false);
+            resetHasChanged();
             notifyAllObserver("save");
             return true;
         }
@@ -261,14 +230,17 @@ public class TextEditorBinded extends javax.swing.JPanel {
             // coloring 
             cdf = new CustomDocumentFilter(this);
             ((AbstractDocument) jTextPane1.getDocument()).setDocumentFilter(cdf);
-            
 
+            // show question number according to carret
+            jTextPane1.addCaretListener(new CaretListener() {
+                @Override
+                public void caretUpdate(CaretEvent e) {
+                    updateQuestionLabel();
+                }
+            });
         } else {
             this.texPanel.setVisible(false);
         }
-
-        hasChanged = false;
-        jButton1.setEnabled(false);
 
     }
 
@@ -306,12 +278,17 @@ public class TextEditorBinded extends javax.swing.JPanel {
         jButton2 = new javax.swing.JButton();
         reloadButton = new javax.swing.JButton();
         texPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         amountQLabel = new javax.swing.JLabel();
         versionChooserComboBox = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
 
         setMinimumSize(new java.awt.Dimension(50, 50));
         setPreferredSize(new java.awt.Dimension(364, 100));
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
+            }
+        });
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_ic_save_48px_352084.png"))); // NOI18N
         jButton1.setToolTipText("Sauvegarder");
@@ -327,6 +304,9 @@ public class TextEditorBinded extends javax.swing.JPanel {
         });
 
         jScrollPane1.setMinimumSize(new java.awt.Dimension(50, 50));
+
+        jTextPane1.setContentType("plain"); // NOI18N
+        jTextPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         jScrollPane1.setViewportView(jTextPane1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -342,7 +322,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
 
@@ -366,9 +346,13 @@ public class TextEditorBinded extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setText("Nb Q :");
+        texPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                texPanelComponentShown(evt);
+            }
+        });
 
-        amountQLabel.setText("jLabel2");
+        amountQLabel.setText("  ");
 
         versionChooserComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "original" }));
         versionChooserComboBox.setMaximumSize(new java.awt.Dimension(200, 32767));
@@ -378,16 +362,18 @@ public class TextEditorBinded extends javax.swing.JPanel {
             }
         });
 
+        jLabel2.setText("V :");
+
         javax.swing.GroupLayout texPanelLayout = new javax.swing.GroupLayout(texPanel);
         texPanel.setLayout(texPanelLayout);
         texPanelLayout.setHorizontalGroup(
             texPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(texPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(amountQLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(amountQLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addGap(2, 2, 2)
                 .addComponent(versionChooserComboBox, 0, 105, Short.MAX_VALUE)
                 .addGap(2, 2, 2))
         );
@@ -396,9 +382,9 @@ public class TextEditorBinded extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, texPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(texPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
                     .addComponent(amountQLabel)
-                    .addComponent(versionChooserComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(versionChooserComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addContainerGap())
         );
 
@@ -411,13 +397,12 @@ public class TextEditorBinded extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(texPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 199, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
                         .addComponent(reloadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
@@ -459,12 +444,18 @@ public class TextEditorBinded extends javax.swing.JPanel {
         this.cdf.setSelectedVersion((String) versionChooserComboBox.getSelectedItem());
     }//GEN-LAST:event_versionChooserComboBoxActionPerformed
 
+    private void texPanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_texPanelComponentShown
+    }//GEN-LAST:event_texPanelComponentShown
+
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+    }//GEN-LAST:event_formFocusGained
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel amountQLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JTextPane jTextPane1;
@@ -483,6 +474,102 @@ public class TextEditorBinded extends javax.swing.JPanel {
         for (Observer ob : this.obs) {
             ob.update(myObs, ob);
         }
+    }
+
+    public void updateMenuBarView() {
+        this.menuBar.removeAll();
+        this.menuBar.add(edition);
+
+        if (this.syntaxStyle == exerciceFile) {
+            this.menuBar.add(source);
+        }
+    }
+
+    public void createMenuBar() {
+        // actions
+        previous = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int offset = TextEditorBinded.this.cdf.getPreviousOffset(TextEditorBinded.this.jTextPane1.getCaretPosition() - 1);
+                TextEditorBinded.this.jTextPane1.setCaretPosition(offset);
+            }
+        };
+
+        next = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int offset = TextEditorBinded.this.cdf.getNextOffset(TextEditorBinded.this.jTextPane1.getCaretPosition());
+                TextEditorBinded.this.jTextPane1.setCaretPosition(offset);
+            }
+        };
+
+        undo = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (undoManager.canUndo()) {
+                        undoManager.undo();
+                    }
+                } catch (CannotUndoException exp) {
+                    exp.printStackTrace();
+                }
+            }
+        };
+
+        save = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TextEditorBinded.this.saveFile();
+            }
+        };
+
+        redo = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (undoManager.canRedo()) {
+                        undoManager.redo();
+                    }
+                } catch (CannotUndoException exp) {
+                    exp.printStackTrace();
+                }
+            }
+        };
+
+        // menu items
+        edition = new JMenu("Edition");
+
+        JMenuItem undoItem = new JMenuItem("undo");
+        edition.add(undoItem);
+        undoItem.addActionListener(undo);
+        undoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+
+        JMenuItem redoItem = new JMenuItem("redo");
+        edition.add(redoItem);
+        redoItem.addActionListener(redo);
+        redoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | Event.SHIFT_MASK));
+
+        JMenuItem saveItem = new JMenuItem("sauvegarde");
+        edition.add(saveItem);
+        saveItem.addActionListener(save);
+        saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+
+        source = new JMenu("source");
+
+        JMenuItem nextItem = new JMenuItem("aller à la question suivante");
+        source.add(nextItem);
+        nextItem.addActionListener(next);
+        nextItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+
+        JMenuItem previousItem = new JMenuItem("aller à la question précédente");
+        source.add(previousItem);
+        previousItem.addActionListener(previous);
+        previousItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+
+    }
+
+    public void setMenuBar(JMenuBar menuBar) {
+        this.menuBar = menuBar;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -505,8 +592,12 @@ public class TextEditorBinded extends javax.swing.JPanel {
     public void setQuestionAmount(int questionAmount) {
         if (questionAmount != this.questionAmount) {
             this.questionAmount = questionAmount;
-            this.amountQLabel.setText("" + this.questionAmount);
+            updateQuestionLabel();
         }
+    }
+
+    public void updateQuestionLabel() {
+        this.amountQLabel.setText("Q : " + this.cdf.getQuestionNumber(this.jTextPane1.getCaretPosition()) + "/" + this.questionAmount);
     }
 
     public void updateVersionTags() {
@@ -528,3 +619,6 @@ public class TextEditorBinded extends javax.swing.JPanel {
     }
 
 }
+
+///////////////// word wrapping fix : see https://stackoverflow.com/questions/11000220/strange-text-wrapping-with-styled-text-in-jtextpane-with-java-7
+

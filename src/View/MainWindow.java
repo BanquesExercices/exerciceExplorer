@@ -7,15 +7,16 @@ package View;
 
 import Helper.SavedVariables;
 import exerciceexplorer.Exercice;
-import java.awt.Graphics;
-import java.awt.Insets;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javax.swing.JMenuBar;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -33,6 +34,9 @@ public class MainWindow extends javax.swing.JFrame {
     KeywordsEditor ke = null;
     CompoEditor ce = null;
     SubjectEditor se = null;
+    ChangeListener cl = null;
+
+    JMenuBar menuBar;
 
     public MainWindow() {
         SavedVariables.prefs = Preferences.userNodeForPackage(this.getClass());
@@ -41,28 +45,52 @@ public class MainWindow extends javax.swing.JFrame {
         this.creationSujetView1.setMw(this);
         this.options1.setMw(this);
 
-        
+        // menubar
+        menuBar = new JMenuBar();
+
+        this.getRootPane().setJMenuBar(menuBar);
+
+        cl = new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                if (editorTabbedPane.getSelectedComponent() == se) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            se.updateColoring();
+                            se.setMenuBar(menuBar);
+                            se.updateMenuBarView();
+                        }
+                    });
+
+                } else {
+                    menuBar.removeAll();
+                }
+            }
+        };
+
     }
-    
-    
-    public void updateDatabase(){
+
+    public void updateDatabase() {
         this.creationSujetView1.updateDataBase();
         // should we do more here ? (removing oppened tabs ?)
     }
 
     public void setExerciceDisplay(Exercice ex) {
+        this.editorTabbedPane.removeChangeListener(cl);
+
         if (re != null) {
             re.saveFile();
             this.editorTabbedPane.remove(re);
         }
         if (ke != null) {
-            
+
             this.editorTabbedPane.remove(ke);
         }
         if (se != null) {
             this.editorTabbedPane.remove(se);
         }
-        
+
         re = new ReadmeEditor(ex);
         ke = new KeywordsEditor(ex);
         se = new SubjectEditor(ex);
@@ -71,6 +99,8 @@ public class MainWindow extends javax.swing.JFrame {
         this.editorTabbedPane.insertTab("Mots clés", null, ke, "", 0);
         this.editorTabbedPane.insertTab("Readme", null, re, "", 0);
         this.editorTabbedPane.setSelectedComponent(re);
+
+        this.editorTabbedPane.addChangeListener(cl);
 
     }
 
