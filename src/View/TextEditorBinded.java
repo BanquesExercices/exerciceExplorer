@@ -5,11 +5,17 @@
  */
 package View;
 
+import Helper.TextLineNumber;
 import Helper.ExecCommand;
 import Helper.SavedVariables;
 import Helper.Utils;
+import Helper.CustomDocumentFilter;
 import TexRessources.TexWriter;
 import java.awt.Color;
+import java.awt.Event;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -19,16 +25,24 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
 
 /**
  *
@@ -46,6 +60,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
     protected HashMap<String, SimpleAttributeSet> corresp = new HashMap<>();
     SimpleAttributeSet blackSet = new SimpleAttributeSet();
 
+    protected CustomDocumentFilter cdf;
     protected File f;
     protected StyledDocument doc;
     protected List<Observer> obs;
@@ -53,22 +68,77 @@ public class TextEditorBinded extends javax.swing.JPanel {
     protected DocumentListener docList;
     protected boolean hasChanged = false;
     protected long lastUpdate;
+    private UndoManager undoManager;
+    protected UndoableEditListener uel;
+
+    // speficic to tex files
+    protected int questionAmount;
+    protected ArrayList<String> previousTags = new ArrayList<>();
 
     public TextEditorBinded() {
         initComponents();
-        
+
+        uel = new UndoableEditListener() {
+            @Override
+            public void undoableEditHappened(UndoableEditEvent e) {
+                undoManager.addEdit(e.getEdit());
+            }
+        };
 
         StyleConstants.setItalic(blackSet, true);
         StyleConstants.setForeground(blackSet, Color.black);
         obs = new ArrayList<>();
+
+        undoManager = new UndoManager();
         doc = jTextPane1.getStyledDocument();
+
+        InputMap im = jTextPane1.getInputMap(JComponent.WHEN_FOCUSED);
+        ActionMap am = jTextPane1.getActionMap();
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "Undo");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "Save");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | Event.SHIFT_MASK), "Redo");
+
+        am.put("Undo", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (undoManager.canUndo()) {
+                        undoManager.undo();
+                    }
+                } catch (CannotUndoException exp) {
+                    exp.printStackTrace();
+                }
+            }
+        });
+
+        am.put("Save", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TextEditorBinded.this.saveFile();
+            }
+        });
+
+        am.put("Redo", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (undoManager.canRedo()) {
+                        undoManager.redo();
+                    }
+                } catch (CannotUndoException exp) {
+                    exp.printStackTrace();
+                }
+            }
+        });
+
         docList = new DocumentListener() {
 
             @Override
             public void insertUpdate(DocumentEvent e) {
                 changeOccured();
                 SwingUtilities.invokeLater(() -> {
-                    processChangedLines(e.getDocument(), e.getOffset(), e.getLength());
+                    //processChangedLines(e.getDocument(), e.getOffset(), e.getLength());
                 });
 
                 notifyAllObserver();
@@ -92,13 +162,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
 
     protected void changeOccured() {
         hasChanged = true;
-        if (!jCheckBox1.isSelected()) {
-            if (checkSafe()){
-                jButton1.setEnabled(true);
-            }
-        }else{
-            SaveFile();
-        }
+        jButton1.setEnabled(true);
     }
 
     public boolean hasChanged() {
@@ -130,35 +194,44 @@ public class TextEditorBinded extends javax.swing.JPanel {
         } else if (path.endsWith(".tex")) {
             this.syntaxStyle = texFile;
         }
-        this.setCorresp();
+        //this.setCorresp();
         f = new File(path);
 
         this.updateView();
         this.jButton1.setEnabled(false); // no need to save when text loaded from file
         TextEditorBinded.this.hasChanged = false;
-        
+        this.registerUndoableManager();
+
     }
 
-    protected boolean checkSafe(){
+    public void registerUndoableManager() {
+        doc.addUndoableEditListener(uel);
+    }
+
+    public void unRegisterUndoableManager() {
+        doc.removeUndoableEditListener(uel);
+    }
+
+    protected boolean checkSafe() {
         // check that file as not been modified elesewhere
-        boolean status = f.lastModified() <= (this.lastUpdate+100);
+        boolean status = f.lastModified() <= (this.lastUpdate + 100);
         reloadButton.setVisible(!status);
         return status;
     }
-            
-    protected boolean SaveFile() {
-        
+
+    protected boolean saveFile() {
+
         if (hasChanged) { // prevent intempestive saving
-            
-            if (!this.checkSafe()){
-                String out="Fichier "+f.getAbsolutePath()+ " modifié depuis l'exterieur. Impossible de sauvegarder";
+
+            if (!this.checkSafe()) {
+                String out = "Fichier " + f.getAbsolutePath() + " modifié depuis l'exterieur. Impossible de sauvegarder";
                 System.err.println(out);
                 JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
                 Utils.showShortTextMessageInDialog(out, topFrame);
                 return false;
             }
-            
-            this.lastUpdate=System.currentTimeMillis();
+
+            this.lastUpdate = System.currentTimeMillis();
             TexWriter.writeToFile(getText(), f.getAbsolutePath());
             hasChanged = false;
             jButton1.setEnabled(false);
@@ -170,14 +243,31 @@ public class TextEditorBinded extends javax.swing.JPanel {
 
     public void updateView() {
         List<String> lines = TexWriter.readFile(f.getAbsolutePath());
-        this.lastUpdate=System.currentTimeMillis();
+        this.lastUpdate = System.currentTimeMillis();
+
         this.clearDisplay();
         this.checkSafe();
-        
+
         for (String line : lines) {
             append(line);
         }
-        hasChanged=false;
+
+        if (this.syntaxStyle == exerciceFile) {
+            // numbering lines
+            TextLineNumber tln = new TextLineNumber(jTextPane1);
+            jScrollPane1.setRowHeaderView(tln);
+            tln.setBorderGap(2);
+
+            // coloring 
+            cdf = new CustomDocumentFilter(this);
+            ((AbstractDocument) jTextPane1.getDocument()).setDocumentFilter(cdf);
+            
+
+        } else {
+            this.texPanel.setVisible(false);
+        }
+
+        hasChanged = false;
         jButton1.setEnabled(false);
 
     }
@@ -195,8 +285,8 @@ public class TextEditorBinded extends javax.swing.JPanel {
         }
         changeOccured();
     }
-    
-    protected void clearDisplay(){
+
+    protected void clearDisplay() {
         jTextPane1.setText("");
     }
 
@@ -210,12 +300,15 @@ public class TextEditorBinded extends javax.swing.JPanel {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
         jButton2 = new javax.swing.JButton();
         reloadButton = new javax.swing.JButton();
+        texPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        amountQLabel = new javax.swing.JLabel();
+        versionChooserComboBox = new javax.swing.JComboBox();
 
         setMinimumSize(new java.awt.Dimension(50, 50));
         setPreferredSize(new java.awt.Dimension(364, 100));
@@ -233,13 +326,6 @@ public class TextEditorBinded extends javax.swing.JPanel {
             }
         });
 
-        jCheckBox1.setText("Auto save");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
-            }
-        });
-
         jScrollPane1.setMinimumSize(new java.awt.Dimension(50, 50));
         jScrollPane1.setViewportView(jTextPane1);
 
@@ -247,13 +333,17 @@ public class TextEditorBinded extends javax.swing.JPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_pen-checkbox_353430.png"))); // NOI18N
@@ -276,43 +366,81 @@ public class TextEditorBinded extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setText("Nb Q :");
+
+        amountQLabel.setText("jLabel2");
+
+        versionChooserComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "original" }));
+        versionChooserComboBox.setMaximumSize(new java.awt.Dimension(200, 32767));
+        versionChooserComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                versionChooserComboBoxActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout texPanelLayout = new javax.swing.GroupLayout(texPanel);
+        texPanel.setLayout(texPanelLayout);
+        texPanelLayout.setHorizontalGroup(
+            texPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(texPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(amountQLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(versionChooserComboBox, 0, 105, Short.MAX_VALUE)
+                .addGap(2, 2, 2))
+        );
+        texPanelLayout.setVerticalGroup(
+            texPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, texPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(texPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(amountQLabel)
+                    .addComponent(versionChooserComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jCheckBox1)
-                .addGap(27, 27, 27)
-                .addComponent(reloadButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(texPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 199, Short.MAX_VALUE)
+                        .addComponent(reloadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jCheckBox1)
-                        .addComponent(reloadButton))
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(0, 0, 0))
+                .addGap(0, 0, 0)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(texPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(reloadButton)))
+                        .addContainerGap())))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.SaveFile();
-        
+        this.saveFile();
+
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        this.jButton1.setVisible(!jCheckBox1.isSelected());
-
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (f == null) {
@@ -327,15 +455,22 @@ public class TextEditorBinded extends javax.swing.JPanel {
         this.updateView();
     }//GEN-LAST:event_reloadButtonActionPerformed
 
+    private void versionChooserComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_versionChooserComboBoxActionPerformed
+        this.cdf.setSelectedVersion((String) versionChooserComboBox.getSelectedItem());
+    }//GEN-LAST:event_versionChooserComboBoxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel amountQLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextPane jTextPane1;
+    public javax.swing.JTextPane jTextPane1;
     private javax.swing.JButton reloadButton;
+    private javax.swing.JPanel texPanel;
+    private javax.swing.JComboBox versionChooserComboBox;
     // End of variables declaration//GEN-END:variables
 
     public void notifyAllObserver(Object mess) {
@@ -343,82 +478,53 @@ public class TextEditorBinded extends javax.swing.JPanel {
             ob.update(myObs, mess);
         }
     }
-    
+
     public void notifyAllObserver() {
         for (Observer ob : this.obs) {
             ob.update(myObs, ob);
         }
     }
 
-    ///////////////// Syntax coloration
-    protected void processChangedLines(Document doc, int offset, int length) {
-        Element rootElement = doc.getDefaultRootElement();
-        int startLine = rootElement.getElementIndex(offset);
-        int endLine = rootElement.getElementIndex(offset + length);
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////   specific to exercice files      ///////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void updateColoring() {
+        this.cdf.updateTextStyles(-1);
+    }
 
-        for (int i = startLine; i <= endLine; i++) {
-            try {
-                int lineStart = rootElement.getElement(i).getStartOffset();
-                int lineEnd = rootElement.getElement(i).getEndOffset() - 1;
-                String lineText = doc.getText(lineStart, lineEnd - lineStart);
-                applyHighlighting(doc, lineText, lineStart);
+    /**
+     * @return the questionAmount
+     */
+    public int getQuestionAmount() {
+        return questionAmount;
+    }
 
-            } catch (BadLocationException ex) {
-                Logger.getLogger(TextEditorBinded.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    /**
+     * @param questionAmount the questionAmount to set
+     */
+    public void setQuestionAmount(int questionAmount) {
+        if (questionAmount != this.questionAmount) {
+            this.questionAmount = questionAmount;
+            this.amountQLabel.setText("" + this.questionAmount);
         }
     }
 
-    protected void applyHighlighting(Document doc, String text, int offset) {
-        boolean toBeColored = false;
-        for (String s : corresp.keySet()) {
-            if (text.contains(s)) {
-                toBeColored = true;
-            }
-        }
-        if (!toBeColored) {
-            return;
-        }
-        // if here, at least one word must be colored
-        doc.removeDocumentListener(docList); // prevent infinite loop 
+    public void updateVersionTags() {
+        if (!previousTags.equals(this.cdf.versionTags)) {
+            String current = (String) this.versionChooserComboBox.getSelectedItem();
+            this.versionChooserComboBox.removeAllItems();
 
-        try {
-            // we first put normal color everywhere in the line : 
-            doc.remove(offset, text.length());
-            doc.insertString(offset, text, blackSet);
-
-            // we then check syntax words 
-            for (String s : corresp.keySet()) {
-                int begin = text.indexOf(s);
-
-                if (begin > -1) {
-                    doc.remove(begin + offset, s.length());
-                    doc.insertString(begin + offset, s, corresp.get(s));
-                }
+            if (!this.cdf.versionTags.contains("original")) {
+                this.versionChooserComboBox.addItem("original");
             }
 
-        } catch (BadLocationException ex) {
-            System.err.println(ex.getMessage() + " | " + ex.offsetRequested());
+            for (String version : this.cdf.versionTags) {
+                this.versionChooserComboBox.addItem(version);
+            }
+            this.previousTags = (ArrayList<String>) this.cdf.versionTags.clone();
+            this.versionChooserComboBox.setSelectedItem(current);
         }
-        doc.addDocumentListener(docList);
+
     }
 
-    protected void setCorresp() {
-        if (this.syntaxStyle == exerciceFile) {
-            this.corresp.clear();
-            SimpleAttributeSet redset = new SimpleAttributeSet();
-            StyleConstants.setItalic(redset, true);
-            StyleConstants.setForeground(redset, Color.red);
-
-            SimpleAttributeSet blueset = new SimpleAttributeSet();
-            StyleConstants.setItalic(blueset, true);
-            StyleConstants.setForeground(blueset, Color.blue);
-
-            this.corresp.put("\\addQ", redset);
-            this.corresp.put("\\partie", blueset);
-            this.corresp.put("\\sousPartie", blueset);
-            this.corresp.put("\\enonce", blueset);
-
-        }
-    }
 }

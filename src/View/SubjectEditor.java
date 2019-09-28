@@ -29,6 +29,7 @@ public class SubjectEditor extends javax.swing.JPanel implements Observer{
         this.ex=ex;
         this.textEditorBinded1.bindToFile(ex.getSubjectPath());
         this.textEditorBinded1.addObserver(this);
+        //this.textEditorBinded1.updateColoring();
     }
 
     
@@ -44,8 +45,21 @@ public class SubjectEditor extends javax.swing.JPanel implements Observer{
 
         textEditorBinded1 = new View.TextEditorBinded();
 
-        setLayout(new java.awt.BorderLayout());
-        add(textEditorBinded1, java.awt.BorderLayout.CENTER);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(textEditorBinded1, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(textEditorBinded1, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
 
@@ -56,9 +70,10 @@ public class SubjectEditor extends javax.swing.JPanel implements Observer{
     @Override
     public void update(Observable o, Object arg) {
         ex.NotifySubjectChanged();
+        
     }
     
     public void saveFile(){
-        this.textEditorBinded1.SaveFile();
+        this.textEditorBinded1.saveFile();
     }
 }
