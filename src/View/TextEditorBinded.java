@@ -25,9 +25,6 @@ import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -105,7 +102,6 @@ public class TextEditorBinded extends javax.swing.JPanel {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 changeOccured();
-
                 notifyAllObserver();
             }
 
@@ -303,6 +299,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
             }
         });
 
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setMinimumSize(new java.awt.Dimension(50, 50));
 
         jTextPane1.setContentType("plain"); // NOI18N
@@ -397,7 +394,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(texPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(reloadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -592,6 +589,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
     public void setQuestionAmount(int questionAmount) {
         if (questionAmount != this.questionAmount) {
             this.questionAmount = questionAmount;
+            System.err.println("pic poc");
             updateQuestionLabel();
         }
     }

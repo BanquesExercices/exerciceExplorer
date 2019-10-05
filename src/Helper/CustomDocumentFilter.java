@@ -20,7 +20,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.StyleContext;
 import javax.swing.text.AttributeSet;
-import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants;
 
@@ -32,6 +31,8 @@ public class CustomDocumentFilter extends DocumentFilter {
     private final Timer timer;
     private final int delay = 500;
 
+    private int dec = 0;
+
     public final ArrayList<Integer> questionLocations = new ArrayList<>();
     public final ArrayList<String> versionTags = new ArrayList<>();
     private String selectedVersion = "original";
@@ -40,8 +41,8 @@ public class CustomDocumentFilter extends DocumentFilter {
     private final AttributeSet redAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, Color.RED);
     private final AttributeSet blackAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, Color.BLACK);
     private final AttributeSet grayAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, Color.LIGHT_GRAY);
+    private final AttributeSet greenAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, Color.GREEN);
 
-    DefaultHighlighter.DefaultHighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
 
     // list to store the new color locations
     private final List<Integer> blueList = new ArrayList<>();
@@ -66,6 +67,7 @@ public class CustomDocumentFilter extends DocumentFilter {
 
         });
         timer.setRepeats(false);
+        
 
     }
 
@@ -141,6 +143,7 @@ public class CustomDocumentFilter extends DocumentFilter {
         // if offset<0 : the whole text is parsed
         int begin, end;
         if (offset < 0) {
+            dec = 0;
             begin = 0;
             end = jtp.getText().length();
             questionLocations.clear();
@@ -148,8 +151,9 @@ public class CustomDocumentFilter extends DocumentFilter {
                 versionTags.clear();  // remove all known tags
             }
         } else {
-            begin = Math.max(offset - 80, 0); // maybe lokking for a few \n would be safer
-            end = Math.min(jtp.getText().length(), offset + 80);
+            dec += 1; // this prevent from recomputing offests when something is inserted.
+            begin = Math.max(this.getPreviousOffset(offset), 0);
+            end = Math.min(jtp.getText().length(), this.getNextOffset(offset));
         }
 
         int count = 0;
@@ -219,7 +223,9 @@ public class CustomDocumentFilter extends DocumentFilter {
 
                 if (display) {
                     count++; // one more question
-                    questionLocations.add(matcher.start() + begin);
+                    if (offset<0){
+                        questionLocations.add(matcher.start() + begin);
+                    }
                     // normal mode : addQ tag and corresponding { and } are colored.
 
                     indices.stream().forEach((i) -> {
@@ -263,13 +269,13 @@ public class CustomDocumentFilter extends DocumentFilter {
                 this.teb.updateVersionTags();
             }
         }
-
         this.teb.registerUndoableManager();
 
     }
 
     public int getQuestionNumber(int offset) {
         int out = 0;
+        
         for (int i : questionLocations) {
             if (i > offset) {
                 break;
@@ -282,11 +288,13 @@ public class CustomDocumentFilter extends DocumentFilter {
     public int getNextOffset(int offset) {
         int out = 0;
         for (int i : questionLocations) {
-            out = i;
-            if (i > offset) {
+            out = i + dec;  // this prevent from recalculating questionLocations each time a character is added
+            if (i + dec > offset) {
                 break;
             }
-
+        }
+        if (out < offset) {
+            out = this.jtp.getText().length();
         }
         return out;
     }
@@ -298,7 +306,7 @@ public class CustomDocumentFilter extends DocumentFilter {
             if (i > offset) {
                 break;
             }
-            out = i;
+            out = i; // previous offset is not affected by the adding of a new character
         }
         return out;
     }
@@ -309,3 +317,9 @@ public class CustomDocumentFilter extends DocumentFilter {
         //The number of question must be modified here ! it is not done for the moment
     }
 }
+
+
+
+///////////////////////////////////////////////////////
+
+
