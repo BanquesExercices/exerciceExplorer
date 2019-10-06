@@ -29,6 +29,8 @@ public class ReadmeEditor extends javax.swing.JPanel implements Observer{
         this.ex=ex;
         this.textEditorBinded1.bindToFile(ex.getReadmePath());
         this.textEditorBinded1.addObserver(this);
+        this.countLabel.setText(""+ex.getCountGiven());
+        this.dateLabel.setText(ex.getLastEntry());
     }
 
     
@@ -43,13 +45,47 @@ public class ReadmeEditor extends javax.swing.JPanel implements Observer{
     private void initComponents() {
 
         textEditorBinded1 = new View.TextEditorBinded();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        dateLabel = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        countLabel = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
 
         setLayout(new java.awt.BorderLayout());
         add(textEditorBinded1, java.awt.BorderLayout.CENTER);
+
+        jLabel1.setText("Dernière fois :");
+        jPanel1.add(jLabel1);
+
+        dateLabel.setText("N.A.");
+        jPanel1.add(dateLabel);
+
+        jLabel3.setText("           ");
+        jPanel1.add(jLabel3);
+
+        jLabel4.setText("En tout :");
+        jPanel1.add(jLabel4);
+
+        countLabel.setText("0 ");
+        jPanel1.add(countLabel);
+
+        jLabel6.setText("fois");
+        jPanel1.add(jLabel6);
+
+        add(jPanel1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel countLabel;
+    private javax.swing.JLabel dateLabel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
     private View.TextEditorBinded textEditorBinded1;
     // End of variables declaration//GEN-END:variables
 

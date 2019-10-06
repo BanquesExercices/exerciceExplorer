@@ -49,7 +49,8 @@ public class MainWindow extends javax.swing.JFrame {
         menuBar = new JMenuBar();
 
         this.getRootPane().setJMenuBar(menuBar);
-
+        
+        
         cl = new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
@@ -59,12 +60,12 @@ public class MainWindow extends javax.swing.JFrame {
                         public void run() {
                             se.updateColoring();
                             se.setMenuBar(menuBar);
-                            se.updateMenuBarView();
+                            se.updateMenuBarView(true);
                         }
                     });
 
                 } else {
-                    menuBar.removeAll();
+                    se.updateMenuBarView(false);
                 }
             }
         };
@@ -88,6 +89,7 @@ public class MainWindow extends javax.swing.JFrame {
             this.editorTabbedPane.remove(ke);
         }
         if (se != null) {
+            se.updateMenuBarView(false);
             this.editorTabbedPane.remove(se);
         }
 
@@ -113,8 +115,11 @@ public class MainWindow extends javax.swing.JFrame {
     public void setSubjectDisplay(List<String> lines) {
         if (ce != null) {
             this.editorTabbedPane.remove(ce);
+            ce.updateMenuBarView(false);
         }
         ce = new CompoEditor(lines);
+        ce.setMenuBar(menuBar);
+        ce.updateMenuBarView(true);
         this.editorTabbedPane.insertTab("Composition", null, ce, "", 0);
         this.editorTabbedPane.setSelectedIndex(0);
     }

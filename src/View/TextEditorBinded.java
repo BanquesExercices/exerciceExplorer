@@ -9,6 +9,7 @@ import Helper.TextLineNumber;
 import Helper.ExecCommand;
 import Helper.SavedVariables;
 import Helper.Utils;
+import Helper.MyStyledEditorKit;
 import Helper.CustomDocumentFilter;
 import TexRessources.TexWriter;
 import java.awt.Event;
@@ -93,6 +94,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
         obs = new ArrayList<>();
 
         undoManager = new UndoManager();
+        jTextPane1.setEditorKit(new MyStyledEditorKit());
         doc = jTextPane1.getStyledDocument();
 
         createMenuBar();
@@ -299,7 +301,6 @@ public class TextEditorBinded extends javax.swing.JPanel {
             }
         });
 
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setMinimumSize(new java.awt.Dimension(50, 50));
 
         jTextPane1.setContentType("plain"); // NOI18N
@@ -473,13 +474,20 @@ public class TextEditorBinded extends javax.swing.JPanel {
         }
     }
 
-    public void updateMenuBarView() {
-        this.menuBar.removeAll();
-        this.menuBar.add(edition);
+    public void updateMenuBarView(boolean show) {
+        try {
+            menuBar.remove(edition);
+            menuBar.remove(source);
+            if (show) {
+                this.menuBar.add(edition);
 
-        if (this.syntaxStyle == exerciceFile) {
-            this.menuBar.add(source);
+                if (this.syntaxStyle == exerciceFile) {
+                    this.menuBar.add(source);
+                }
+            }
+        } catch (Exception e) {
         }
+
     }
 
     public void createMenuBar() {
@@ -589,7 +597,6 @@ public class TextEditorBinded extends javax.swing.JPanel {
     public void setQuestionAmount(int questionAmount) {
         if (questionAmount != this.questionAmount) {
             this.questionAmount = questionAmount;
-            System.err.println("pic poc");
             updateQuestionLabel();
         }
     }

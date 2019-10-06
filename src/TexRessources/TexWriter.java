@@ -26,7 +26,7 @@ import java.util.List;
 public class TexWriter {
 
     public static void openPdf() {
-        ExecCommand.execo(new String[]{SavedVariables.getOpenCmd(), "output/output.pdf"}, 0);
+        ExecCommand.execo(new String[]{SavedVariables.getOpenCmd(),"-F", "output/output.pdf"}, 0);
     }
 
     protected static void getExercicestoTex(Enumeration<Exercice> exercices, List<String> output, List<String> imports, boolean localLinks) {
@@ -180,7 +180,6 @@ public class TexWriter {
         try {
             b = new BufferedReader(new FileReader(f));
         } catch (FileNotFoundException ex) {
-            System.err.println(path + "  not found");
             return out;
         }
 
@@ -196,6 +195,27 @@ public class TexWriter {
 
     }
 
+    
+    
+    public static boolean appendToFile(List<String> in, String path) {
+
+        File f = new File(path);
+        BufferedWriter b;
+        try {
+            b = new BufferedWriter(new FileWriter(f,true));
+            for (String line : in) {
+                b.write(line);
+                b.newLine();
+            }
+            b.close();
+
+        } catch (IOException ex) {
+            System.out.println(path + " file cannot be outputed");
+            return false;
+        }
+        return true;
+    }
+    
     public static boolean writeToFile(List<String> in, String path) {
 
         File f = new File(path);

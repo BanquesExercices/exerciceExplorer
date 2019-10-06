@@ -89,8 +89,8 @@ public class SubjectEditor extends javax.swing.JPanel implements Observer {
         
     }
     
-    public void updateMenuBarView() {
-        this.textEditorBinded1.updateMenuBarView();
+    public void updateMenuBarView(boolean show) {
+        this.textEditorBinded1.updateMenuBarView(show);
     }
     
     public void saveFile() {

@@ -5,6 +5,7 @@
  */
 package exerciceexplorer;
 
+import TexRessources.TexWriter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * @author mbrebion
  */
-public class Exercice implements Comparable<Exercice>{
+public class Exercice implements Comparable<Exercice> {
 
     public static final String DS = "DS", TD = "TD", Colle = "Colle";
 
@@ -77,19 +78,18 @@ public class Exercice implements Comparable<Exercice>{
         return out;
     }
 
-    
-    public void NotifyKeyWordsChanged(){
+    public void NotifyKeyWordsChanged() {
         this.updateKeywords();
     }
-    
-    public void NotifyReadmeChanged(){
-    
+
+    public void NotifyReadmeChanged() {
+
     }
-    
-    public void NotifySubjectChanged(){
-    
+
+    public void NotifySubjectChanged() {
+
     }
-    
+
     protected void updateKeywords() {
 
         try {
@@ -149,19 +149,22 @@ public class Exercice implements Comparable<Exercice>{
     public String getPath() {
         return path;
     }
-    
-        public String getSubjectPath(){
-        return path+"/sujet.tex";
-    }
-    
-    public String getKeywordsPath(){
-        return path+"/mots_clefs.txt";
-    }
-    
-    public String getReadmePath(){
-        return path+"/readme.txt";
+
+    public String getSubjectPath() {
+        return path + "/sujet.tex";
     }
 
+    public String getKeywordsPath() {
+        return path + "/mots_clefs.txt";
+    }
+
+    public String getReadmePath() {
+        return path + "/readme.txt";
+    }
+
+    public String getlastTimePath() {
+        return path + "/lastTime.txt";
+    }
 
     /**
      * @return the kind
@@ -186,6 +189,19 @@ public class Exercice implements Comparable<Exercice>{
     public List<String> getContent() {
         this.updateContent();
         return content;
+    }
+
+    public int getCountGiven() {
+        return TexWriter.readFile(this.getlastTimePath()).size();
+    }
+
+    public String getLastEntry() {
+        List<String> out = TexWriter.readFile(this.getlastTimePath());
+        if (out.size() > 0) {
+            return out.get(out.size() - 1);
+        } else {
+            return "N.A.";
+        }
     }
 
     @Override

@@ -55,6 +55,8 @@ public class CustomDocumentFilter extends DocumentFilter {
     public CustomDocumentFilter(TextEditorBinded teb) {
         this.teb = teb;
         this.jtp = teb.jTextPane1;
+        
+        
         styledDocument = jtp.getStyledDocument();
 
         // parsing whole file event 
@@ -320,6 +322,7 @@ public class CustomDocumentFilter extends DocumentFilter {
 
 
 
-///////////////////////////////////////////////////////
+
+
 
 

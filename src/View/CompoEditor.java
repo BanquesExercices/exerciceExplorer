@@ -9,11 +9,19 @@ import Helper.ExecCommand;
 import Helper.SavedVariables;
 import Helper.Utils;
 import TexRessources.TexWriter;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
@@ -24,7 +32,10 @@ import javax.swing.text.StyledDocument;
  */
 public class CompoEditor extends javax.swing.JPanel {
 
-    StyledDocument doc;
+    protected StyledDocument doc;
+    protected JMenuBar menuBar;
+    protected JMenu compilation;
+    protected AbstractAction compileAndOpen, compileWithoutOpen;
 
     /**
      * Creates new form SubjectEditor
@@ -37,6 +48,43 @@ public class CompoEditor extends javax.swing.JPanel {
         initComponents();
         this.doc = jTextPane1.getStyledDocument();
         this.setText(lines);
+        this.createMenubar();
+    }
+
+    public void createMenubar() {
+        // actions
+        compileAndOpen = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                compileAction(true);
+            }
+        };
+
+        compileWithoutOpen = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                compileAction(false);
+            }
+        };
+
+        compilation = new JMenu("Compilation");
+
+        JMenuItem compileAO = new JMenuItem("compile and open");
+        compilation.add(compileAO);
+        compileAO.addActionListener(compileAndOpen);
+        compileAO.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+
+    }
+
+    public void updateMenuBarView(boolean show) {
+        menuBar.remove(compilation);
+        if (show) {
+            menuBar.add(compilation);
+        }
+    }
+
+    public void setMenuBar(JMenuBar jmb) {
+        this.menuBar = jmb;
     }
 
     protected void setText(List<String> lines) {
@@ -147,18 +195,21 @@ public class CompoEditor extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileButtonActionPerformed
+    private void compileAction(boolean open) {
         List<String> lines = this.getLines();
-
         TexWriter.writeTexFile(lines);
         if (TexWriter.latexToPdf()) {
-            TexWriter.openPdf();
+            if (open) {
+                TexWriter.openPdf();
+            }
         } else {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             Utils.showLongTextMessageInDialog(TexWriter.latexLog, topFrame);
         }
+    }
 
-
+    private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileButtonActionPerformed
+        this.compileAction(true);
     }//GEN-LAST:event_compileButtonActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

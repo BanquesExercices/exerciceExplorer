@@ -16,7 +16,9 @@ import exerciceexplorer.KeyWords;
 import java.awt.FlowLayout;
 import java.io.File;
 import java.io.FileFilter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -448,11 +450,29 @@ public class CreationCompoView extends javax.swing.JPanel {
         List<String> cc = TexWriter.outputTexFile(selectedExericesModel.elements(), kind,true);
         TexWriter.writeToFile(cc, compoDir+"/"+kind+compoNumber+".tex");
         Enumeration<Exercice> exercices = selectedExericesModel.elements();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         while (exercices.hasMoreElements()) {
             Exercice exo = exercices.nextElement();
+            
+            // update of lasttime file
+           
+            List<String> lines =  TexWriter.readFile(exo.getlastTimePath() );
+            List<String> outLines = new ArrayList<>();
+            
+            outLines.add(formatter.format(new Date()) + " : " + kind + "  "+compoNumber);
+            if (lines.size()==0){
+            // in this case, the file is empty or do not exist yet
+                TexWriter.writeToFile(outLines,exo.getlastTimePath() );
+            }else{
+                TexWriter.appendToFile(outLines,exo.getlastTimePath() );
+            }
+            
+            
+        
+            // hard copy
             ExecCommand.execo(new String[]{"cp","-r",exo.getPath(),compoDir+"/" }, 100);
         }
-        // copie du fichier raccourcis commun : 
+        // copy of file raccourcis_communs.sty : 
         ExecCommand.execo(new String[]{"cp","-r",SavedVariables.getMainGitDir()+"/fichiers_utiles/raccourcis_communs.sty" ,compoDir+"/" }, 100);
         
         
