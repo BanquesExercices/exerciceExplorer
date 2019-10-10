@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -49,8 +50,7 @@ public class MainWindow extends javax.swing.JFrame {
         menuBar = new JMenuBar();
 
         this.getRootPane().setJMenuBar(menuBar);
-        
-        
+
         cl = new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
@@ -79,20 +79,55 @@ public class MainWindow extends javax.swing.JFrame {
 
     public void setExerciceDisplay(Exercice ex) {
         this.editorTabbedPane.removeChangeListener(cl);
-
+        boolean warning = false;
+        boolean toDelete=false;
+        
         if (re != null) {
-            re.saveFile();
-            this.editorTabbedPane.remove(re);
+            toDelete=true;
+            if (SavedVariables.getAutoSave()) {
+                re.saveFile();
+            }else{
+                warning = re.needSaving() || warning;
+            }
+            
         }
         if (ke != null) {
+            if (SavedVariables.getAutoSave()) {
+                ke.saveFile();
+            }else{
+                warning = ke.needSaving() || warning;
+            }
+            
 
-            this.editorTabbedPane.remove(ke);
         }
         if (se != null) {
+            if (SavedVariables.getAutoSave()) {
+                se.saveFile();
+            }else{
+                warning = se.needSaving() || warning;
+            }
             se.updateMenuBarView(false);
-            this.editorTabbedPane.remove(se);
+            
         }
 
+        if (warning){
+            int result=JOptionPane.showConfirmDialog(this, "Voulez vous sauvegarder les fichiers en cours ? (si non, les dernières modifications non sauvegardées seront effacées)");
+            if (result== JOptionPane.YES_OPTION){
+                re.saveFile();
+                se.saveFile();
+                ke.saveFile();
+            }
+            if (result == JOptionPane.CANCEL_OPTION){
+                return;
+            }
+        }
+        
+        if (toDelete){
+            this.editorTabbedPane.remove(re);
+            this.editorTabbedPane.remove(ke);
+            this.editorTabbedPane.remove(se);
+        }
+        
         re = new ReadmeEditor(ex);
         ke = new KeywordsEditor(ex);
         se = new SubjectEditor(ex);

@@ -97,4 +97,9 @@ public class ReadmeEditor extends javax.swing.JPanel implements Observer{
     public void saveFile(){
         this.textEditorBinded1.saveFile();
     }
+    
+    public boolean needSaving(){
+        return this.textEditorBinded1.hasChanged();
+    }
+    
 }

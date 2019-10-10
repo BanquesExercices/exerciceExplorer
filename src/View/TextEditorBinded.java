@@ -58,8 +58,6 @@ public class TextEditorBinded extends javax.swing.JPanel {
     public final static int exerciceFile = 1, texFile = 2, textFile = 0; // used for syntax coloration
     protected int syntaxStyle = textFile; // default choice : no color
 
-    protected HashMap<String, SimpleAttributeSet> corresp = new HashMap<>();
-    SimpleAttributeSet blackSet = new SimpleAttributeSet();
 
     protected CustomDocumentFilter cdf;
     protected File f;

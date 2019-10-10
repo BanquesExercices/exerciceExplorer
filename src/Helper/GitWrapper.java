@@ -15,7 +15,7 @@ public class GitWrapper {
 
     public static String status() {
         ExecCommand.execo(new String[]{"git", "fetch"}, SavedVariables.getMainGitDir());
-        String output = ExecCommand.execo(new String[]{"git", "st"}, SavedVariables.getMainGitDir())[1];
+        String output = ExecCommand.execo(new String[]{"git", "status"}, SavedVariables.getMainGitDir())[1];
         return output;
     }
 
