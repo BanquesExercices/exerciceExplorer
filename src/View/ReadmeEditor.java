@@ -8,33 +8,32 @@ package View;
 import exerciceexplorer.Exercice;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.JMenuBar;
 
 /**
  *
  * @author mbrebion
  */
-public class ReadmeEditor extends javax.swing.JPanel implements Observer{
+public class ReadmeEditor extends javax.swing.JPanel implements Observer {
 
     /**
      * Creates new form SubjectEditor
      */
     protected Exercice ex;
-    
+
     public ReadmeEditor() {
         initComponents();
     }
 
     public ReadmeEditor(Exercice ex) {
         initComponents();
-        this.ex=ex;
+        this.ex = ex;
         this.textEditorBinded1.bindToFile(ex.getReadmePath());
         this.textEditorBinded1.addObserver(this);
-        this.countLabel.setText(""+ex.getCountGiven());
+        this.countLabel.setText("" + ex.getCountGiven());
         this.dateLabel.setText(ex.getLastEntry());
     }
 
-    
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -93,13 +92,21 @@ public class ReadmeEditor extends javax.swing.JPanel implements Observer{
     public void update(Observable o, Object arg) {
         ex.NotifyReadmeChanged();
     }
-    
-    public void saveFile(){
+
+    public void saveFile() {
         this.textEditorBinded1.saveFile();
     }
-    
-    public boolean needSaving(){
+
+    public boolean needSaving() {
         return this.textEditorBinded1.hasChanged();
     }
-    
+
+    public void setMenuBar(JMenuBar jmb) {
+        this.textEditorBinded1.setMenuBar(jmb);
+    }
+
+    public void updateMenuBarView() {
+        this.textEditorBinded1.updateMenuBarView();
+    }
+
 }

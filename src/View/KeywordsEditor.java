@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
@@ -86,7 +87,12 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer {
 
         jButton1.setText("jButton1");
 
-        keywordPicker.setModel(KeyWords.getDefaultComboBoxModelModel());
+        keywordPicker.setModel(KeyWords.getDefaultComboBoxModelModel(keywordPicker));
+        keywordPicker.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                keywordPickerActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jLabel2.setText("Ajout :");
@@ -101,9 +107,7 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer {
                 .addGap(12, 12, 12)
                 .addComponent(keywordPicker, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(textEditorBinded1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(textEditorBinded1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,6 +120,10 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer {
                 .addComponent(textEditorBinded1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void keywordPickerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keywordPickerActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_keywordPickerActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -140,7 +148,7 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer {
         }
         if (newKeywords.size() > 0) {
             // new elements to add
-            int output = JOptionPane.showConfirmDialog(null, "il y a " + newKeywords.size()+" nouveaux mots clefs.", "Ajout des nouveaux mots clefs ?", JOptionPane.YES_NO_OPTION);
+            int output = JOptionPane.showConfirmDialog(null, "il y a " + newKeywords.size() + " nouveaux mots clefs.", "Ajout des nouveaux mots clefs ?", JOptionPane.YES_NO_OPTION);
             if (output == JOptionPane.YES_OPTION) {
                 KeyWords.addNewKeywords(newKeywords);
                 KeyWords.updateKeywordsList();
@@ -150,11 +158,19 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer {
         ex.NotifyKeyWordsChanged();
     }
 
+    public void setMenuBar(JMenuBar jmb) {
+        this.textEditorBinded1.setMenuBar(jmb);
+    }
+
+    public void updateMenuBarView() {
+        this.textEditorBinded1.updateMenuBarView();
+    }
+
     public void saveFile() {
         this.textEditorBinded1.saveFile();
     }
-    
-    public boolean needSaving(){
+
+    public boolean needSaving() {
         return this.textEditorBinded1.hasChanged();
     }
 

@@ -51,9 +51,12 @@
     <Component class="javax.swing.JComboBox" name="keywordPicker">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="KeyWords.getDefaultComboBoxModelModel()" type="code"/>
+          <Connection code="KeyWords.getDefaultComboBoxModelModel(keywordPicker)" type="code"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="keywordPickerActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="AutoCompleteDecorator.decorate(keywordPicker); &#xa;ComboBoxCellEditor editor = new ComboBoxCellEditor(keywordPicker);&#xa;CellEditorListener listener = new CellEditorListener() {&#xa;        @Override&#xa;        public void editingStopped(ChangeEvent e) {&#xa;            String name=(String)keywordPicker.getSelectedItem();&#xa;            KeywordsEditor.this.appendKeyword(name);&#xa;        }&#xa;&#xa;        @Override&#xa;        public void editingCanceled(ChangeEvent e) {&#xa;        }&#xa;        };&#xa;editor.addCellEditorListener(listener);&#xa;"/>
       </AuxValues>

@@ -219,7 +219,7 @@ public class CreationCompoView extends javax.swing.JPanel {
             }
         });
 
-        keywordPicker.setModel(KeyWords.getDefaultComboBoxModelModel());
+        keywordPicker.setModel(KeyWords.getDefaultComboBoxModelModel(keywordPicker));
         keywordPicker.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 keywordPickerActionPerformed(evt);

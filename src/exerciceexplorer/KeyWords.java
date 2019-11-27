@@ -14,11 +14,18 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 
 /**
  *
@@ -28,6 +35,7 @@ public class KeyWords {
 
     protected List<String> keywords;
     protected static KeyWords instance = null;
+    protected static Collection<JComboBox> jcbs = new HashSet<>();
 
     public static void updateKeywordsList() {
         try {
@@ -38,9 +46,12 @@ public class KeyWords {
 
     }
 
-    public static DefaultComboBoxModel<String> getDefaultComboBoxModelModel() {
+    public static DefaultComboBoxModel<String> getDefaultComboBoxModelModel(JComboBox jcb) {
+        // add the jComboBox to the list of comboboxes which uses this model
+        jcbs.add(jcb);
+
+        // create the model
         DefaultComboBoxModel<String> out = new DefaultComboBoxModel<>();
-        getInstance();
         getInstance().keywords.stream().forEach((kw) -> {
             out.addElement(kw);
         });
@@ -80,17 +91,34 @@ public class KeyWords {
     }
 
     public void addKeywords(List<String> keys) {
+        //  add the new keywords, sort, write down and update jcomboboxes
         BufferedWriter b = null;
+        BufferedReader r = null;
         try {
             File f = new File(SavedVariables.getMainGitDir() + "/fichiers_utiles/mots_clefs.txt");
-            b = new BufferedWriter(new FileWriter(f, true));
-            PrintWriter out = new PrintWriter(b);
-            for (String st : keys) {
-                if (!keywords.contains(st)) {
-                    out.println(st);
+
+            // mix all keywords (check for duplicate)
+            for (String key : keys) {
+                if (!keywords.contains(key)) {
+                    keywords.add(key);
                 }
             }
+
+            //keywords.sort(null); // sort
+            Collator frCollator = Collator.getInstance(Locale.FRENCH);
+            frCollator.setStrength(Collator.PRIMARY);
+            Collections.sort(keywords, frCollator);
+
+            b = new BufferedWriter(new FileWriter(f)); // write back to textfile
+            PrintWriter out = new PrintWriter(b);
+            for (String st : keywords) {
+                out.println(st);
+            }
             out.flush();
+
+            for (JComboBox jcb : jcbs) {
+                jcb.setModel(getDefaultComboBoxModelModel(jcb));
+            }
 
         } catch (IOException ex) {
             Logger.getLogger(KeyWords.class.getName()).log(Level.SEVERE, null, ex);

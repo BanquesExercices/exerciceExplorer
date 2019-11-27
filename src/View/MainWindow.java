@@ -54,22 +54,48 @@ public class MainWindow extends javax.swing.JFrame {
         cl = new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
-                if (editorTabbedPane.getSelectedComponent() == se) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            se.updateColoring();
-                            se.setMenuBar(menuBar);
-                            se.updateMenuBarView(true);
-                        }
-                    });
-
-                } else {
-                    se.updateMenuBarView(false);
-                }
+                MainWindow.this.updateMenuBar();
             }
         };
 
+    }
+
+    protected void updateMenuBar() {
+        menuBar.removeAll();
+
+        if (editorTabbedPane.getSelectedComponent() == se) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    se.updateColoring(); // special trick to perform full syntax coloring later.
+                    se.setMenuBar(menuBar);
+                    se.updateMenuBarView();
+                }
+            });
+
+        }
+
+        if (editorTabbedPane.getSelectedComponent() == re) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    re.setMenuBar(menuBar);
+                    re.updateMenuBarView();
+                }
+            });
+
+        }
+
+        if (editorTabbedPane.getSelectedComponent() == ke) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    ke.setMenuBar(menuBar);
+                    ke.updateMenuBarView();
+                }
+            });
+
+        }
     }
 
     public void updateDatabase() {
@@ -78,56 +104,57 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     public void setExerciceDisplay(Exercice ex) {
+
         this.editorTabbedPane.removeChangeListener(cl);
         boolean warning = false;
-        boolean toDelete=false;
-        
+        boolean toDelete = false;
+
         if (re != null) {
-            toDelete=true;
+            toDelete = true;
             if (SavedVariables.getAutoSave()) {
                 re.saveFile();
-            }else{
+            } else {
                 warning = re.needSaving() || warning;
             }
-            
+
         }
         if (ke != null) {
             if (SavedVariables.getAutoSave()) {
                 ke.saveFile();
-            }else{
+            } else {
                 warning = ke.needSaving() || warning;
             }
-            
 
         }
         if (se != null) {
             if (SavedVariables.getAutoSave()) {
                 se.saveFile();
-            }else{
+            } else {
                 warning = se.needSaving() || warning;
             }
-            se.updateMenuBarView(false);
-            
+
         }
 
-        if (warning){
-            int result=JOptionPane.showConfirmDialog(this, "Voulez vous sauvegarder les fichiers en cours ? (si non, les dernières modifications non sauvegardées seront effacées)");
-            if (result== JOptionPane.YES_OPTION){
+        
+
+        if (warning) {
+            int result = JOptionPane.showConfirmDialog(this, "Voulez vous sauvegarder les fichiers en cours ? (si non, les dernières modifications non sauvegardées seront effacées)");
+            if (result == JOptionPane.YES_OPTION) {
                 re.saveFile();
                 se.saveFile();
                 ke.saveFile();
             }
-            if (result == JOptionPane.CANCEL_OPTION){
+            if (result == JOptionPane.CANCEL_OPTION) {
                 return;
             }
         }
-        
-        if (toDelete){
+
+        if (toDelete) {
             this.editorTabbedPane.remove(re);
             this.editorTabbedPane.remove(ke);
             this.editorTabbedPane.remove(se);
         }
-        
+
         re = new ReadmeEditor(ex);
         ke = new KeywordsEditor(ex);
         se = new SubjectEditor(ex);
@@ -138,6 +165,8 @@ public class MainWindow extends javax.swing.JFrame {
         this.editorTabbedPane.setSelectedComponent(re);
 
         this.editorTabbedPane.addChangeListener(cl);
+        
+        this.updateMenuBar();
 
     }
 

@@ -19,7 +19,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -40,7 +39,6 @@ import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
@@ -57,7 +55,6 @@ public class TextEditorBinded extends javax.swing.JPanel {
      */
     public final static int exerciceFile = 1, texFile = 2, textFile = 0; // used for syntax coloration
     protected int syntaxStyle = textFile; // default choice : no color
-
 
     protected CustomDocumentFilter cdf;
     protected File f;
@@ -162,6 +159,8 @@ public class TextEditorBinded extends javax.swing.JPanel {
         } else if (path.endsWith(".tex")) {
             this.syntaxStyle = texFile;
         }
+        // default is textFile
+
         f = new File(path);
 
         this.updateView();
@@ -472,16 +471,12 @@ public class TextEditorBinded extends javax.swing.JPanel {
         }
     }
 
-    public void updateMenuBarView(boolean show) {
+    public void updateMenuBarView() {
         try {
-            menuBar.remove(edition);
-            menuBar.remove(source);
-            if (show) {
-                this.menuBar.add(edition);
+            this.menuBar.add(edition);
 
-                if (this.syntaxStyle == exerciceFile) {
-                    this.menuBar.add(source);
-                }
+            if (this.syntaxStyle == exerciceFile) {
+                this.menuBar.add(source);
             }
         } catch (Exception e) {
         }
@@ -490,6 +485,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
 
     public void createMenuBar() {
         // actions
+
         previous = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
