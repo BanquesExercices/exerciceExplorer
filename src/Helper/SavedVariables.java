@@ -45,8 +45,9 @@ public class SavedVariables {
     
     
     public static boolean getAutoSave() {
+        System.err.println("Ping");
         if (prefs != null) {
-            return prefs.get("autoSave", "") == "true";
+            return "true".equals(prefs.get("autoSave", ""));
         } else {
             return false;
         }
@@ -58,8 +59,26 @@ public class SavedVariables {
         } else {
             prefs.put("autoSave", "false");
         }
+        
+    }
+    
+    
+    public static void setMultiEdit(boolean me) {
+        if (me) {
+            prefs.put("multiEdit", "true");
+        } else {
+            prefs.put("multiEdit", "false");
+        }
+        
     }
 
+    public static boolean getMultiEdit() {
+        if (prefs != null) {
+            return "true".equals(prefs.get("multiEdit", ""));
+        } else {
+            return false;
+        }
+    }
     
     
     

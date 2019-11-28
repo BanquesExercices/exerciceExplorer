@@ -57,11 +57,6 @@
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                               <Component id="outputDirInput" max="32767" attributes="0"/>
@@ -71,11 +66,13 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Group type="102" attributes="0">
+                                  <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
                                       <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                                       <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+                                      <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -127,12 +124,12 @@
               <Component id="jSeparator1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jCheckBox1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jCheckBox2" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+              <EmptySpace min="5" pref="5" max="-2" attributes="0"/>
               <Component id="jSeparator2" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
               <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
@@ -225,17 +222,11 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="templatesFolderInputActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Actualiser"/>
-        <Property name="toolTipText" type="java.lang.String" value="Mettre &#xe0; jour la base des exercices dans l&apos;interface graphique"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBox1">
       <Properties>
+        <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="SavedVariables.getAutoSave()" type="code"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Sauvegarde auto"/>
         <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Les fichiers sont &lt;em&gt;automatiquement&lt;/em&gt; sauvegard&#xe9;s quand les onglets sont cach&#xe9;s.&#xa;&lt;br&gt;&#xa;Cela peut &#xea;tre utile lorsque vous selectionnez un nouvel exercice (l&apos;ancien disparait).&#xa;&lt;/html&gt;"/>
       </Properties>
@@ -341,5 +332,17 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JCheckBox" name="jCheckBox2">
+      <Properties>
+        <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="SavedVariables.getMultiEdit()" type="code"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="multi-edition"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt; Permet d&apos;activer le mode &lt;em&gt;multi-edition&lt;/em&gt; &lt;br&gt; &#xa;qui permet de modifier simultan&#xe9;ment plusieurs exercices &lt;br&gt;&#xa;(find and replace) sur les mots clefs ou bien des expressions pr&#xe9;sentes &lt;br&gt;&#xa;dans les fichiers sujet.tex&#xa;&lt;/html&gt;"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox2ActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>

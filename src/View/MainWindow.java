@@ -98,8 +98,15 @@ public class MainWindow extends javax.swing.JFrame  {
         global.add(replaceWordMI);
         replaceWordMI.addActionListener(replaceWordAction);
         
-        menuBar.add(global);
+        this.updateGlobalMenuBarStatus();
 
+    }
+    
+    public void updateGlobalMenuBarStatus(){
+        menuBar.remove(global);
+        if (SavedVariables.getMultiEdit()){
+            menuBar.add(global);
+        }
     }
 
     protected void updateMenuBar() {

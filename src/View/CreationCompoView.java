@@ -78,7 +78,6 @@ public class CreationCompoView extends javax.swing.JPanel {
     public void updateDataBase() {
         ef.updateList();
         this.updateModel();
-
     }
 
     public Exercice getSelectedExercice() {

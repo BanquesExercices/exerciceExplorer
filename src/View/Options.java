@@ -48,7 +48,6 @@ public class Options extends javax.swing.JPanel {
         gitFolderInput = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         templatesFolderInput = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel6 = new javax.swing.JLabel();
         outputDirInput = new javax.swing.JTextField();
@@ -62,6 +61,7 @@ public class Options extends javax.swing.JPanel {
         statusButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         outputView = new javax.swing.JTextArea();
+        jCheckBox2 = new javax.swing.JCheckBox();
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 20)); // NOI18N
         jLabel3.setText("Options");
@@ -107,14 +107,7 @@ public class Options extends javax.swing.JPanel {
             }
         });
 
-        jButton1.setText("Actualiser");
-        jButton1.setToolTipText("Mettre à jour la base des exercices dans l'interface graphique");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
+        jCheckBox1.setSelected(SavedVariables.getAutoSave());
         jCheckBox1.setText("Sauvegarde auto");
         jCheckBox1.setToolTipText("<html>\nLes fichiers sont <em>automatiquement</em> sauvegardés quand les onglets sont cachés.\n<br>\nCela peut être utile lorsque vous selectionnez un nouvel exercice (l'ancien disparait).\n</html>");
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -184,6 +177,15 @@ public class Options extends javax.swing.JPanel {
         outputView.setText("click on status to update");
         jScrollPane1.setViewportView(outputView);
 
+        jCheckBox2.setSelected(SavedVariables.getMultiEdit());
+        jCheckBox2.setText("multi-edition");
+        jCheckBox2.setToolTipText("<html> Permet d'activer le mode <em>multi-edition</em> <br> \nqui permet de modifier simultanément plusieurs exercices <br>\n(find and replace) sur les mots clefs ou bien des expressions présentes <br>\ndans les fichiers sujet.tex\n</html>");
+        jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -222,10 +224,6 @@ public class Options extends javax.swing.JPanel {
                                     .addComponent(openInput, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(pdflatexInput, javax.swing.GroupLayout.Alignment.TRAILING)))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jButton1)
-                                .addGap(13, 13, 13))
-                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addGap(7, 7, 7)
                                 .addComponent(outputDirInput))
@@ -234,10 +232,12 @@ public class Options extends javax.swing.JPanel {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel7)
                                     .addComponent(jLabel8)
+                                    .addComponent(jLabel9)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(6, 6, 6)
-                                        .addComponent(jCheckBox1))
-                                    .addComponent(jLabel9))
+                                        .addComponent(jCheckBox1)
+                                        .addGap(55, 55, 55)
+                                        .addComponent(jCheckBox2)))
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(3, 3, 3))
             .addGroup(layout.createSequentialGroup()
@@ -276,11 +276,11 @@ public class Options extends javax.swing.JPanel {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel9)
-                .addGap(3, 3, 3)
+                .addGap(4, 4, 4)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBox1)
-                    .addComponent(jButton1))
-                .addGap(0, 0, 0)
+                    .addComponent(jCheckBox2))
+                .addGap(5, 5, 5)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
                 .addComponent(jLabel7)
@@ -311,12 +311,6 @@ public class Options extends javax.swing.JPanel {
     private void openInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openInputActionPerformed
         SavedVariables.setOpenCmd(openInput.getText());
     }//GEN-LAST:event_openInputActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (mw != null) {
-            this.mw.updateDatabase();
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         SavedVariables.setAutoSave(jCheckBox1.isSelected());
@@ -390,12 +384,17 @@ public class Options extends javax.swing.JPanel {
         this.checkStatus(out);
     }//GEN-LAST:event_statusButtonActionPerformed
 
+    private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
+        SavedVariables.setMultiEdit(jCheckBox2.isSelected());
+        this.mw.updateGlobalMenuBarStatus();
+    }//GEN-LAST:event_jCheckBox2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton commitButton;
     private javax.swing.JTextField gitFolderInput;
-    private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
