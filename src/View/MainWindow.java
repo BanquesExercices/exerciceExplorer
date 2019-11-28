@@ -7,11 +7,15 @@ package View;
 
 import Helper.SavedVariables;
 import exerciceexplorer.Exercice;
+import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javax.swing.AbstractAction;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -23,7 +27,7 @@ import javax.swing.event.ChangeListener;
  *
  * @author mbrebion
  */
-public class MainWindow extends javax.swing.JFrame {
+public class MainWindow extends javax.swing.JFrame  {
 
     /**
      * Creates new form MainWindow
@@ -38,6 +42,8 @@ public class MainWindow extends javax.swing.JFrame {
     ChangeListener cl = null;
 
     JMenuBar menuBar;
+    protected AbstractAction replaceKeywordAction, replaceWordAction;
+    protected JMenu global;
 
     public MainWindow() {
         SavedVariables.prefs = Preferences.userNodeForPackage(this.getClass());
@@ -58,10 +64,47 @@ public class MainWindow extends javax.swing.JFrame {
             }
         };
 
+        setMainMenuBarItems();
+
+    }
+
+    
+    
+    protected void setMainMenuBarItems() {
+        replaceKeywordAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainWindow.this.editorTabbedPane.insertTab("remplacement de mot clef", null, new ReplaceKeywordPanel(MainWindow.this), "", 0);
+                MainWindow.this.editorTabbedPane.setSelectedIndex(0);
+            }
+        };
+        
+        replaceWordAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainWindow.this.editorTabbedPane.insertTab("remplacement de mot clef", null, new ReplaceWordPanel(MainWindow.this), "", 0);
+                MainWindow.this.editorTabbedPane.setSelectedIndex(0);
+            }
+        };
+
+        // menu items
+        global = new JMenu("Global");
+
+        JMenuItem replaceKeywordMI = new JMenuItem("remplacer un mot_clef");
+        global.add(replaceKeywordMI);
+        replaceKeywordMI.addActionListener(replaceKeywordAction);
+        
+        JMenuItem replaceWordMI = new JMenuItem("remplacer un mot");
+        global.add(replaceWordMI);
+        replaceWordMI.addActionListener(replaceWordAction);
+        
+        menuBar.add(global);
+
     }
 
     protected void updateMenuBar() {
         menuBar.removeAll();
+        menuBar.add(global);
 
         if (editorTabbedPane.getSelectedComponent() == se) {
             SwingUtilities.invokeLater(new Runnable() {
@@ -135,8 +178,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         }
 
-        
-
         if (warning) {
             int result = JOptionPane.showConfirmDialog(this, "Voulez vous sauvegarder les fichiers en cours ? (si non, les dernières modifications non sauvegardées seront effacées)");
             if (result == JOptionPane.YES_OPTION) {
@@ -165,7 +206,7 @@ public class MainWindow extends javax.swing.JFrame {
         this.editorTabbedPane.setSelectedComponent(re);
 
         this.editorTabbedPane.addChangeListener(cl);
-        
+
         this.updateMenuBar();
 
     }
@@ -200,7 +241,8 @@ public class MainWindow extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         creationSujetView1 = new View.CreationCompoView();
         options1 = new View.Options();
-        jPanel2 = new javax.swing.JPanel();
+        middlePane = new javax.swing.JPanel();
+        rightPane = new javax.swing.JPanel();
         editorTabbedPane = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -208,21 +250,38 @@ public class MainWindow extends javax.swing.JFrame {
         jTabbedPane1.addTab("Composition", creationSujetView1);
         jTabbedPane1.addTab("Options", options1);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel2.setPreferredSize(new java.awt.Dimension(7, 2));
+        middlePane.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        middlePane.setPreferredSize(new java.awt.Dimension(7, 2));
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout middlePaneLayout = new javax.swing.GroupLayout(middlePane);
+        middlePane.setLayout(middlePaneLayout);
+        middlePaneLayout.setHorizontalGroup(
+            middlePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 3, Short.MAX_VALUE)
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        middlePaneLayout.setVerticalGroup(
+            middlePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
         editorTabbedPane.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+
+        javax.swing.GroupLayout rightPaneLayout = new javax.swing.GroupLayout(rightPane);
+        rightPane.setLayout(rightPaneLayout);
+        rightPaneLayout.setHorizontalGroup(
+            rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 482, Short.MAX_VALUE)
+            .addGroup(rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(editorTabbedPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE))
+        );
+        rightPaneLayout.setVerticalGroup(
+            rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(editorTabbedPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE))
+        );
+
+        editorTabbedPane.getAccessibleContext().setAccessibleName("");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -232,19 +291,16 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(middlePane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(editorTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+                .addComponent(rightPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
+            .addComponent(middlePane, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
             .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
-            .addComponent(editorTabbedPane)
+            .addComponent(rightPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-
-        editorTabbedPane.getAccessibleContext().setAccessibleName("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -299,9 +355,10 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private View.CreationCompoView creationSujetView1;
-    private javax.swing.JTabbedPane editorTabbedPane;
-    private javax.swing.JPanel jPanel2;
+    public javax.swing.JTabbedPane editorTabbedPane;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JPanel middlePane;
     private View.Options options1;
+    private javax.swing.JPanel rightPane;
     // End of variables declaration//GEN-END:variables
 }

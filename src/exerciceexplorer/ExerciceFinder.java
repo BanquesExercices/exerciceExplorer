@@ -22,33 +22,39 @@ public final class ExerciceFinder {
     /**
      * Array containing all known exercices
      */
-    protected List<Exercice> exercices;
+    protected static List<Exercice> exercices;
 
     public ExerciceFinder() {
-        this.exercices = new ArrayList<>();
+        // This class must be instanciated only once
+        if (exercices!= null){
+            System.err.println("multiple instanciation of list of exercices");
+        }
+        exercices = new ArrayList<>();
         this.updateList();
     }
-    
-    
-    
-    public boolean createExercice(String kind,String title){
-        System.err.println(kind +" | "+ title);
-        File folder = new File(SavedVariables.getMainGitDir() + "/exercices/"+kind+"/"+title);
-        if (folder.exists()){
+
+    public static List<Exercice> getExercices() {
+        return exercices;
+    }
+
+    public boolean createExercice(String kind, String title) {
+        System.err.println(kind + " | " + title);
+        File folder = new File(SavedVariables.getMainGitDir() + "/exercices/" + kind + "/" + title);
+        if (folder.exists()) {
             // exercice alredy exists, no need to create another one
             return false;
         }
         // first, dir is created
         folder.mkdir();
         // image dir
-        File imagesFolder = new File(folder.getAbsolutePath()+"/images");
+        File imagesFolder = new File(folder.getAbsolutePath() + "/images");
         imagesFolder.mkdir();
-        
+
         // .txt files
-        List<String> lines= new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         lines.add("");
-        TexWriter.writeToFile(lines, folder.getAbsolutePath()+"/mots_clefs.txt");
-        
+        TexWriter.writeToFile(lines, folder.getAbsolutePath() + "/mots_clefs.txt");
+
         lines.clear();
         lines.add("auteur(s) : ");
         lines.add("contibuteur(s) : ");
@@ -56,8 +62,8 @@ public final class ExerciceFinder {
         lines.add("");
         lines.add("thème de l'exercice : ");
         lines.add("");
-        TexWriter.writeToFile(lines, folder.getAbsolutePath()+"/README.txt");
-        
+        TexWriter.writeToFile(lines, folder.getAbsolutePath() + "/README.txt");
+
         lines.clear();
         lines.add("\\titreExercice{ ...  }");
         lines.add("%##############################");
@@ -69,8 +75,8 @@ public final class ExerciceFinder {
         lines.add("%finImport");
         lines.add("%##############################");
         lines.add("");
-        TexWriter.writeToFile(lines, folder.getAbsolutePath()+"/sujet.tex");
-        
+        TexWriter.writeToFile(lines, folder.getAbsolutePath() + "/sujet.tex");
+
         return true;
     }
 
@@ -141,26 +147,20 @@ public final class ExerciceFinder {
                 out.addElement(ex);
             }
         });
-        
+
         return out;
     }
 
-    /**
-     * @return the exercices
-     */
-    public List<Exercice> getExercices() {
-        return exercices;
-    }
-
     
-    public Exercice getExercice(String title){
-        for (Exercice ex : exercices){
-            if (ex.getName().equals(title)){
+    public Exercice getExercice(String title) {
+        for (Exercice ex : exercices) {
+            if (ex.getName().equals(title)) {
                 return ex;
             }
         }
         return null;
     }
+
     /**
      * @param exercices the exercices to set
      */

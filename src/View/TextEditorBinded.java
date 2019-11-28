@@ -18,8 +18,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.nio.charset.Charset;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -53,7 +56,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
     /**
      * Creates new form TextEditorBinded
      */
-    public final static int exerciceFile = 1, texFile = 2, textFile = 0; // used for syntax coloration
+    public final static int exerciceFile = 1, texFile = 2, textFile = 0, keywordsFile=3 ; // used for syntax coloration
     protected int syntaxStyle = textFile; // default choice : no color
 
     protected CustomDocumentFilter cdf;
@@ -158,6 +161,8 @@ public class TextEditorBinded extends javax.swing.JPanel {
             this.syntaxStyle = exerciceFile;
         } else if (path.endsWith(".tex")) {
             this.syntaxStyle = texFile;
+        }else if (path.endsWith("mots_clefs.txt")) {
+            this.syntaxStyle = keywordsFile;
         }
         // default is textFile
 
@@ -184,8 +189,8 @@ public class TextEditorBinded extends javax.swing.JPanel {
         return status;
     }
 
+    
     protected boolean saveFile() {
-
         if (hasChanged) { // prevent intempestive saving
 
             if (!this.checkSafe()) {
@@ -197,8 +202,16 @@ public class TextEditorBinded extends javax.swing.JPanel {
             }
 
             this.lastUpdate = System.currentTimeMillis();
-            TexWriter.writeToFile(getText(), f.getAbsolutePath());
             resetHasChanged();
+            List<String> out = this.getText();
+            if (this.syntaxStyle==keywordsFile) {
+                Collator frCollator = Collator.getInstance(Locale.FRENCH);
+                frCollator.setStrength(Collator.PRIMARY);
+                Collections.sort(out, frCollator);
+                System.out.println("PINGGG");
+            }
+            resetHasChanged();
+            TexWriter.writeToFile(out, f.getAbsolutePath());
             notifyAllObserver("save");
             return true;
         }

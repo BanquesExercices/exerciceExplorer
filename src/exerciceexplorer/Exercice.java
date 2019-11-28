@@ -64,6 +64,34 @@ public class Exercice implements Comparable<Exercice> {
         return imports;
     }
 
+    
+    public boolean replaceWordAndUpdate(String before, String after) {
+        // replace a word (or several words) in file sujet.tex and update
+        
+        boolean out=false;
+        for (int i = 0; i < content.size(); i++) {
+            String line  = content.get(i);
+            if (line.contains(before)) {
+                content.set(i, line.replace(before, after));
+                out=true;
+            }
+        }
+        TexWriter.writeToFile(content, this.getSubjectPath());
+        return out;
+    }
+    
+    public boolean replaceKeywordAndUpdate(String before, String after) {
+        boolean out=false;
+        for (int i = 0; i < keywords.size(); i++) {
+            if (before.equals(keywords.get(i))) {
+                keywords.set(i, after);
+                out=true;
+            }
+        }
+        TexWriter.writeToFile(keywords, this.getKeywordsPath());
+        return out;
+    }
+
     public boolean containsKeyWords(List<String> kws) {
         if (keywords.isEmpty()) {
             this.updateKeywords();

@@ -45,6 +45,7 @@ public class CreationCompoView extends javax.swing.JPanel {
     protected List<KeyWordView> selectedKeyWords;
     protected DefaultListModel<Exercice> selectedExericesModel;
     protected MainWindow mw;
+    public static List<Exercice> displayedExercices = new ArrayList<>();
 
     public CreationCompoView() {
 
@@ -122,6 +123,12 @@ public class CreationCompoView extends javax.swing.JPanel {
         }
         this.jLabel7.setText(String.valueOf(lm.getSize()));
         choixExercice.setModel(lm);
+        // 
+        
+        displayedExercices.clear();
+        for (int i=0 ; i<lm.getSize(); i++ ){
+            displayedExercices.add((Exercice)lm.getElementAt(i));
+        }
     }
     
     
@@ -229,6 +236,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         jLabel4.setText("Mot clef");
 
         choixExercice.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        choixExercice.setToolTipText("Faite glisser un element vers la zone ci dessous pour l'inclure dans la composition.");
         jScrollPane3.setViewportView(choixExercice);
 
         jScrollPane4.setBorder(null);

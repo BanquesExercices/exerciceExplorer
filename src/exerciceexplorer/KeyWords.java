@@ -6,6 +6,7 @@
 package exerciceexplorer;
 
 import Helper.SavedVariables;
+import TexRessources.TexWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,7 +22,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -44,6 +44,21 @@ public class KeyWords {
             System.err.println("global keyword file not found");
         }
 
+    }
+    
+    public static boolean replaceKeywordAndUpdate(String before, String after) {
+        boolean out=false;
+        for (int i = 0; i < instance.keywords.size(); i++) {
+            if (before.equals(instance.keywords.get(i))) {
+                instance.keywords.set(i, after);
+                out=true;
+            }
+        }
+        TexWriter.writeToFile(instance.keywords,SavedVariables.getMainGitDir() + "/fichiers_utiles/mots_clefs.txt" );
+        for (JComboBox jcb : jcbs) {
+                jcb.setModel(getDefaultComboBoxModelModel(jcb));
+            }
+        return out;
     }
 
     public static DefaultComboBoxModel<String> getDefaultComboBoxModelModel(JComboBox jcb) {
@@ -131,6 +146,9 @@ public class KeyWords {
         }
 
     }
+    
+    
+    
 
     public void updateKeyWords() throws FileNotFoundException, IOException {
         this.keywords.clear();
