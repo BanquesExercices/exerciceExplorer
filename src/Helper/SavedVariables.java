@@ -45,7 +45,6 @@ public class SavedVariables {
     
     
     public static boolean getAutoSave() {
-        System.err.println("Ping");
         if (prefs != null) {
             return "true".equals(prefs.get("autoSave", ""));
         } else {

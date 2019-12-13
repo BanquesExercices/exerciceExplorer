@@ -8,6 +8,10 @@ package View;
 import Helper.SavedVariables;
 import exerciceexplorer.Exercice;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +31,7 @@ import javax.swing.event.ChangeListener;
  *
  * @author mbrebion
  */
-public class MainWindow extends javax.swing.JFrame  {
+public class MainWindow extends javax.swing.JFrame {
 
     /**
      * Creates new form MainWindow
@@ -42,7 +46,7 @@ public class MainWindow extends javax.swing.JFrame  {
     ChangeListener cl = null;
 
     JMenuBar menuBar;
-    protected AbstractAction replaceKeywordAction, replaceWordAction;
+    protected AbstractAction replaceKeywordAction, replaceWordAction, checkAllExercicesAction;
     protected JMenu global;
 
     public MainWindow() {
@@ -68,8 +72,6 @@ public class MainWindow extends javax.swing.JFrame  {
 
     }
 
-    
-    
     protected void setMainMenuBarItems() {
         replaceKeywordAction = new AbstractAction() {
             @Override
@@ -78,7 +80,7 @@ public class MainWindow extends javax.swing.JFrame  {
                 MainWindow.this.editorTabbedPane.setSelectedIndex(0);
             }
         };
-        
+
         replaceWordAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -87,31 +89,44 @@ public class MainWindow extends javax.swing.JFrame  {
             }
         };
 
+        checkAllExercicesAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainWindow.this.editorTabbedPane.insertTab("Test de compilation", null, new CheckExercicesPanel(MainWindow.this), "", 0);
+                MainWindow.this.editorTabbedPane.setSelectedIndex(0);
+            }
+        };
+
         // menu items
         global = new JMenu("Global");
 
-        JMenuItem replaceKeywordMI = new JMenuItem("remplacer un mot_clef");
+        JMenuItem replaceKeywordMI = new JMenuItem("Remplacer un mot_clef");
         global.add(replaceKeywordMI);
         replaceKeywordMI.addActionListener(replaceKeywordAction);
-        
-        JMenuItem replaceWordMI = new JMenuItem("remplacer un mot");
+
+        JMenuItem replaceWordMI = new JMenuItem("Remplacer un mot");
         global.add(replaceWordMI);
         replaceWordMI.addActionListener(replaceWordAction);
-        
+
+        JMenuItem checkExercicesMI = new JMenuItem("Compiler tous les exercices");
+        global.add(checkExercicesMI);
+        checkExercicesMI.addActionListener(checkAllExercicesAction);
+
         this.updateGlobalMenuBarStatus();
 
     }
-    
-    public void updateGlobalMenuBarStatus(){
+
+    public void updateGlobalMenuBarStatus() {
         menuBar.remove(global);
-        if (SavedVariables.getMultiEdit()){
+        if (SavedVariables.getMultiEdit()) {
             menuBar.add(global);
         }
+
     }
 
     protected void updateMenuBar() {
         menuBar.removeAll();
-        menuBar.add(global);
+        this.updateGlobalMenuBarStatus();
 
         if (editorTabbedPane.getSelectedComponent() == se) {
             SwingUtilities.invokeLater(new Runnable() {
@@ -146,6 +161,10 @@ public class MainWindow extends javax.swing.JFrame  {
             });
 
         }
+        if (this.ce != null) {
+            ce.updateMenuBarView(true);
+        }
+
     }
 
     public void updateDatabase() {
@@ -356,6 +375,18 @@ public class MainWindow extends javax.swing.JFrame  {
                     Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 new MainWindow().setVisible(true);
+
+                // error reporting : 
+                File file = new File("err.txt");
+                FileOutputStream fos;
+                try {
+                    fos = new FileOutputStream(file);
+                    PrintStream ps = new PrintStream(fos);
+                    System.setErr(ps);
+                } catch (FileNotFoundException ex) {
+                    System.err.println("Le fichier d'erreur n'a pu être créé/lu");
+                }
+
             }
         });
     }

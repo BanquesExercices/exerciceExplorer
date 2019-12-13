@@ -178,8 +178,8 @@ public class Options extends javax.swing.JPanel {
         jScrollPane1.setViewportView(outputView);
 
         jCheckBox2.setSelected(SavedVariables.getMultiEdit());
-        jCheckBox2.setText("multi-edition");
-        jCheckBox2.setToolTipText("<html> Permet d'activer le mode <em>multi-edition</em> <br> \nqui permet de modifier simultanément plusieurs exercices <br>\n(find and replace) sur les mots clefs ou bien des expressions présentes <br>\ndans les fichiers sujet.tex\n</html>");
+        jCheckBox2.setText("Mode avancé");
+        jCheckBox2.setToolTipText("<html> Permet d'activer le mode <em>avancé</em> <br> \nqui permet de modifier simultanément plusieurs exercices <br>\n(find and replace) sur les mots clefs ou bien des expressions présentes <br>\ndans les fichiers sujet.tex et aussi de verifier la compilation de l'ensemble des exercices.\n</html>");
         jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox2ActionPerformed(evt);

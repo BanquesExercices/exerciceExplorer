@@ -26,34 +26,33 @@ import java.util.List;
 public class TexWriter {
 
     public static void openPdf() {
-        ExecCommand.execo(new String[]{SavedVariables.getOpenCmd(),"-F", "output/output.pdf"}, 0);
+        ExecCommand.execo(new String[]{SavedVariables.getOpenCmd(), "-F", "output/output.pdf"}, 0);
     }
 
     protected static void getExercicestoTex(Enumeration<Exercice> exercices, List<String> output, List<String> imports, boolean localLinks) {
         List<String> dummy = new ArrayList<>();
-        TexWriter.getExercicestoTex(exercices,output,imports,localLinks,dummy,dummy);
+        TexWriter.getExercicestoTex(exercices, output, imports, localLinks, dummy, dummy);
     }
-    
-    protected static void getExercicestoTex(Enumeration<Exercice> exercices, List<String> output, List<String> imports, boolean localLinks,List<String> before, List<String>after) {
-        int count=0;
+
+    protected static void getExercicestoTex(Enumeration<Exercice> exercices, List<String> output, List<String> imports, boolean localLinks, List<String> before, List<String> after) {
+        int count = 0;
         while (exercices.hasMoreElements()) {
             count++;
             Exercice element = exercices.nextElement();
-            
-            
+
             output.add("\\resetQ");
-            
-            for (String s : before){
+
+            for (String s : before) {
                 output.add(s.replace("##", String.valueOf(count)));
             }
-            
+
             if (localLinks) {
                 output.add("\\subimport{./" + element.getName() + "/}{sujet.tex}");
             } else {
                 output.add("\\subimport{" + element.getPath() + "/}{sujet.tex}");
             }
-            
-            for (String s : after){
+
+            for (String s : after) {
                 output.add(s.replace("##", String.valueOf(count)));
             }
 
@@ -85,7 +84,7 @@ public class TexWriter {
         return writeToFile(in, "output/output.tex");
     }
 
-    public static List<String> outputTexFile(Enumeration<Exercice> exercices, String kind, boolean localLinks) {
+    public static List<String> outputTexFile(Enumeration<Exercice> exercices, String kind, boolean localLinks, boolean forceDefault) {
         List<String> output = new ArrayList<>(); // main file
         List<String> imports = new ArrayList<>(); // packages required by a specific exercice
 
@@ -105,13 +104,18 @@ public class TexWriter {
                 break;
 
         }
-
-        File f = new File(SavedVariables.getTexModelsPaths() + fileName);
+        File f;
+        if (!forceDefault) {
+            f = new File(SavedVariables.getTexModelsPaths() + fileName);
+        } else {
+            f = new File(SavedVariables.getMainGitDir() + "/fichiers_utiles/defaultLatexTemplates" + fileName);
+        }
+        
         BufferedReader b;
         try {
             b = new BufferedReader(new FileReader(f));
         } catch (FileNotFoundException ex) {
-            String errorMsg = SavedVariables.getTexModelsPaths()+fileName+" file not found. Please create this file and edit its path";
+            String errorMsg = SavedVariables.getTexModelsPaths() + fileName + " file not found. Please create this file and edit its path";
             System.err.println(errorMsg);
             output.clear();
             output.add(errorMsg);
@@ -119,14 +123,14 @@ public class TexWriter {
         }
 
         String readLine = "";
-        boolean blockTokenFound=false;
+        boolean blockTokenFound = false;
 
         try {
             while ((readLine = b.readLine()) != null) {
-                if (readLine.trim().equals("[[")){
-                    // we need to store whats before ****, whats after **** and then send tp getExercicetoTex
+                if (readLine.trim().equals("[[")) {
+                    // we need to store whats before ****, whats after **** and then send to getExercicetoTex
                     String nextLine;
-                    
+
                     List<String> before = new ArrayList<>();
                     List<String> after = new ArrayList<>();
                     nextLine = b.readLine();
@@ -135,33 +139,32 @@ public class TexWriter {
                         nextLine = b.readLine();
                     }
                     nextLine = b.readLine();
-                    while(!nextLine.trim().equals("]]") ) {
+                    while (!nextLine.trim().equals("]]")) {
                         after.add(nextLine);
                         nextLine = b.readLine();
                     }
-                    getExercicestoTex(exercices, output, imports,localLinks,before,after);
+                    getExercicestoTex(exercices, output, imports, localLinks, before, after);
                     continue;
                 }
-                
+
                 if (readLine.trim().equals("****") && !blockTokenFound) {
-                    getExercicestoTex(exercices, output, imports,localLinks);
+                    getExercicestoTex(exercices, output, imports, localLinks);
                     continue;
                 }
-                
-                
+
                 output.add(readLine);
-                
+
             }
-            // imports must be added after \documentclass
-            boolean found=false;
-            int count=0;
-            while (! found){
-                found= output.get(count).contains("documentclass");
-                count+=1;
-                
+            // imports must be added before \begin{document}
+            boolean found = false;
+            int count = 0;
+            while (!found) {
+                found = output.get(count).contains("\\begin{document}");
+                count += 1;
+
             }
-            output.addAll(count, imports);
-            
+            output.addAll(count - 1, imports);
+
         } catch (IOException ex) {
             String errorMsg = "Problem occured while parsing **model.tex";
             System.err.println(errorMsg);
@@ -195,14 +198,12 @@ public class TexWriter {
 
     }
 
-    
-    
     public static boolean appendToFile(List<String> in, String path) {
 
         File f = new File(path);
         BufferedWriter b;
         try {
-            b = new BufferedWriter(new FileWriter(f,true));
+            b = new BufferedWriter(new FileWriter(f, true));
             for (String line : in) {
                 b.write(line);
                 b.newLine();
@@ -215,7 +216,7 @@ public class TexWriter {
         }
         return true;
     }
-    
+
     public static boolean writeToFile(List<String> in, String path) {
 
         File f = new File(path);

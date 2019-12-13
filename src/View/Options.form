@@ -337,8 +337,8 @@
         <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="SavedVariables.getMultiEdit()" type="code"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="multi-edition"/>
-        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt; Permet d&apos;activer le mode &lt;em&gt;multi-edition&lt;/em&gt; &lt;br&gt; &#xa;qui permet de modifier simultan&#xe9;ment plusieurs exercices &lt;br&gt;&#xa;(find and replace) sur les mots clefs ou bien des expressions pr&#xe9;sentes &lt;br&gt;&#xa;dans les fichiers sujet.tex&#xa;&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="Mode avanc&#xe9;"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt; Permet d&apos;activer le mode &lt;em&gt;avanc&#xe9;&lt;/em&gt; &lt;br&gt; &#xa;qui permet de modifier simultan&#xe9;ment plusieurs exercices &lt;br&gt;&#xa;(find and replace) sur les mots clefs ou bien des expressions pr&#xe9;sentes &lt;br&gt;&#xa;dans les fichiers sujet.tex et aussi de verifier la compilation de l&apos;ensemble des exercices.&#xa;&lt;/html&gt;"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox2ActionPerformed"/>

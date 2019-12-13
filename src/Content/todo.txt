@@ -1,0 +1,9 @@
+
+
+A faire : 
+
+ - ajout d'une copie des messages d'erreur sur un fichier afin de debbuger l'appli lorsque lancée sans netbeans
+ - amélioration de l'éditeur de fichier
+ - ajout d'une vérification des mots clefs présent dans chaque exercice (sont-ils bien présents dans la liste officiele ?
+ - meilleur gestion de l'export. En l'état, l'export n'est pas réalisé si le dossier d'export contient des dossier ou fichiers avec des noms non reconnus.
+ - ajout d'un export sans modification des fichiers d'historique
