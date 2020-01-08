@@ -29,7 +29,7 @@ public class CustomDocumentFilter extends DocumentFilter {
     private final JTextPane jtp;
     private final TextEditorBinded teb;
     private final Timer timer;
-    private final int delay = 500;
+    private final int delay = 600;
 
     private int dec = 0;
 
@@ -41,13 +41,14 @@ public class CustomDocumentFilter extends DocumentFilter {
     private final AttributeSet redAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, Color.RED);
     private final AttributeSet blackAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, Color.BLACK);
     private final AttributeSet grayAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, Color.LIGHT_GRAY);
-    private final AttributeSet greenAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, Color.GREEN);
+    private final AttributeSet greenAttributeSet = styleContext.addAttribute(styleContext.getEmptySet(), StyleConstants.Foreground, new Color(0,102,0));
 
 
     // list to store the new color locations
     private final List<Integer> blueList = new ArrayList<>();
     private final List<Integer> greyList = new ArrayList<>();
     private final List<Integer> redList = new ArrayList<>();
+    private final List<Integer> greenList = new ArrayList<>();
 
     // Use a regular expression to find the words you are looking for
     Pattern pattern = buildPattern();
@@ -119,7 +120,7 @@ public class CustomDocumentFilter extends DocumentFilter {
      */
     private Pattern buildPattern() {
         StringBuilder sb = new StringBuilder();
-        for (String token : new String[]{"\\\\addQ(\\[.*\\])?", "\\\\enonce", "\\\\partie", "\\\\sousPartie"}) {
+        for (String token : new String[]{"\\\\addQ(\\[.*\\])?", "\\\\enonce", "\\\\partie", "\\\\sousPartie" , "\\$([\\s\\S]+?)\\$" , "\\\\eq"}) {
             sb.append(""); // Start of word boundary
             sb.append(token);
             sb.append("|"); // End of word boundary and an or for the next word
@@ -138,7 +139,7 @@ public class CustomDocumentFilter extends DocumentFilter {
     }
 
     public void updateTextStyles(int offset, boolean tagUpdate) {
-
+        long startTime = System.nanoTime();
         this.teb.unRegisterUndoableManager(); //  no undoes for coloring
 
         // if offset >0 : only a portion around offset of the text is parsed 
@@ -164,7 +165,7 @@ public class CustomDocumentFilter extends DocumentFilter {
         while (matcher.find()) {
 
             // Change the color of recognized tokens
-            if (matcher.group().contains("addQ")) {
+            if (matcher.group().contains("addQ") ) {
 
                 boolean display = true; // set to false if this question does not contains the versiontag asked by the user
 
@@ -240,12 +241,19 @@ public class CustomDocumentFilter extends DocumentFilter {
                     this.greyList.add(qEnd - matcher.start());
                 }
 
-            } else {
+            } else if (matcher.group().contains("$") || matcher.group().contains("eq")){
+                this.greenList.add(matcher.start() + begin);
+                this.greenList.add(matcher.end() - matcher.start());
+            }
+            
+            else {
                 // other keywords : blue coloring
                 this.blueList.add(matcher.start() + begin);
                 this.blueList.add(matcher.end() - matcher.start());
             }
         }
+        long endTime = System.nanoTime();
+        System.out.println("computing colors time : "+ (endTime-startTime)/1000000+ " ms");
 
         // Clear existing styles
         styledDocument.setCharacterAttributes(begin, end - begin, blackAttributeSet, true);
@@ -255,6 +263,10 @@ public class CustomDocumentFilter extends DocumentFilter {
             styledDocument.setCharacterAttributes(this.blueList.get(i), this.blueList.get(i + 1), blueAttributeSet, true);
         }
         this.blueList.clear();
+        for (int i = 0; i < this.greenList.size(); i += 2) {
+            styledDocument.setCharacterAttributes(this.greenList.get(i), this.greenList.get(i + 1), greenAttributeSet, true);
+        }
+        this.greenList.clear();
         for (int i = 0; i < this.redList.size(); i += 2) {
             styledDocument.setCharacterAttributes(this.redList.get(i), this.redList.get(i + 1), redAttributeSet, true);
         }
@@ -272,7 +284,8 @@ public class CustomDocumentFilter extends DocumentFilter {
             }
         }
         this.teb.registerUndoableManager();
-
+        long veryendTime = System.nanoTime();
+        System.out.println("coloring time : "+ (veryendTime-endTime)/1000000+ " ms");
     }
 
     public int getQuestionNumber(int offset) {

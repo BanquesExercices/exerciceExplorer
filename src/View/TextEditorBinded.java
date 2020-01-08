@@ -208,7 +208,6 @@ public class TextEditorBinded extends javax.swing.JPanel {
                 Collator frCollator = Collator.getInstance(Locale.FRENCH);
                 frCollator.setStrength(Collator.PRIMARY);
                 Collections.sort(out, frCollator);
-                System.out.println("PINGGG");
             }
             resetHasChanged();
             TexWriter.writeToFile(out, f.getAbsolutePath());
