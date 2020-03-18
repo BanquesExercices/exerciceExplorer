@@ -29,9 +29,6 @@ public class ReadmeEditor extends javax.swing.JPanel implements Observer {
         initComponents();
         this.ex = ex;
         this.textEditorBinded1.bindToFile(ex.getReadmePath());
-        System.out.println("readme file is located there : ");
-        System.out.println(ex.getReadmePath());
-        
         this.textEditorBinded1.addObserver(this);
         
         this.countLabel.setText("" + ex.getCountGiven());

@@ -217,21 +217,29 @@ public class MainWindow extends javax.swing.JFrame {
         }
 
         if (toDelete) {
-            this.editorTabbedPane.remove(re);
-            this.editorTabbedPane.remove(ke);
-            this.editorTabbedPane.remove(se);
+            this.editorTabbedPane.removeAll();
         }
 
-        ke = new KeywordsEditor(ex);
-        this.editorTabbedPane.insertTab("Mots clés", null, ke, "", 0);      
-        this.editorTabbedPane.setSelectedComponent(ke);
-        
-        se = new SubjectEditor(ex);
-        this.editorTabbedPane.insertTab("sujet.tex", null, se, "", 0);
-        
         re = new ReadmeEditor(ex);
         this.editorTabbedPane.insertTab("Readme", null, re, "", 0);
-        
+        this.editorTabbedPane.setSelectedComponent(re);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                ke = new KeywordsEditor(ex);
+                editorTabbedPane.insertTab("Mots clés", null, ke, "", 1);
+            }
+        });
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                se = new SubjectEditor(ex);
+                editorTabbedPane.insertTab("sujet.tex", null, se, "", 2);
+            }
+        });
+
         this.editorTabbedPane.addChangeListener(cl);
         this.updateMenuBar();
 

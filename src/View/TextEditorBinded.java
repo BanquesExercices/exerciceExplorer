@@ -56,7 +56,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
     /**
      * Creates new form TextEditorBinded
      */
-    public final static int exerciceFile = 1, texFile = 2, textFile = 0, keywordsFile=3 ; // used for syntax coloration
+    public final static int exerciceFile = 1, texFile = 2, textFile = 0, keywordsFile = 3; // used for syntax coloration
     protected int syntaxStyle = textFile; // default choice : no color
 
     protected CustomDocumentFilter cdf;
@@ -161,10 +161,13 @@ public class TextEditorBinded extends javax.swing.JPanel {
             this.syntaxStyle = exerciceFile;
         } else if (path.endsWith(".tex")) {
             this.syntaxStyle = texFile;
-        }else if (path.endsWith("mots_clefs.txt")) {
+        } else if (path.endsWith("mots_clefs.txt")) {
             this.syntaxStyle = keywordsFile;
+        }else{
+            // default is textFile
+            this.syntaxStyle = textFile;
         }
-        // default is textFile
+        
 
         f = new File(path);
 
@@ -189,7 +192,6 @@ public class TextEditorBinded extends javax.swing.JPanel {
         return status;
     }
 
-    
     protected boolean saveFile() {
         if (hasChanged) { // prevent intempestive saving
 
@@ -204,7 +206,7 @@ public class TextEditorBinded extends javax.swing.JPanel {
             this.lastUpdate = System.currentTimeMillis();
             resetHasChanged();
             List<String> out = this.getText();
-            if (this.syntaxStyle==keywordsFile) {
+            if (this.syntaxStyle == keywordsFile) {
                 Collator frCollator = Collator.getInstance(Locale.FRENCH);
                 frCollator.setStrength(Collator.PRIMARY);
                 Collections.sort(out, frCollator);
@@ -219,6 +221,8 @@ public class TextEditorBinded extends javax.swing.JPanel {
 
     public void updateView() {
         List<String> lines = TexWriter.readFile(f.getAbsolutePath());
+        
+        
         this.lastUpdate = System.currentTimeMillis();
 
         this.clearDisplay();

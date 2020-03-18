@@ -187,7 +187,7 @@ public class Exercice implements Comparable<Exercice> {
     }
 
     public String getReadmePath() {
-        return path + "/readme.txt";
+        return path + "/README.txt";
     }
 
     public String getlastTimePath() {
