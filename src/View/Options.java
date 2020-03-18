@@ -22,6 +22,13 @@ public class Options extends javax.swing.JPanel {
 
     public Options() {
         initComponents();
+        
+        if (System.getProperty("os.name").startsWith("Mac OS X")) {
+            this.openEditorLabel.setText("open");
+        }else{
+            this.openEditorLabel.setText("xdg-open");
+        }
+        
 
     }
 
@@ -42,7 +49,7 @@ public class Options extends javax.swing.JPanel {
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         pdflatexInput = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        openEditorLabel = new javax.swing.JLabel();
         openInput = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         gitFolderInput = new javax.swing.JTextField();
@@ -77,10 +84,10 @@ public class Options extends javax.swing.JPanel {
             }
         });
 
-        jLabel2.setText("open");
+        openEditorLabel.setText("open");
 
         openInput.setText(SavedVariables.getOpenCmd());
-        openInput.setToolTipText("Chemin d'acces (absolu) vers la commande open");
+        openInput.setToolTipText("Chemin d'acces (absolu) vers la commande open (OSX) ou xdg-open (autres OS type unix)");
         openInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openInputActionPerformed(evt);
@@ -214,7 +221,7 @@ public class Options extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel1)
-                                    .addComponent(jLabel2)
+                                    .addComponent(openEditorLabel)
                                     .addComponent(jLabel4)
                                     .addComponent(jLabel5))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -258,7 +265,7 @@ public class Options extends javax.swing.JPanel {
                     .addComponent(pdflatexInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
+                    .addComponent(openEditorLabel)
                     .addComponent(openInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -396,7 +403,6 @@ public class Options extends javax.swing.JPanel {
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -407,6 +413,7 @@ public class Options extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JLabel openEditorLabel;
     private javax.swing.JTextField openInput;
     private javax.swing.JTextField outputDirInput;
     private javax.swing.JTextArea outputView;
