@@ -63,6 +63,7 @@ public class ExecCommand {
         int out=-1;
         Runtime runtime = Runtime.getRuntime();
         try {
+            
             final Process process = runtime.exec(command, null, new File(location));
 
 // Consommation de la sortie standard de l'application externe dans un Thread separe
