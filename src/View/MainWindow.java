@@ -361,7 +361,6 @@ public class MainWindow extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                System.out.println(System.getProperty("os.name"));
                 if (System.getProperty("os.name").startsWith("Mac OS X")) {
                     System.setProperty("apple.laf.useScreenMenuBar", "true");
                     System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Exercice Explorer");
