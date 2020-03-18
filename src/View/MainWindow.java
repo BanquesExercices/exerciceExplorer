@@ -222,17 +222,17 @@ public class MainWindow extends javax.swing.JFrame {
             this.editorTabbedPane.remove(se);
         }
 
-        re = new ReadmeEditor(ex);
         ke = new KeywordsEditor(ex);
+        this.editorTabbedPane.insertTab("Mots clés", null, ke, "", 0);      
+        this.editorTabbedPane.setSelectedComponent(ke);
+        
         se = new SubjectEditor(ex);
-
         this.editorTabbedPane.insertTab("sujet.tex", null, se, "", 0);
-        this.editorTabbedPane.insertTab("Mots clés", null, ke, "", 0);
+        
+        re = new ReadmeEditor(ex);
         this.editorTabbedPane.insertTab("Readme", null, re, "", 0);
-        this.editorTabbedPane.setSelectedComponent(re);
-
+        
         this.editorTabbedPane.addChangeListener(cl);
-
         this.updateMenuBar();
 
     }

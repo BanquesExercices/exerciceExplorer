@@ -33,6 +33,7 @@ public class ReadmeEditor extends javax.swing.JPanel implements Observer {
         System.out.println(ex.getReadmePath());
         
         this.textEditorBinded1.addObserver(this);
+        
         this.countLabel.setText("" + ex.getCountGiven());
         this.dateLabel.setText(ex.getLastEntry());
     }

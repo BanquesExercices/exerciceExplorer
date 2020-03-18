@@ -386,10 +386,7 @@ public class Options extends javax.swing.JPanel {
 
     }
     private void statusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusButtonActionPerformed
-        
-        System.out.println(ExecCommand.execo(new String[]{"pwd"})[1]);
-        System.out.println(ExecCommand.execo(new String[]{"whoami"})[1]);
-        
+                
         String out = GitWrapper.status();
         this.outputView.setText(out);
         this.checkStatus(out);
