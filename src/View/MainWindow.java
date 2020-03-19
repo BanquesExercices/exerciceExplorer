@@ -216,8 +216,12 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
 
+        
         if (toDelete) {
             this.editorTabbedPane.removeAll();
+            if (ce !=null){
+                this.editorTabbedPane.insertTab("Composition", null, ce, "", 0);
+            }
         }
 
         re = new ReadmeEditor(ex);

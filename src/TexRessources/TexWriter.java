@@ -26,7 +26,7 @@ import java.util.List;
 public class TexWriter {
 
     public static void openPdf() {
-        ExecCommand.execo(new String[]{SavedVariables.getOpenCmd(), "-F", "output/output.pdf"}, 0);
+        ExecCommand.execo(new String[]{SavedVariables.getOpenCmd(), "output/output.pdf"}, 0);
     }
 
     protected static void getExercicestoTex(Enumeration<Exercice> exercices, List<String> output, List<String> imports, boolean localLinks) {
@@ -110,7 +110,7 @@ public class TexWriter {
         } else {
             f = new File(SavedVariables.getMainGitDir() + "/fichiers_utiles/defaultLatexTemplates" + fileName);
         }
-        
+
         BufferedReader b;
         try {
             b = new BufferedReader(new FileReader(f));
@@ -127,6 +127,13 @@ public class TexWriter {
 
         try {
             while ((readLine = b.readLine()) != null) {
+                
+                if (readLine.trim().contains("usepackage{raccourcis_communs}")){
+                    // On cherche ou se trouve exactement le fichier .sty contenant les raccoursis ; autre solution ; placer un lien symbolique dans $home/texmf/...
+                    output.add("\\usepackage{"+SavedVariables.getMainGitDir()+"/fichiers_utiles/raccourcis_communs}");
+                    continue;
+                }
+                
                 if (readLine.trim().equals("[[")) {
                     // we need to store whats before ****, whats after **** and then send to getExercicetoTex
                     String nextLine;
@@ -234,6 +241,18 @@ public class TexWriter {
             return false;
         }
         return true;
+    }
+
+    public static void fixSymbolicLinks(String gitPath) {
+        File rc = new File(gitPath + "/fichiers_utiles/raccourcis_communs.sty");
+        File rcsymboliclink = new File(System.getProperty("user.home") + "/texmf/tex/latex/local/raccourcis_communs.sty");
+        if (!rcsymboliclink.exists()) {
+            System.out.println("le lien symbolique n'existe pas");
+        }else{
+            System.out.println("le lien symbolique existe !")   ;
+        }
+        
+        // fonction non utile pour la suite ; je laisse le code au cas ou
     }
 
 }

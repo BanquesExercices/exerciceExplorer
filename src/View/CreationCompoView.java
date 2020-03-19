@@ -403,7 +403,6 @@ public class CreationCompoView extends javax.swing.JPanel {
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
             List<String> cc;
-            
             cc= TexWriter.outputTexFile(selectedExericesModel.elements(), (String) outputTypes.getSelectedItem(),false,false);
             this.mw.setSubjectDisplay(cc);
     }//GEN-LAST:event_editButtonActionPerformed
