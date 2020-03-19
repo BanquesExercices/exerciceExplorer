@@ -18,7 +18,9 @@ Une fois le projet téléchargé/cloné, vous pouvez  :
  - l'executer en double-cliquant sur le fichier ExerciceExplorer.jar.
 
 ## Première utilisation
-Pour utiliser ce logiciel dans les meilleurs conditions, vous devez disposer d'un compte [github](https://github.com/) puis me contacter afin que je puisse vous ajouter à la base de donnée (cette dernière étant en accès privé). Vous pourrez ensuite effectuer les quelques réglagles nécéssaires au bon fonctionnement du logiciel ExerciceExplorer.
+Pour utiliser ce logiciel dans les meilleurs conditions, vous devez disposer d'un compte [github](https://github.com/) puis me contacter afin que je puisse vous donner les droits d'accès à la base de donnée d'exercices de physique (cette dernière étant en accès privé). Vous pourrez ensuite effectuer les quelques réglagles nécéssaires au bon fonctionnement du logiciel ExerciceExplorer.
+
+Il est toutefois possible de créer une nouvelle base de donnée (exercices de mathématiques par exemple). Il est conseillé dans ce cas de me contacter pour mettre en place la structure correcte.
 
 ### Réglage git sur machine locale
 
