@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +32,8 @@ import javax.swing.event.ChangeListener;
  *
  * @author mbrebion
  */
-public class MainWindow extends javax.swing.JFrame {
+@SuppressWarnings("serial")
+public final class MainWindow extends javax.swing.JFrame {
 
     /**
      * Creates new form MainWindow
@@ -54,18 +56,15 @@ public class MainWindow extends javax.swing.JFrame {
 
         initComponents();
         this.creationSujetView1.setMw(this);
-        this.options1.setMw(this);
+        this.options2.setMw(this);
 
         // menubar
         menuBar = new JMenuBar();
 
         this.getRootPane().setJMenuBar(menuBar);
 
-        cl = new ChangeListener() {
-
-            public void stateChanged(ChangeEvent e) {
-                MainWindow.this.updateMenuBar();
-            }
+        cl = (ChangeEvent e) -> {
+            MainWindow.this.updateMenuBar();
         };
 
         setMainMenuBarItems();
@@ -128,42 +127,25 @@ public class MainWindow extends javax.swing.JFrame {
         menuBar.removeAll();
         this.updateGlobalMenuBarStatus();
 
-        if (editorTabbedPane.getSelectedComponent() == se) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    se.updateColoring(); // special trick to perform full syntax coloring later.
-                    se.setMenuBar(menuBar);
-                    se.updateMenuBarView();
-                }
+        ArrayList<MenuBarItemProvider> editingPanels = new ArrayList<>();
+        
+        editingPanels.add(re);
+        editingPanels.add(ke);
+        if (ce!=null){
+            editingPanels.add(ce);
+        }
+        editingPanels.add(se);
+        
+        
+        for (MenuBarItemProvider mbip : editingPanels) {
+            SwingUtilities.invokeLater(() -> {
+                mbip.setMenuBar(menuBar);
+                mbip.updateMenuBarView(MainWindow.this.editorTabbedPane.getSelectedComponent() == mbip || mbip == ce);
             });
-
         }
 
-        if (editorTabbedPane.getSelectedComponent() == re) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    re.setMenuBar(menuBar);
-                    re.updateMenuBarView();
-                }
-            });
-
-        }
-
-        if (editorTabbedPane.getSelectedComponent() == ke) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    ke.setMenuBar(menuBar);
-                    ke.updateMenuBarView();
-                }
-            });
-
-        }
-        if (this.ce != null) {
-            ce.updateMenuBarView(true);
-        }
+       
+       
 
     }
 
@@ -216,10 +198,9 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
 
-        
         if (toDelete) {
             this.editorTabbedPane.removeAll();
-            if (ce !=null){
+            if (ce != null) {
                 this.editorTabbedPane.insertTab("Composition", null, ce, "", 0);
             }
         }
@@ -228,15 +209,12 @@ public class MainWindow extends javax.swing.JFrame {
         this.editorTabbedPane.insertTab("Readme", null, re, "", 0);
         this.editorTabbedPane.setSelectedComponent(re);
 
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                ke = new KeywordsEditor(ex);
-                editorTabbedPane.insertTab("Mots clés", null, ke, "", 1);
-            }
-        });
+        
+        ke = new KeywordsEditor(ex);
+        editorTabbedPane.insertTab("Mots clés", null, ke, "", 1);
 
         SwingUtilities.invokeLater(new Runnable() {
+            // on slow machines, this enables the readme file to be display a bit faster than keywords and subjects
             @Override
             public void run() {
                 se = new SubjectEditor(ex);
@@ -278,7 +256,8 @@ public class MainWindow extends javax.swing.JFrame {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         creationSujetView1 = new View.CreationCompoView();
-        options1 = new View.Options();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        options2 = new View.Options();
         middlePane = new javax.swing.JPanel();
         rightPane = new javax.swing.JPanel();
         editorTabbedPane = new javax.swing.JTabbedPane();
@@ -286,7 +265,11 @@ public class MainWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTabbedPane1.addTab("Composition", creationSujetView1);
-        jTabbedPane1.addTab("Options", options1);
+
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setViewportView(options2);
+
+        jTabbedPane1.addTab("Options", jScrollPane1);
 
         middlePane.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         middlePane.setPreferredSize(new java.awt.Dimension(7, 2));
@@ -380,13 +363,7 @@ public class MainWindow extends javax.swing.JFrame {
 
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InstantiationException ex) {
-                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalAccessException ex) {
-                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (UnsupportedLookAndFeelException ex) {
+                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                     Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 new MainWindow().setVisible(true);
@@ -409,9 +386,10 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private View.CreationCompoView creationSujetView1;
     public javax.swing.JTabbedPane editorTabbedPane;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel middlePane;
-    private View.Options options1;
+    private View.Options options2;
     private javax.swing.JPanel rightPane;
     // End of variables declaration//GEN-END:variables
 }

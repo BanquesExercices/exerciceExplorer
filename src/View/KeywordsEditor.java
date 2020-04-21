@@ -22,7 +22,7 @@ import org.jdesktop.swingx.autocomplete.ComboBoxCellEditor;
  *
  * @author mbrebion
  */
-public class KeywordsEditor extends javax.swing.JPanel implements Observer {
+public class KeywordsEditor extends javax.swing.JPanel implements Observer,MenuBarItemProvider {
 
     /**
      * Creates new form SubjectEditor
@@ -162,8 +162,8 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer {
         this.textEditorBinded1.setMenuBar(jmb);
     }
 
-    public void updateMenuBarView() {
-        this.textEditorBinded1.updateMenuBarView();
+    public void updateMenuBarView(boolean show) {
+        this.textEditorBinded1.updateMenuBarView(show);
     }
 
     public void saveFile() {

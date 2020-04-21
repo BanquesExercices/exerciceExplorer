@@ -15,9 +15,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -204,6 +209,18 @@ public class TexWriter {
         return out;
 
     }
+    
+    public static String readFileOneString(String path) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(path)));
+        } catch (IOException ex) {
+            Logger.getLogger(TexWriter.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
+        }
+
+    }
+    
+    
 
     public static boolean appendToFile(List<String> in, String path) {
 
@@ -243,16 +260,6 @@ public class TexWriter {
         return true;
     }
 
-    public static void fixSymbolicLinks(String gitPath) {
-        File rc = new File(gitPath + "/fichiers_utiles/raccourcis_communs.sty");
-        File rcsymboliclink = new File(System.getProperty("user.home") + "/texmf/tex/latex/local/raccourcis_communs.sty");
-        if (!rcsymboliclink.exists()) {
-            System.out.println("le lien symbolique n'existe pas");
-        }else{
-            System.out.println("le lien symbolique existe !")   ;
-        }
-        
-        // fonction non utile pour la suite ; je laisse le code au cas ou
-    }
+   
 
 }

@@ -10,10 +10,6 @@ import Helper.SavedVariables;
 import Helper.Utils;
 import TexRessources.TexWriter;
 import TextEditor.Base.BaseTextEditor;
-import TextEditor.Base.Saver;
-import TextEditor.Tex.LatexTextEditor;
-import TextEditor.Tex.LatexTokenMaker;
-import TextEditor.Text.NormalTextEditor;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.text.Collator;
@@ -31,7 +27,6 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 /**
@@ -39,7 +34,7 @@ import javax.swing.event.DocumentListener;
  * @author mbrebion
  */
 @SuppressWarnings("serial")
-public class TextEditorBinded extends javax.swing.JPanel implements Saver, Observer {
+public class TextEditorBinded_old extends javax.swing.JPanel {
 
     /**
      * Creates new form TextEditorBinded
@@ -61,12 +56,13 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
     protected JMenuBar menuBar;
 
     // speficic to tex files
+    protected int questionAmount;
     protected ArrayList<String> previousTags = new ArrayList<>();
     // TextArea
     public BaseTextEditor textArea;
 
-    public TextEditorBinded() {
-        initComponents();
+    public TextEditorBinded_old() {
+        initComponents();        
         obs = new ArrayList<>();
 
     }
@@ -106,73 +102,28 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
 
     public void bindToFile(String path) {
         // set syntax color mode according to file kind.
-
-        JScrollPane sp = LatexTextEditor.getMyTextAreaInScrollPane(textArea);
+        
+        
+        JScrollPane sp = BaseTextEditor.getMyTextAreaInScrollPane(textArea);
         jPanel1.add(sp);
-
+        
         if (path.endsWith("sujet.tex")) {
             this.syntaxStyle = exerciceFile;
-            textArea = new LatexTextEditor();
-            ((LatexTextEditor) textArea).addObserver(this);
-
+            textArea = new BaseTextEditor();
         } else if (path.endsWith(".tex")) {
             this.syntaxStyle = texFile;
-            textArea = new LatexTextEditor();
-
         } else if (path.endsWith("mots_clefs.txt")) {
             this.syntaxStyle = keywordsFile;
-            textArea = new NormalTextEditor();
         } else {
             // default is textFile
             this.syntaxStyle = textFile;
-            textArea = new NormalTextEditor();
         }
 
-        textArea.addSaveActionToJMenu(this); // enabling saving from JMenuBar
-
-        jPanel1.removeAll();
-        jPanel1.add(BaseTextEditor.getMyTextAreaInScrollPane(textArea));
         f = new File(path);
+
         this.updateView();
-        textArea.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                TextEditorBinded.this.changeOccured();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                TextEditorBinded.this.changeOccured();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                
-            }
-        });
-    }
-
-    public void updateView() {
-
-        String Content = TexWriter.readFileOneString(f.getAbsolutePath());
-        this.lastUpdate = System.currentTimeMillis();
-        this.textArea.setText(Content);
-        this.textArea.discardAllEdits();
-        this.checkSafe();
-
-        if (this.syntaxStyle == exerciceFile) {
-
-            // show question number according to carret
-            textArea.addCaretListener(new CaretListener() {
-                @Override
-                public void caretUpdate(CaretEvent e) {
-                    updateQuestionLabel();
-                }
-            });
-        } else {
-            this.texPanel.setVisible(false);
-        }
         this.resetHasChanged();
+
     }
 
     protected boolean checkSafe() {
@@ -182,8 +133,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
         return status;
     }
 
-    @Override
-    public boolean saveFile() {
+    protected boolean saveFile() {
         if (hasChanged) { // prevent intempestive saving
 
             if (!this.checkSafe()) {
@@ -210,8 +160,35 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
         return false;
     }
 
+    public void updateView() {
+        List<String> lines = TexWriter.readFile(f.getAbsolutePath());
+
+        this.lastUpdate = System.currentTimeMillis();
+
+        this.clearDisplay();
+        this.checkSafe();
+
+        for (String line : lines) {
+            append(line);
+        }
+
+        if (this.syntaxStyle == exerciceFile) {
+
+            // show question number according to carret
+                textArea.addCaretListener(new CaretListener() {
+                @Override
+                public void caretUpdate(CaretEvent e) {
+                    updateQuestionLabel();
+                }
+            });
+        } else {
+            this.texPanel.setVisible(false);
+        }
+
+    }
+
     public void append(String s) {
-        textArea.append(s + "\n");
+        textArea.append(s+"\n");
     }
 
     protected void clearDisplay() {
@@ -376,14 +353,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
     }//GEN-LAST:event_reloadButtonActionPerformed
 
     private void versionChooserComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_versionChooserComboBoxActionPerformed
-        LatexTokenMaker.login = (String) versionChooserComboBox.getSelectedItem();
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                ((LatexTextEditor) textArea).updateWholeDocumentHighlighting();
-            }
-        });
-
+        // to be re-implemented
     }//GEN-LAST:event_versionChooserComboBoxActionPerformed
 
     private void texPanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_texPanelComponentShown
@@ -416,13 +386,19 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
         }
     }
 
-    public void updateMenuBarView(boolean show) {
-        if (show) {
-            textArea.addToMenuBar(menuBar);
-        } else {
-            textArea.removeToMenuBar(menuBar);
+    public void updateMenuBarView() {
+        try {
+            this.menuBar.add(edition);
+
+            if (this.syntaxStyle == exerciceFile) {
+                this.menuBar.add(source);
+            }
+        } catch (Exception e) {
         }
+
     }
+
+   
 
     public void setMenuBar(JMenuBar menuBar) {
         this.menuBar = menuBar;
@@ -431,40 +407,51 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////   specific to exercice files      ///////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   
+
     /**
      * @return the questionAmount
      */
     public int getQuestionAmount() {
-        return ((LatexTextEditor) textArea).getQuestionLines().size();
+        return questionAmount;
+    }
+
+    /**
+     * @param questionAmount the questionAmount to set
+     */
+    public void setQuestionAmount(int questionAmount) {
+        if (questionAmount != this.questionAmount) {
+            this.questionAmount = questionAmount;
+            updateQuestionLabel();
+        }
     }
 
     public void updateQuestionLabel() {
-        int shownQ = ((LatexTextEditor) textArea).getQuestionNumber();
-        this.amountQLabel.setText("Q : " + shownQ + "/" + getQuestionAmount());
+    // to be re-implemented    
+    //this.amountQLabel.setText("Q : " + this.cdf.getQuestionNumber(this.jTextPane1.getCaretPosition()) + "/" + this.questionAmount);
     }
 
     public void updateVersionTags() {
-        List<String> newTags = ((LatexTextEditor) textArea).getTags();
-        if (!previousTags.equals(newTags)) {
+        // to be re-implemented    
+        /*
+        if (!previousTags.equals(this.cdf.versionTags)) {
             String current = (String) this.versionChooserComboBox.getSelectedItem();
             this.versionChooserComboBox.removeAllItems();
 
-            if (!newTags.contains("original")) {
+            if (!this.cdf.versionTags.contains("original")) {
                 this.versionChooserComboBox.addItem("original");
             }
 
-            for (String version : newTags) {
+            for (String version : this.cdf.versionTags) {
                 this.versionChooserComboBox.addItem(version);
             }
-            this.previousTags = (ArrayList<String>) ((ArrayList<String>) newTags).clone();
+            this.previousTags = (ArrayList<String>) this.cdf.versionTags.clone();
             this.versionChooserComboBox.setSelectedItem(current);
         }
+    */
 
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        this.updateVersionTags();
     }
 
 }
+
+

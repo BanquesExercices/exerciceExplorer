@@ -5,6 +5,7 @@
  */
 package Helper;
 
+import java.awt.Color;
 import java.awt.Frame;
 import java.text.Normalizer;
 import javax.swing.JOptionPane;
@@ -31,6 +32,18 @@ public class Utils {
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
         JOptionPane.showMessageDialog(frame, scrollPane);
+    }
+    
+     public static Color getColorFromString(String in){
+            int r, g, b;
+            r = Integer.decode(in.split(",")[0]);
+            g = Integer.decode(in.split(",")[1]);
+            b = Integer.decode(in.split(",")[2]);
+           return new Color(r, g, b);
+    }
+     
+     public static String getStringFromColor(Color c){
+            return c.getRed() + "," + c.getGreen() + "," + c.getBlue();
     }
     
     public static String stripAccents(String s) 

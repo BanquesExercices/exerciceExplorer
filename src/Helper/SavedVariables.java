@@ -5,6 +5,9 @@
  */
 package Helper;
 
+import static Helper.Utils.getColorFromString;
+import TextEditor.Tex.LatexTextEditor;
+import java.awt.Color;
 import java.util.prefs.Preferences;
 
 /**
@@ -28,8 +31,6 @@ public class SavedVariables {
         prefs.put("open", openCmd);
     }
 
-    
-    
     public static void setOutputDir(String output) {
         prefs.put("outputDir", output);
     }
@@ -42,8 +43,6 @@ public class SavedVariables {
         }
     }
 
-    
-    
     public static boolean getAutoSave() {
         if (prefs != null) {
             return "true".equals(prefs.get("autoSave", ""));
@@ -58,17 +57,16 @@ public class SavedVariables {
         } else {
             prefs.put("autoSave", "false");
         }
-        
+
     }
-    
-    
+
     public static void setMultiEdit(boolean me) {
         if (me) {
             prefs.put("multiEdit", "true");
         } else {
             prefs.put("multiEdit", "false");
         }
-        
+
     }
 
     public static boolean getMultiEdit() {
@@ -78,9 +76,99 @@ public class SavedVariables {
             return false;
         }
     }
-    
-    
-    
+
+    public static void setSpellCheck(boolean me) {
+        if (me) {
+            prefs.put("spellCheck", "true");
+        } else {
+            prefs.put("spellCheck", "false");
+        }
+
+    }
+
+    public static boolean getSpellCheck() {
+        if (prefs != null) {
+            return "true".equals(prefs.get("spellCheck", ""));
+        } else {
+            return false;
+        }
+    }
+
+    public static void setParsing(boolean me) {
+        if (me) {
+            prefs.put("parsing", "true");
+        } else {
+            prefs.put("parsing", "false");
+        }
+
+    }
+
+    public static boolean getParsing() {
+        if (prefs != null) {
+            return "true".equals(prefs.get("parsing", ""));
+        } else {
+            return false;
+        }
+    }
+
+    public static void setColoring(boolean me) {
+        if (me) {
+            prefs.put("coloring", "true");
+        } else {
+            prefs.put("coloring", "false");
+        }
+
+    }
+
+    public static boolean getColoring() {
+        if (prefs != null) {
+            return "true".equals(prefs.get("coloring", ""));
+        } else {
+            return false;
+        }
+    }
+
+    public static void setBigTitles(boolean me) {
+        if (me) {
+            prefs.put("bigTitles", "true");
+        } else {
+            prefs.put("bigTitles", "false");
+        }
+
+    }
+
+    public static boolean getBigTitles() {
+        if (prefs != null) {
+            return "true".equals(prefs.get("bigTitles", ""));
+        } else {
+            return false;
+        }
+    }
+
+    public static void setGlobalDict(String me) {
+        prefs.put("globalDict", me);
+    }
+
+    public static String getGlobalDict() {
+        if (prefs != null) {
+            return prefs.get("globalDict", "");
+        } else {
+            return "";
+        }
+    }
+
+    public static void setCustomDict(String me) {
+        prefs.put("customDict", me);
+    }
+
+    public static String getCustomDict() {
+        if (prefs != null) {
+            return prefs.get("customDict", "");
+        } else {
+            return "";
+        }
+    }
+
     public static String getPdflatexCmd() {
 
         if (prefs != null) {
@@ -94,8 +182,6 @@ public class SavedVariables {
         prefs.put("pdflatex", pdflatexCmd);
     }
 
-    
-    
     public static String getTexModelsPaths() {
 
         if (prefs != null) {
@@ -109,9 +195,6 @@ public class SavedVariables {
         prefs.put("templates", in);
     }
 
-    
-    
-    
     public static String getMainGitDir() {
 
         if (prefs != null) {
@@ -123,8 +206,26 @@ public class SavedVariables {
 
     public static void setMainGitDir(String in) {
         prefs.put("mainGit", in);
+        
     }
 
+    public static void setColor(int token, String color) {
+        try {
+            getColorFromString(color); // if this fails, we don't store the color.
+            prefs.put("color"+token, color);
+        } catch (Exception e) {
+            System.out.println("no saving !");
+        }
+    }
     
-    
+   
+
+    public static Color getColor(int token) {
+        String out = LatexTextEditor.getDefaultColor(token);
+        if (prefs != null) {
+            out = prefs.get("color" + token, out);
+        } 
+        return getColorFromString(out);
+    }
+
 }

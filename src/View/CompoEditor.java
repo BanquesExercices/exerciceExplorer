@@ -30,7 +30,7 @@ import javax.swing.text.StyledDocument;
  *
  * @author mbrebion
  */
-public class CompoEditor extends javax.swing.JPanel {
+public class CompoEditor extends javax.swing.JPanel implements MenuBarItemProvider{
 
     protected StyledDocument doc;
     protected JMenuBar menuBar;

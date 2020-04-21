@@ -14,7 +14,7 @@ import javax.swing.JMenuBar;
  *
  * @author mbrebion
  */
-public class ReadmeEditor extends javax.swing.JPanel implements Observer {
+public class ReadmeEditor extends javax.swing.JPanel implements Observer,MenuBarItemProvider {
 
     /**
      * Creates new form SubjectEditor
@@ -106,8 +106,8 @@ public class ReadmeEditor extends javax.swing.JPanel implements Observer {
         this.textEditorBinded1.setMenuBar(jmb);
     }
 
-    public void updateMenuBarView() {
-        this.textEditorBinded1.updateMenuBarView();
+    public void updateMenuBarView(boolean show) {
+        this.textEditorBinded1.updateMenuBarView(show);
     }
 
 }
