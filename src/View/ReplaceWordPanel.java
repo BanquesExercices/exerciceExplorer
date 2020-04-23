@@ -47,9 +47,9 @@ public class ReplaceWordPanel extends javax.swing.JPanel {
         returnLabel = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
 
-        jLabel1.setText("Mot clef à changer");
+        jLabel1.setText("Mot à changer");
 
-        jLabel2.setText("Nouveau mot clef");
+        jLabel2.setText("Nouveau mot");
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -104,7 +104,7 @@ public class ReplaceWordPanel extends javax.swing.JPanel {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(64, 64, 64))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

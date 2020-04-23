@@ -5,7 +5,7 @@
  */
 package TextEditor.Base;
 
-import TextEditor.Tex.LatexTextEditor;
+import Helper.SavedVariables;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -14,8 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -47,6 +46,7 @@ public class BaseTextEditor extends RSyntaxTextArea {
         this.setTabSize(3);
         initiateEditMenu();
         
+
     }
 
     public BaseTextEditor() {
@@ -68,12 +68,16 @@ public class BaseTextEditor extends RSyntaxTextArea {
         editMenu.addSeparator();
         editMenu.add(createMenuItem(RTextArea.getAction(RTextArea.SELECT_ALL_ACTION)));
         editMenu.addSeparator();
+
     }
 
-    public void setDictParser(String file,String customFile) {
+    public void setDictParser() {
         if (dictLoaded) {
             return;
         }
+        String file = SavedVariables.getGlobalDict();
+        String customFile = SavedVariables.getCustomDict();
+
         try {
             Reader reader = new FileReader(file);
             SpellDictionaryHashMap dict = new SpellDictionaryHashMap(reader);
@@ -97,7 +101,9 @@ public class BaseTextEditor extends RSyntaxTextArea {
         return sp;
     }
 
-    public void addSaveActionToJMenu(Saver s) {
+   
+
+    public void dealWithFileProcessorJMenu(FileProcessor s) {
         RecordableTextAction ts = new RecordableTextAction("Sauvegarder") {
             @Override
             public void actionPerformedImpl(ActionEvent e, RTextArea textArea) {
@@ -113,12 +119,38 @@ public class BaseTextEditor extends RSyntaxTextArea {
 
         ts.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, mod));
         editMenu.add(ts);
+        editMenu.addSeparator();
+        
+        AbstractAction find = new AbstractAction("Find") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                s.toggleFindPanel();
+            }
+        };
+
+        JMenuItem findItem = new JMenuItem(find);
+        findItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, mod));
+        editMenu.add(findItem);
+        
+        AbstractAction replace = new AbstractAction("Replace") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                s.toggleReplacePanel();
+            }
+        };
+
+        JMenuItem replaceItem = new JMenuItem(replace);
+        replaceItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, mod));
+        editMenu.add(replaceItem);
+
     }
 
     public void setupSyntaxColoring() {
     }
 
-    public void setupSpellChecker(String file) {
+    public void setupSpellChecker() {
     }
 
     public void setupAutoCompletion() {

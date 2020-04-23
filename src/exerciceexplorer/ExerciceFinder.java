@@ -6,6 +6,7 @@
 package exerciceexplorer;
 
 import Helper.SavedVariables;
+import Helper.Utils;
 import TexRessources.TexWriter;
 import java.io.File;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public final class ExerciceFinder {
 
     public ExerciceFinder() {
         // This class must be instanciated only once
-        if (exercices!= null){
+        if (exercices != null) {
             System.err.println("multiple instanciation of list of exercices");
         }
         exercices = new ArrayList<>();
@@ -106,6 +107,22 @@ public final class ExerciceFinder {
 
     }
 
+    public boolean isNameAvailable(String title) {
+        boolean out = true;
+        for (Exercice ex : exercices) {
+            if (ex.getName().equals(title)) {
+                out = false;
+            }
+        }
+        if (title.contains(" ")) {
+            out = false;
+        }
+        if (!title.equals(Utils.stripAccents(title))) {
+            out = false;
+        }
+        return out;
+    }
+
     public void showExercices() {
         exercices.stream().forEach((ex) -> {
             System.out.println(ex.getName() + "  |  " + ex.getKind());
@@ -151,7 +168,6 @@ public final class ExerciceFinder {
         return out;
     }
 
-    
     public Exercice getExercice(String title) {
         for (Exercice ex : exercices) {
             if (ex.getName().equals(title)) {

@@ -9,9 +9,13 @@ package TextEditor.Base;
  *
  * @author mbrebion
  */
-public interface Saver {
+public interface FileProcessor {
     
     
     public boolean saveFile();
+    
+    public void toggleFindPanel();
+    
+    public void toggleReplacePanel();
     
 }

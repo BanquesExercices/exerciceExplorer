@@ -10,7 +10,6 @@ import Helper.SavedVariables;
 import Helper.Utils;
 import TexRessources.TexWriter;
 import TextEditor.Base.BaseTextEditor;
-import TextEditor.Base.Saver;
 import TextEditor.Tex.LatexTextEditor;
 import TextEditor.Tex.LatexTokenMaker;
 import TextEditor.Text.NormalTextEditor;
@@ -33,13 +32,18 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import TextEditor.Base.FileProcessor;
+import java.awt.Color;
+import org.fife.ui.rtextarea.SearchContext;
+import org.fife.ui.rtextarea.SearchEngine;
+import org.fife.ui.rtextarea.SearchResult;
 
 /**
  *
  * @author mbrebion
  */
 @SuppressWarnings("serial")
-public class TextEditorBinded extends javax.swing.JPanel implements Saver, Observer {
+public class TextEditorBinded extends javax.swing.JPanel implements FileProcessor, Observer {
 
     /**
      * Creates new form TextEditorBinded
@@ -65,9 +69,44 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
     // TextArea
     public BaseTextEditor textArea;
 
+    // find and replace
+    protected SearchContext context;
+
     public TextEditorBinded() {
         initComponents();
         obs = new ArrayList<>();
+
+        // specific to find and replace
+        findTextField.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                TextEditorBinded.this.findAction(true,TextEditorBinded.this.findTextField.getText() );
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                TextEditorBinded.this.findAction(true,TextEditorBinded.this.findTextField.getText());
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+                TextEditorBinded.this.findAction(true,TextEditorBinded.this.findTextField.getText());
+            }
+        });
+        
+        replaceWhatTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                TextEditorBinded.this.findAction(true,TextEditorBinded.this.replaceWhatTextField.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                TextEditorBinded.this.findAction(true,TextEditorBinded.this.replaceWhatTextField.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                TextEditorBinded.this.findAction(true,TextEditorBinded.this.replaceWhatTextField.getText());
+            }
+        });
 
     }
 
@@ -128,7 +167,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
             textArea = new NormalTextEditor();
         }
 
-        textArea.addSaveActionToJMenu(this); // enabling saving from JMenuBar
+        textArea.dealWithFileProcessorJMenu(this); // enabling saving from JMenuBar
 
         jPanel1.removeAll();
         jPanel1.add(BaseTextEditor.getMyTextAreaInScrollPane(textArea));
@@ -147,9 +186,10 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                
+
             }
         });
+        textArea.setCaretPosition(0);
     }
 
     public void updateView() {
@@ -182,6 +222,128 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
         return status;
     }
 
+    
+    
+   
+
+    ///////////////////////////////////////////////
+    ////////// find and replace  //////////////////
+    ///////////////////////////////////////////////
+    
+    /////////////////// find //////////////////////
+    
+    @Override
+    public void toggleFindPanel() {
+        if (!this.findPanel.isVisible()) {
+            this.startFindPanel();
+        } else {
+            this.endFindPanel();
+        }
+    }
+    
+    public void setupFindAction(String expr) {
+        context = new SearchContext();
+        context.setSearchFor(expr);
+        context.setMatchCase(true);
+        context.setRegularExpression(false);
+    }
+
+    
+     public int findAction(boolean forward, String text) {
+        this.setupFindAction(text);
+        int caretLoc = textArea.getCaretPosition();
+        context.setSearchForward(forward);
+        
+        SearchResult sr = SearchEngine.find(textArea, context);
+        this.nbLabel.setText("  ("+ sr.getMarkedCount() + ")  ");
+        this.replaceNbLabel.setText("  ("+ sr.getMarkedCount() + ")  ");
+        
+        boolean found = sr.getMarkedCount() > 0;
+        if (!found) {
+            this.findTextField.setForeground(Color.red);
+            this.replaceWhatTextField.setForeground(Color.red);
+        } else {
+            this.findTextField.setForeground(Color.black);
+            this.replaceWhatTextField.setForeground(Color.black);
+        }
+        int newCaret = textArea.getCaretPosition();
+        textArea.setCaretPosition(caretLoc);
+        return newCaret;
+    }
+    
+    public void findActionMove(boolean forward) {
+        int newCaret = this.findAction(forward,TextEditorBinded.this.findTextField.getText());
+        textArea.setCaretPosition(newCaret-1);
+    }
+
+    public void startFindPanel() {
+        this.findPanel.setVisible(true);
+        this.findTextField.setText("...");
+        this.findTextField.selectAll();
+        this.findTextField.requestFocusInWindow();
+
+    }
+
+    public void endFindPanel() {
+        this.findPanel.setVisible(false);
+        this.context.setSearchFor("abcdzpretztpo");
+        SearchResult sr = SearchEngine.find(textArea, context);
+    }
+
+    
+    /////////////////// replace //////////////////////
+    
+     @Override
+    public void toggleReplacePanel() {
+         if (!this.replacePanel.isVisible()) {
+            this.startReplacePanel();
+        } else {
+            this.endReplacePanel();
+        }
+    }
+    
+     public void startReplacePanel() {
+        this.replacePanel.setVisible(true);
+        this.replaceWhatTextField.setText("...");
+        this.replaceWhatTextField.selectAll();
+        this.replaceWhatTextField.requestFocusInWindow();
+        this.replaceWithTextField.setText("");
+        this.replaceNbLabel.setText("");
+    }
+
+    public void endReplacePanel() {
+        this.replacePanel.setVisible(false);
+        this.context.setSearchFor("abcdzpretztpo");
+        SearchResult sr = SearchEngine.find(textArea, context);
+    }
+    
+    
+    public void replaceNext(){
+        context.setSearchFor(this.replaceWhatTextField.getText());
+        context.setReplaceWith(this.replaceWithTextField.getText());
+        context.setSearchForward(true);
+        
+        SearchResult sr =  SearchEngine.find(textArea, context);
+        int begin = sr.getMatchRange().getStartOffset();
+        SearchEngine.replace(textArea, context);
+        
+        textArea.setCaretPosition(begin);
+        this.findAction(true,this.replaceWhatTextField.getText() );
+    }
+    
+    public void replaceAll(){
+        context.setSearchFor(this.replaceWhatTextField.getText());
+        context.setReplaceWith(this.replaceWithTextField.getText());
+        context.setSearchForward(true);
+        SearchResult sr = SearchEngine.replaceAll(textArea, context);
+        textArea.setCaretPosition(sr.getMatchRange().getEndOffset());
+        this.findAction(true,this.replaceWhatTextField.getText() );
+    }
+    
+    
+    ///////// end of find & replace section ///////////////
+    
+    
     @Override
     public boolean saveFile() {
         if (hasChanged) { // prevent intempestive saving
@@ -235,6 +397,24 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
         amountQLabel = new javax.swing.JLabel();
         versionChooserComboBox = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
+        findPanel = new javax.swing.JPanel();
+        findTextField = new javax.swing.JTextField();
+        nbLabel = new javax.swing.JLabel();
+        nextButton = new javax.swing.JButton();
+        previousButton = new javax.swing.JButton();
+        exitButton = new javax.swing.JButton();
+        replacePanel = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        replaceWhatTextField = new javax.swing.JTextField();
+        replaceNbLabel = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(30, 0), new java.awt.Dimension(149, 0), new java.awt.Dimension(30, 32767));
+        replaceExitButton = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        replaceWithTextField = new javax.swing.JTextField();
+        replaceNextButton = new javax.swing.JButton();
+        replaceAllButton = new javax.swing.JButton();
 
         setMinimumSize(new java.awt.Dimension(50, 50));
         setPreferredSize(new java.awt.Dimension(364, 100));
@@ -321,39 +501,134 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
                 .addContainerGap())
         );
 
+        findPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Find", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 0, 14))); // NOI18N
+        this.findPanel.setVisible(false);
+        findPanel.setLayout(new javax.swing.BoxLayout(findPanel, javax.swing.BoxLayout.LINE_AXIS));
+
+        findTextField.setText("...");
+        findTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                findTextFieldActionPerformed(evt);
+            }
+        });
+        findPanel.add(findTextField);
+
+        nbLabel.setText("(0)");
+        findPanel.add(nbLabel);
+
+        nextButton.setText("suivant");
+        nextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextButtonActionPerformed(evt);
+            }
+        });
+        findPanel.add(nextButton);
+
+        previousButton.setText("précédant");
+        previousButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previousButtonActionPerformed(evt);
+            }
+        });
+        findPanel.add(previousButton);
+
+        exitButton.setText("x");
+        exitButton.setSize(new java.awt.Dimension(60, 29));
+        exitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitButtonActionPerformed(evt);
+            }
+        });
+        findPanel.add(exitButton);
+
+        replacePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Replace", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 0, 14))); // NOI18N
+        this.replacePanel.setVisible(false);
+        replacePanel.setLayout(new javax.swing.BoxLayout(replacePanel, javax.swing.BoxLayout.PAGE_AXIS));
+
+        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
+
+        jLabel1.setText("  Find what :        ");
+        jPanel3.add(jLabel1);
+
+        replaceWhatTextField.setText("...");
+        jPanel3.add(replaceWhatTextField);
+
+        replaceNbLabel.setText("(0)");
+        jPanel3.add(replaceNbLabel);
+        jPanel3.add(filler1);
+
+        replaceExitButton.setText("x");
+        replaceExitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                replaceExitButtonActionPerformed(evt);
+            }
+        });
+        jPanel3.add(replaceExitButton);
+
+        replacePanel.add(jPanel3);
+
+        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.LINE_AXIS));
+
+        jLabel4.setText("  Replace with :   ");
+        jPanel4.add(jLabel4);
+
+        replaceWithTextField.setText("...");
+        jPanel4.add(replaceWithTextField);
+
+        replaceNextButton.setText("Replace Next");
+        replaceNextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                replaceNextButtonActionPerformed(evt);
+            }
+        });
+        jPanel4.add(replaceNextButton);
+
+        replaceAllButton.setText("Replace All");
+        replaceAllButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                replaceAllButtonActionPerformed(evt);
+            }
+        });
+        jPanel4.add(replaceAllButton);
+
+        replacePanel.add(jPanel4);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0))
+                        .addGap(1, 1, 1))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(texPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 217, Short.MAX_VALUE)
                         .addComponent(reloadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(4, 4, 4))
+            .addComponent(findPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(replacePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                .addGap(2, 2, 2)
+                .addComponent(replacePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
+                .addComponent(findPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(texPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(reloadButton)))
-                        .addContainerGap())))
+                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(reloadButton)))
+                .addGap(2, 2, 2))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -392,14 +667,60 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
     }//GEN-LAST:event_formFocusGained
 
+    private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
+        this.endFindPanel();
+    }//GEN-LAST:event_exitButtonActionPerformed
+
+    private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
+        this.findActionMove(true);
+    }//GEN-LAST:event_nextButtonActionPerformed
+
+    private void previousButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousButtonActionPerformed
+        this.findActionMove(false);
+    }//GEN-LAST:event_previousButtonActionPerformed
+
+    private void findTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findTextFieldActionPerformed
+        this.findActionMove(true);
+    }//GEN-LAST:event_findTextFieldActionPerformed
+
+    private void replaceExitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceExitButtonActionPerformed
+        this.endReplacePanel();
+    }//GEN-LAST:event_replaceExitButtonActionPerformed
+
+    private void replaceNextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceNextButtonActionPerformed
+        this.replaceNext();
+    }//GEN-LAST:event_replaceNextButtonActionPerformed
+
+    private void replaceAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceAllButtonActionPerformed
+       this.replaceAll();
+    }//GEN-LAST:event_replaceAllButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel amountQLabel;
+    private javax.swing.JButton exitButton;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.JPanel findPanel;
+    private javax.swing.JTextField findTextField;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JLabel nbLabel;
+    private javax.swing.JButton nextButton;
+    private javax.swing.JButton previousButton;
     private javax.swing.JButton reloadButton;
+    private javax.swing.JButton replaceAllButton;
+    private javax.swing.JButton replaceExitButton;
+    private javax.swing.JLabel replaceNbLabel;
+    private javax.swing.JButton replaceNextButton;
+    private javax.swing.JPanel replacePanel;
+    private javax.swing.JTextField replaceWhatTextField;
+    private javax.swing.JTextField replaceWithTextField;
     private javax.swing.JPanel texPanel;
     private javax.swing.JComboBox versionChooserComboBox;
     // End of variables declaration//GEN-END:variables
@@ -465,6 +786,9 @@ public class TextEditorBinded extends javax.swing.JPanel implements Saver, Obser
     @Override
     public void update(Observable o, Object arg) {
         this.updateVersionTags();
+        this.updateQuestionLabel();
     }
+
+    
 
 }

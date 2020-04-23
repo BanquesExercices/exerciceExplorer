@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.ComboBoxModel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -40,6 +41,20 @@ public class Options extends JPanel {
         this.mw = mw;
     }
 
+    public void setGitOutputText(String txt) {
+        this.gitOutputText.setText(txt);
+        this.gitOutputText.setRows(this.gitOutputText.getLineCount());
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void appendGitOutputText(String txt) {
+        this.gitOutputText.append(txt);
+        this.gitOutputText.setRows(this.gitOutputText.getLineCount());
+        this.revalidate();
+        this.repaint();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -50,32 +65,19 @@ public class Options extends JPanel {
     private void initComponents() {
 
         jLabel3 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        openEditorLabel = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        pdflatexInput = new javax.swing.JTextField();
-        openInput = new javax.swing.JTextField();
-        gitFolderInput = new javax.swing.JTextField();
-        templatesFolderInput = new javax.swing.JTextField();
-        outputDirInput = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
         statusButton = new javax.swing.JButton();
-        commitButton = new javax.swing.JButton();
         pushButton = new javax.swing.JButton();
         pullButton = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        outputView = new javax.swing.JTextArea();
+        commitButton = new javax.swing.JButton();
+        gitOutputText = new javax.swing.JTextArea();
         jSeparator3 = new javax.swing.JSeparator();
         jPanel4 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
@@ -91,122 +93,25 @@ public class Options extends JPanel {
         tokenComboBox = new javax.swing.JComboBox<>();
         colorSetTextField = new javax.swing.JTextField();
         titlesCheckBox = new javax.swing.JCheckBox();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        pdflatexInput = new javax.swing.JTextField();
+        templatesFolderInput = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        openEditorLabel = new javax.swing.JLabel();
+        outputDirInput = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        openInput = new javax.swing.JTextField();
+        gitFolderInput = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jSeparator4 = new javax.swing.JSeparator();
+
+        setMaximumSize(new java.awt.Dimension(430, 32767));
+        setPreferredSize(new java.awt.Dimension(360, 660));
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 20)); // NOI18N
         jLabel3.setText("Options");
-
-        jLabel8.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
-        jLabel8.setText("Chemins d'accès :");
-
-        jLabel1.setText("pdflatex");
-
-        openEditorLabel.setText("open");
-
-        jLabel4.setText("dossier git");
-
-        jLabel5.setText("dossier modèles");
-
-        jLabel6.setText("dossier d'export");
-
-        pdflatexInput.setText(SavedVariables.getPdflatexCmd()
-        );
-        pdflatexInput.setToolTipText("Chemin d'acces (absolu) vers l'executable pdflatex");
-        pdflatexInput.setMinimumSize(new java.awt.Dimension(6, 6));
-        pdflatexInput.setPreferredSize(new java.awt.Dimension(55, 18));
-        pdflatexInput.setRequestFocusEnabled(false);
-        pdflatexInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pdflatexInputActionPerformed(evt);
-            }
-        });
-
-        openInput.setText(SavedVariables.getOpenCmd());
-        openInput.setToolTipText("Chemin d'acces (absolu) vers la commande open (OSX) ou xdg-open (autres OS type unix)");
-        openInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openInputActionPerformed(evt);
-            }
-        });
-
-        gitFolderInput.setText(SavedVariables.getMainGitDir());
-        gitFolderInput.setToolTipText("Chemin d'acces (absolu) vers le dossier contenant le repository git local");
-        gitFolderInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                gitFolderInputActionPerformed(evt);
-            }
-        });
-
-        templatesFolderInput.setText(SavedVariables.getTexModelsPaths());
-        templatesFolderInput.setToolTipText("<html>\nChemin d'acces (absolu) vers le dossier contenant les templates latex :\n<ul>\n    <li> DSModel.tex  </li>\n    <li> DMModel.tex  </li>\n    <li> ColleModel.tex  </li>\n    <li> TDModel.tex  </li>\n</ul>\nCes documents servent de template pour l'unclusion des exercices et doivent inclure le fichier fichiers_utiles/raccourcis_communs.sty et contenir une ligne : <br>\n****\n<br> \nqui sera remplacée par l'import des exercice lors de l'édition d'une composition.\n<br>\n<br>\nUn exemple de fichier se trouve dans le répertoire path/To/Git/Dir/fichiers_utiles/defaultLatexTemplates\n</html>");
-        templatesFolderInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                templatesFolderInputActionPerformed(evt);
-            }
-        });
-
-        outputDirInput.setText(SavedVariables.getOutputDir());
-        outputDirInput.setToolTipText("<html>\nChemin d'acces (absolu) vers le dossier contenant vos DS/DM de l'année en cours. <br>\nCe dossier doit contenir un sous dossier nommé DM et un autre nommé DS. <br>\nAinsi, une composition type DS exportée sera placé dans le sous dossier DS de manière incrémentielle (exemple DS5 si un dossier DS4 est déjà présent).\n</html>");
-        outputDirInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                outputDirInputActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel8)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel6)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel5)
-                        .addComponent(jLabel4)
-                        .addComponent(openEditorLabel)
-                        .addComponent(jLabel1)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(openInput)
-                            .addComponent(gitFolderInput)
-                            .addComponent(pdflatexInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(outputDirInput)
-                            .addComponent(templatesFolderInput))))
-                .addGap(0, 0, 0))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(pdflatexInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(4, 4, 4)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(openEditorLabel)
-                    .addComponent(openInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(4, 4, 4)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(gitFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(4, 4, 4)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(templatesFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(6, 6, 6)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(outputDirInput, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        );
 
         jLabel9.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
         jLabel9.setText("Actions :");
@@ -241,7 +146,7 @@ public class Options extends JPanel {
                 .addComponent(jCheckBox1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox2)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 125, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -257,21 +162,18 @@ public class Options extends JPanel {
         jLabel7.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
         jLabel7.setText("Git :");
 
+        jPanel5.setLayout(new java.awt.GridLayout(1, 0));
+
         statusButton.setText("Status");
+        statusButton.setMaximumSize(new java.awt.Dimension(60, 22));
+        statusButton.setMinimumSize(new java.awt.Dimension(60, 22));
+        statusButton.setPreferredSize(new java.awt.Dimension(60, 22));
         statusButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 statusButtonActionPerformed(evt);
             }
         });
-
-        commitButton.setText("Commit");
-        commitButton.setToolTipText("Réalise un commit du repo git. Les fichiers existant et modifiés sont automatiqument ajoutés.");
-        commitButton.setEnabled(false);
-        commitButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                commitButtonActionPerformed(evt);
-            }
-        });
+        jPanel5.add(statusButton);
 
         pushButton.setText("Push");
         pushButton.setToolTipText("<html>\nEnvoie le dernier commit sur le serveur. \n<br>\nLes conflits n'étant pas gérés à partir de l'interface graphique. Il faudra dans ce cas utiliser un logiciel dédié ou bien le terminal.\n</html>");
@@ -281,6 +183,7 @@ public class Options extends JPanel {
                 pushButtonActionPerformed(evt);
             }
         });
+        jPanel5.add(pushButton);
 
         pullButton.setText("Pull");
         pullButton.setToolTipText("Réccupère les nouvelles données depuis le serveur.");
@@ -290,52 +193,54 @@ public class Options extends JPanel {
                 pullButtonActionPerformed(evt);
             }
         });
+        jPanel5.add(pullButton);
 
-        outputView.setEditable(false);
-        outputView.setBackground(javax.swing.UIManager.getDefaults().getColor("ProgressBar.background"));
-        outputView.setColumns(16);
-        outputView.setLineWrap(true);
-        outputView.setRows(5);
-        outputView.setTabSize(4);
-        outputView.setText("click on status to update");
-        outputView.setMinimumSize(new java.awt.Dimension(1, 215));
-        jScrollPane1.setViewportView(outputView);
+        commitButton.setText("Commit");
+        commitButton.setToolTipText("Réalise un commit du repo git. Les fichiers existant et modifiés sont automatiqument ajoutés.");
+        commitButton.setEnabled(false);
+        commitButton.setMaximumSize(new java.awt.Dimension(70, 29));
+        commitButton.setMinimumSize(new java.awt.Dimension(70, 29));
+        commitButton.setPreferredSize(new java.awt.Dimension(70, 29));
+        commitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                commitButtonActionPerformed(evt);
+            }
+        });
+        jPanel5.add(commitButton);
+
+        gitOutputText.setEditable(false);
+        gitOutputText.setBackground(javax.swing.UIManager.getDefaults().getColor("ProgressBar.background"));
+        gitOutputText.setColumns(26);
+        gitOutputText.setLineWrap(true);
+        gitOutputText.setRows(1);
+        gitOutputText.setTabSize(4);
+        gitOutputText.setText("     click on status to update");
+        gitOutputText.setMinimumSize(new java.awt.Dimension(1, 120));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(statusButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(commitButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(pushButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(pullButton)))
-                        .addGap(8, 8, 8))))
+                            .addComponent(gitOutputText, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(64, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addComponent(jLabel7)
-                .addGap(4, 4, 4)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(statusButton)
-                    .addComponent(commitButton)
-                    .addComponent(pushButton)
-                    .addComponent(pullButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(0, 0, 0)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(gitOutputText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
 
         jLabel10.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
@@ -383,9 +288,10 @@ public class Options extends JPanel {
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(spellPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(globalDictTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
-                    .addComponent(customDictTextField)))
+                .addGroup(spellPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(customDictTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(globalDictTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(142, 142, 142))
         );
         spellPanelLayout.setVerticalGroup(
             spellPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -447,13 +353,16 @@ public class Options extends JPanel {
         coloringPanelLayout.setHorizontalGroup(
             coloringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(coloringPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(coloringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(titlesCheckBox)
-                    .addComponent(tokenComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(colorSetTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(coloringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(coloringPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(tokenComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(colorSetTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(coloringPanelLayout.createSequentialGroup()
+                        .addGap(112, 112, 112)
+                        .addComponent(titlesCheckBox)))
+                .addContainerGap(125, Short.MAX_VALUE))
         );
         coloringPanelLayout.setVerticalGroup(
             coloringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -461,9 +370,8 @@ public class Options extends JPanel {
                 .addGroup(coloringPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tokenComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(colorSetTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(titlesCheckBox)
-                .addGap(0, 0, 0))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(titlesCheckBox))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -474,14 +382,18 @@ public class Options extends JPanel {
                 .addContainerGap()
                 .addComponent(jLabel10)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(spellPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(spellCheckBox)
-                    .addComponent(parsingCheckBox)
-                    .addComponent(coloringCheckBox))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(parsingCheckBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(coloringCheckBox))
+                    .addComponent(coloringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(spellPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addComponent(coloringPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -492,52 +404,173 @@ public class Options extends JPanel {
                 .addGap(0, 0, 0)
                 .addComponent(spellPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(parsingCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(coloringCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(parsingCheckBox)
+                    .addComponent(coloringCheckBox))
+                .addGap(4, 4, 4)
                 .addComponent(coloringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 22, Short.MAX_VALUE))
+                .addGap(4, 4, 4))
+        );
+
+        jLabel8.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
+        jLabel8.setText("Chemins d'accès :");
+
+        pdflatexInput.setText(SavedVariables.getPdflatexCmd()
+        );
+        pdflatexInput.setToolTipText("Chemin d'acces (absolu) vers l'executable pdflatex");
+        pdflatexInput.setCaretPosition(0);
+        pdflatexInput.setMinimumSize(new java.awt.Dimension(6, 6));
+        pdflatexInput.setPreferredSize(new java.awt.Dimension(240, 24));
+        pdflatexInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pdflatexInputActionPerformed(evt);
+            }
+        });
+
+        templatesFolderInput.setText(SavedVariables.getTexModelsPaths());
+        templatesFolderInput.setToolTipText("<html>\nChemin d'acces (absolu) vers le dossier contenant les templates latex :\n<ul>\n    <li> DSModel.tex  </li>\n    <li> DMModel.tex  </li>\n    <li> ColleModel.tex  </li>\n    <li> TDModel.tex  </li>\n</ul>\nCes documents servent de template pour l'unclusion des exercices et doivent inclure le fichier fichiers_utiles/raccourcis_communs.sty et contenir une ligne : <br>\n****\n<br> \nqui sera remplacée par l'import des exercice lors de l'édition d'une composition.\n<br>\n<br>\nUn exemple de fichier se trouve dans le répertoire path/To/Git/Dir/fichiers_utiles/defaultLatexTemplates\n</html>");
+        templatesFolderInput.setPreferredSize(new java.awt.Dimension(240, 24));
+        templatesFolderInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                templatesFolderInputActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("dossier d'export");
+
+        openEditorLabel.setText("open");
+
+        outputDirInput.setText(SavedVariables.getOutputDir());
+        outputDirInput.setToolTipText("<html>\nChemin d'acces (absolu) vers le dossier contenant vos DS/DM de l'année en cours. <br>\nCe dossier doit contenir un sous dossier nommé DM et un autre nommé DS. <br>\nAinsi, une composition type DS exportée sera placé dans le sous dossier DS de manière incrémentielle (exemple DS5 si un dossier DS4 est déjà présent).\n</html>");
+        outputDirInput.setPreferredSize(new java.awt.Dimension(240, 24));
+        outputDirInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                outputDirInputActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("pdflatex");
+
+        openInput.setText(SavedVariables.getOpenCmd());
+        openInput.setToolTipText("Chemin d'acces (absolu) vers la commande open (OSX) ou xdg-open (autres OS type unix)");
+        openInput.setPreferredSize(new java.awt.Dimension(240, 24));
+        openInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openInputActionPerformed(evt);
+            }
+        });
+
+        gitFolderInput.setText(SavedVariables.getMainGitDir());
+        gitFolderInput.setToolTipText("Chemin d'acces (absolu) vers le dossier contenant le repository git local");
+        gitFolderInput.setPreferredSize(new java.awt.Dimension(240, 24));
+        gitFolderInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gitFolderInputActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("dossier git");
+
+        jLabel5.setText("dossier modèles");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6)
+                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel5)
+                                .addComponent(jLabel4)
+                                .addComponent(openEditorLabel)
+                                .addComponent(jLabel1)))
+                        .addGap(8, 8, 8)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(outputDirInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(templatesFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(openInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(gitFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pdflatexInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(pdflatexInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(openEditorLabel)
+                    .addComponent(openInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(gitFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(templatesFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(outputDirInput, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addComponent(jSeparator3)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(4, 4, 4)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel3)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSeparator1)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(jSeparator2)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jSeparator3, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jSeparator4)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(4, 4, 4)
+                .addContainerGap()
                 .addComponent(jLabel3)
-                .addGap(4, 4, 4)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(180, 180, 180))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(4, 4, 4)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(4, 4, 4)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -568,33 +601,57 @@ public class Options extends JPanel {
     }//GEN-LAST:event_outputDirInputActionPerformed
 
     private void pushButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pushButtonActionPerformed
-        GitWrapper.push();
-        this.outputView.setText("commit pushed to remote repository");
-        String status = GitWrapper.status();
-        this.checkStatus(status);
-        this.outputView.append("\n - - - - - - -\n" + status);
+        this.setGitOutputText("requête en cours ...");
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                GitWrapper.push();
+                Options.this.setGitOutputText("commit pushed to remote repository");
+                String status = GitWrapper.status();
+                Options.this.checkStatus(status);
+                Options.this.appendGitOutputText("\n - - - - - - -\n" + status);
+            }
+        });
+
     }//GEN-LAST:event_pushButtonActionPerformed
 
     private void commitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitButtonActionPerformed
-        String out = GitWrapper.commit();
-        this.outputView.setText(out);
-        String status = GitWrapper.status();
-        this.checkStatus(status);
-        this.outputView.append("\n - - - - - - -\n" + status);
+        this.setGitOutputText("requête en cours ...");
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                GitWrapper.commit();
+                Options.this.setGitOutputText("commit effectué");
+                String status = GitWrapper.status();
+                Options.this.checkStatus(status);
+                Options.this.appendGitOutputText("\n - - - - - - -\n" + status);
+            }
+        });
 
     }//GEN-LAST:event_commitButtonActionPerformed
 
     private void pullButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pullButtonActionPerformed
-        String out = GitWrapper.pull();
-        if (out.contains("CONFLICT")) {
-            this.outputView.setText("Le même fichier à été modifié à la fois dans le répertoire local et sur le serveur (surement par un autre utlisateur). \n Ce cas n'est pas géré depuis l'interface graphique. \n Effectuez un git pull depuis le terminal, identifiez les conflit à l'aide de git diff, corrigez les, puis effectuez un git commit suivi d'un git push");
-        } else {
-            this.outputView.setText(out);
-        }
+        this.setGitOutputText("requête en cours ...");
 
-        String status = GitWrapper.status();
-        this.checkStatus(status);
-        this.outputView.append("\n - - - - - - -\n \n" + status);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                GitWrapper.pull();
+                String out = GitWrapper.pull();
+                if (out.contains("CONFLICT")) {
+                    Options.this.setGitOutputText("Le même fichier à été modifié à la fois dans le répertoire local et sur le serveur (surement par un autre utlisateur). \n Ce cas n'est pas géré depuis l'interface graphique. \n Effectuez un git pull depuis le terminal, identifiez les conflit à l'aide de git diff, corrigez les, puis effectuez un git commit suivi d'un git push");
+                } else {
+                    Options.this.setGitOutputText(out);
+                }
+                String status = GitWrapper.status();
+                Options.this.checkStatus(status);
+                Options.this.appendGitOutputText("\n - - - - - - -\n" + status);
+            }
+        });
+
+      
 
     }//GEN-LAST:event_pullButtonActionPerformed
 
@@ -626,10 +683,17 @@ public class Options extends JPanel {
 
     }
     private void statusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusButtonActionPerformed
+        this.setGitOutputText("requête en cours ...");
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                String out = GitWrapper.status();
+                Options.this.setGitOutputText(out);
 
-        String out = GitWrapper.status();
-        this.outputView.setText(out);
-        this.checkStatus(out);
+                Options.this.checkStatus(out);
+            }
+        });
+
     }//GEN-LAST:event_statusButtonActionPerformed
 
     private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
@@ -668,7 +732,7 @@ public class Options extends JPanel {
         int token = LatexTextEditor.getToken((String) tokenComboBox.getSelectedItem());
         try {
             colorSetTextField.setForeground(Utils.getColorFromString(color));
-            
+
             SavedVariables.setColor(token, color);
         } catch (Exception e) {
             color = Utils.getStringFromColor(SavedVariables.getColor(token));
@@ -697,6 +761,7 @@ public class Options extends JPanel {
     private javax.swing.JButton commitButton;
     private javax.swing.JTextField customDictTextField;
     private javax.swing.JTextField gitFolderInput;
+    private javax.swing.JTextArea gitOutputText;
     private javax.swing.JTextField globalDictTextField;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
@@ -711,18 +776,17 @@ public class Options extends JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
     private javax.swing.JLabel openEditorLabel;
     private javax.swing.JTextField openInput;
     private javax.swing.JTextField outputDirInput;
-    private javax.swing.JTextArea outputView;
     private javax.swing.JCheckBox parsingCheckBox;
     private javax.swing.JTextField pdflatexInput;
     private javax.swing.JButton pullButton;

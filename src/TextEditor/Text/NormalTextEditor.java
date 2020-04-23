@@ -46,7 +46,7 @@ public class NormalTextEditor extends BaseTextEditor {
 
      
         // adding spell checker
-        //this.setupSpellChecker("/Users/mbrebion/Downloads/fra.txt");
+        
 
 
         // adding auto-completion abilities
@@ -57,8 +57,8 @@ public class NormalTextEditor extends BaseTextEditor {
     
 
     @Override
-    public void setupSpellChecker(String file) {
-            this.setDictParser(file,"./customDic.txt");
+    public void setupSpellChecker() {
+            this.setDictParser();
             //parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());
             parser.setSquiggleUnderlineColor(Color.BLACK);
             this.clearParsers();

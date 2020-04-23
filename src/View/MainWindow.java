@@ -6,25 +6,26 @@
 package View;
 
 import Helper.SavedVariables;
+import com.formdev.flatlaf.FlatLightLaf;
 import exerciceexplorer.Exercice;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -49,7 +50,7 @@ public final class MainWindow extends javax.swing.JFrame {
 
     JMenuBar menuBar;
     protected AbstractAction replaceKeywordAction, replaceWordAction, checkAllExercicesAction;
-    protected JMenu global;
+    protected JMenu global, file;
 
     public MainWindow() {
         SavedVariables.prefs = Preferences.userNodeForPackage(this.getClass());
@@ -68,10 +69,27 @@ public final class MainWindow extends javax.swing.JFrame {
         };
 
         setMainMenuBarItems();
+        updateMenuBar();
 
     }
 
     protected void setMainMenuBarItems() {
+        
+        // file : 
+        
+        file = new JMenu("Fichier");
+        JMenuItem newExo = new JMenuItem("Nouvel exercice");
+        newExo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainWindow.this.creationSujetView1.toggleCreateNewExercicePanel();
+            }
+        });
+        int mod = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+        newExo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,mod));
+        file.add(newExo);
+        
+        // global : 
         replaceKeywordAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,7 +101,7 @@ public final class MainWindow extends javax.swing.JFrame {
         replaceWordAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainWindow.this.editorTabbedPane.insertTab("remplacement de mot clef", null, new ReplaceWordPanel(MainWindow.this), "", 0);
+                MainWindow.this.editorTabbedPane.insertTab("remplacement de mot", null, new ReplaceWordPanel(MainWindow.this), "", 0);
                 MainWindow.this.editorTabbedPane.setSelectedIndex(0);
             }
         };
@@ -125,6 +143,11 @@ public final class MainWindow extends javax.swing.JFrame {
 
     protected void updateMenuBar() {
         menuBar.removeAll();
+        menuBar.add(file);
+        // file menu
+        
+        
+        
         this.updateGlobalMenuBarStatus();
 
         ArrayList<MenuBarItemProvider> editingPanels = new ArrayList<>();
@@ -291,15 +314,17 @@ public final class MainWindow extends javax.swing.JFrame {
         rightPane.setLayout(rightPaneLayout);
         rightPaneLayout.setHorizontalGroup(
             rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 482, Short.MAX_VALUE)
+            .addGap(0, 487, Short.MAX_VALUE)
             .addGroup(rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(editorTabbedPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightPaneLayout.createSequentialGroup()
+                    .addComponent(editorTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         rightPaneLayout.setVerticalGroup(
             rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 613, Short.MAX_VALUE)
             .addGroup(rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(editorTabbedPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE))
+                .addComponent(editorTabbedPane, javax.swing.GroupLayout.Alignment.TRAILING))
         );
 
         editorTabbedPane.getAccessibleContext().setAccessibleName("");
@@ -310,16 +335,16 @@ public final class MainWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(3, 3, 3)
                 .addComponent(middlePane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addGap(3, 3, 3)
                 .addComponent(rightPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(middlePane, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
+            .addComponent(middlePane, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
             .addComponent(rightPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -360,12 +385,8 @@ public final class MainWindow extends javax.swing.JFrame {
                     System.setProperty("apple.laf.useScreenMenuBar", "true");
                     System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Exercice Explorer");
                 }
-
-                try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                FlatLightLaf.install(); // nice flat look and feel
+                
                 new MainWindow().setVisible(true);
 
                 // error reporting : 
