@@ -208,10 +208,19 @@ public class LatexTextEditor extends BaseTextEditor {
 
         DefaultCompletionProvider provider = new DefaultCompletionProvider();
         provider.setAutoActivationRules(true, "");
+        AutoCompletion acb = new AutoCompletion(provider);
+        acb.setAutoCompleteEnabled(true);
+        acb.setAutoActivationEnabled(true);
+        acb.setAutoCompleteSingleChoices(false);
+        acb.setParameterAssistanceEnabled(true);
+        acb.setChoicesWindowSize(260, 90);
+        
         // general latex templates
         provider.addCompletion(new TemplateCompletion(provider, "begin{itemize}", "begin{itemize} ... \\end{itemize}", "begin{itemize}\n\t\\item ${cursor}\n\t\\item \n\\end{itemize} ", "Liste", "Liste"));
         provider.addCompletion(new TemplateCompletion(provider, "begin{enumerate}", "begin{enumerate} ... \\end{enumerate}", "begin{enumerate}\n\t\\item ${cursor}\n\t\\item \n\\end{enumerate} ", "Liste numérotée", "Liste numérotée"));
-
+        provider.addCompletion(new TemplateCompletion(provider, "begin{env}", "begin{env} ... \\end{env}", "begin{${env}}\n\t \n\\end{${env}} ", "nouvel environnement", "nouvel environnement"));
+        
+        
         // specific latex templates
         provider.addCompletion(new TemplateCompletion(provider, "partie{", "partie{...}", "partie{${cursor}}\n", "Partie", "Partie"));
         provider.addCompletion(new TemplateCompletion(provider, "sousPartie{", "sousPartie{...}", "sousPartie{${cursor}}\n", "Sous-partie", "Sous-partie"));
@@ -225,13 +234,8 @@ public class LatexTextEditor extends BaseTextEditor {
         // maths accelerators templates
         provider.addCompletion(new TemplateCompletion(provider, "frac{", "frac{...}{...}", "frac{${cursor}}{}", "Fraction", "Fraction"));
 
-        AutoCompletion acb = new AutoCompletion(provider);
+        
         acb.install(this);
-        acb.setAutoCompleteEnabled(true);
-        acb.setAutoActivationEnabled(true);
-        acb.setAutoCompleteSingleChoices(false);
-        acb.setParameterAssistanceEnabled(true);
-        acb.setChoicesWindowSize(260, 90);
     }
 
     private void setupJMenus() {
@@ -257,6 +261,7 @@ public class LatexTextEditor extends BaseTextEditor {
 
             }
         }));
+                
 
         debugMenu.add(createMenuItem(new TextAction("switchToMMB") {
             @Override
@@ -264,6 +269,17 @@ public class LatexTextEditor extends BaseTextEditor {
                 LatexTokenMaker.login = "mmb";
                 LatexTextEditor.this.updateWholeDocumentHighlighting();
             }
+        }));
+        
+        debugMenu.add(createMenuItem(new TextAction("parseText") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LatexParserBase  lpi = new LatexParserImpl();
+                lpi.parseText( LatexTextEditor.this.getText());
+                LatexTextEditor.this.setText(lpi.outputResult());
+                
+            }
+            
         }));
 
         RecordableTextAction tq = new RecordableTextAction("toggle questions") {

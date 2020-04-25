@@ -364,7 +364,7 @@ public static final int FIRST_MULT = FORMER_BALANCE_MULT*10;
 %}
 
 
-Letter					= ([azertyuiopmlkjhgfdsqwxcvbnAZERTYUIOPMLKJHGFDSQWXCVBNéèêëàâùûüöôç@Éïî])
+Letter					= ([azertyuiopmlkjhgfdsqwxcvbnAZERTYUIOPMLKJHGFDSQWXCVBNéèêëàâùûüöôç@ÉïîÀ])
 Digit					= ([0-9])
 LetterOrUnderscore		        = ({Letter}|[_])
 AnyChar					= ({LetterOrUnderscore}|{Digit}|[\-])
