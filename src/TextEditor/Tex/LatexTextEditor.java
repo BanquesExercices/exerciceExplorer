@@ -277,7 +277,6 @@ public class LatexTextEditor extends BaseTextEditor {
                 LatexParserBase  lpi = new LatexParserImpl();
                 lpi.parseText( LatexTextEditor.this.getText());
                 LatexTextEditor.this.setText(lpi.outputResult());
-                
             }
             
         }));

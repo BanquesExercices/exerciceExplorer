@@ -2,3 +2,5 @@ conservative
 extrémale
 qu
 colinéaires
+volumique
+inductance

@@ -17,31 +17,27 @@ import java.util.LinkedList;
 public abstract class LatexParserBase {
 
     protected ArrayList<String> lines = new ArrayList<>();
-    protected LinkedList<String> formerBlocks = new LinkedList<>();
     protected LinkedList<Integer> formerStates = new LinkedList<>();
+    protected LinkedList<Integer> formerBracketCount = new LinkedList<>();
 
     protected String currentLine = "";
     protected int currentIndent = 0;
     protected int currentState = 0;
-    protected int bracketCount = 0;
+    protected int currentBracketCount = 0;
     protected int outerBracketBalance = 0;
 
     /**
      * lexical states
      */
-    /**
-     * lexical states
-     */
-  public static final int TCOLSA = 5;
-  public static final int YYINITIAL = 0;
-  public static final int MLE = 4;
-  public static final int ADDQ = 2;
-  public static final int BLOCK = 1;
-  public static final int TCOLSB = 6;
-  public static final int ADDA = 3;
+      public static final int BLOCK_A = 2;
+      public static final int YYINITIAL = 0;
+      public static final int BLOCK_Q = 1;
+      public static final int BRACKET_BLOCK = 3;
+  
 
     public LatexParserBase() {
         formerStates.add(YYINITIAL);
+        formerBracketCount.add(0);
     }
 
     public void printResult() {
@@ -52,6 +48,12 @@ public abstract class LatexParserBase {
         System.out.println("--------------------");
     }
 
+    /**
+     * This method should be used after <code> parseText <\code> has been
+     * called.
+     *
+     * @return the String containing the result of the parsing.
+     */
     public String outputResult() {
         StringBuilder sb = new StringBuilder(lines.size() * 30);
         for (String l : lines) {
@@ -61,6 +63,12 @@ public abstract class LatexParserBase {
         return sb.toString();
     }
 
+    /**
+     * This methods start parsing the input String Results are gatherer in <code> lines.
+     * </code>.
+     *
+     * @param txt the String that will be parsed
+     */
     public void parseText(String txt) {
         Reader r = new StringReader(txt);
         this.yyreset(r);
@@ -77,8 +85,13 @@ public abstract class LatexParserBase {
     public abstract void yybegin(int v);
 
     /**
+     *
      * DEALING WITH Lines
      *
+     */
+    /**
+     * End a line by taking into account the indent level. The line is then
+     * added to <code> lines </code> list.
      */
     protected void endLine() {
         // do indent the line
@@ -87,10 +100,14 @@ public abstract class LatexParserBase {
         for (int i = 0; i < currentIndent; i++) {
             indent += "\t";
         }
-        this.lines.add(indent + currentLine);
+        this.lines.add(indent + currentLine.trim());
         currentLine = "";
     }
 
+    /**
+     * Add a white-space to the current line except on start (indenting is
+     * performed by this parser).
+     */
     protected void addWhiteSpace() {
         // white space not added at the begening of the line
         if (currentLine.length() > 0) {
@@ -99,223 +116,201 @@ public abstract class LatexParserBase {
     }
 
     /**
+     *
      * DEALING WITH BRACKETS
      *
      */
-    public void initBracketBlock() {
-        bracketCount = 0;
-    }
-
+    /**
+     * Add an opening bracket to the output and increase counter. the "\{"
+     * character should not be followed by a call to this method.
+     */
     public void addOpenBracket() {
-        bracketCount++;
+        currentBracketCount++;
         this.currentLine += "{";
     }
 
+    /**
+     * Add an closing bracket to the output and decrease counter. the "\}"
+     * character should not be followed by a call to this method.
+     */
     public void addCloseBracket() {
-        bracketCount--;
+        currentBracketCount--;
         this.currentLine += "}";
     }
 
+    /**
+     * Check if a bracket block is closed.
+     *
+     * @return Whether the current bracket block is finished.
+     */
     public boolean isEndOfBlock() {
-        return bracketCount == 0;
+        return currentBracketCount == 0;
     }
-
-    ////////////// states ///////////////
+    
+    
+    /**
+     *
+     * DEALING WITH STATES
+     *
+     */
+    
+    
+    /**
+     * Save state to LIFO lists (piles) and switch to new parser state.
+     *
+     * @param state the new state to go in (may be the same as the current one).
+     */
     public void switchToNewState(int state) {
         this.formerStates.addLast(state);
-        this.yybegin(state);
+        this.formerBracketCount.addLast(currentBracketCount);
+        this.currentBracketCount = 0;
+        currentState = state;
+        this.yybegin(currentState);
     }
 
+    /**
+     * go back to previous state and retrieve usefull data from piles (balance
+     * of brackets, state name).
+     */
     public void returnToOldState() {
         this.formerStates.pollLast();
-        int former = formerStates.getLast();
-        this.yybegin(former);
+        currentState = formerStates.getLast();
+        currentBracketCount = formerBracketCount.pollLast();
+        this.yybegin(currentState);
     }
 
-    public void startBlock(String name) {
-        this.formerBlocks.addLast(name);
+    /*
+    *             \begin{} ... \end{}   block section
+     */
+    /**
+     * Start a new block with <code> \begin{xxx} </code> syntax. - deal with
+     * state - deal with formating
+     *
+     */
+    public void startBlock() {
         if (!"".equals(this.currentLine)) {
             // non empty line : the previous line must be ended
             this.endLine();
         }
-        this.currentLine += "\\begin{" + name + "}";
+        this.currentLine += yytext().replace(" ","").replace("\n", ""); // TODO : improve to take options into account ; lexer must be adapted.
         this.endLine();
         this.currentIndent++;
-        this.switchToNewState(BLOCK);
     }
 
+    /**
+     * End the last block started with <code> \begin{xxx} </code> syntax. The
+     * name is automaticaly retrieved. Deal with formating
+     */
     public void endBlock() {
-        String name = this.formerBlocks.pollLast();
+        
         if (!"".equals(this.currentLine)) {
             // non empty line : the previous line must be ended
             this.endLine();
         }
         this.currentIndent--;
-        this.currentLine += "\\end{" + name + "}";
+        this.currentLine += yytext().replace(" ","").replace("\n", "");
         this.endLine();
-        this.returnToOldState();
-
     }
 
-    public void startADDQ() {
-        this.bracketCount++;
+    /**
+     * Enters a block delimited by brackets This may be use for blocks like <br>
+     * <code>
+     * \eq{ <br>
+     * &emsp 2+\frac{4}{2}=4 <br>
+     * }<br>
+     * </code>
+     *
+     * @param command the command that started the bracket block (like <code> eq
+     * </code> or <code> addQ </code>).
+     */
+    public void startBracketBloc(String command) {
+        this.switchToNewState(BRACKET_BLOCK); // save previous state
+        this.currentBracketCount++; // the lexer must has matched an opening bracked
+
         if (!"".equals(this.currentLine)) {
             // non empty line : the previous line must be ended
             this.endLine();
         }
-        this.currentLine += "\\addQ{";
-        this.endLine();
+
+        this.currentLine += command.replace(" ", "").replace("\n", ""); // white spaces are removed
+        this.endLine(); // a new line is enforced.
         this.currentIndent++;
-        this.switchToNewState(ADDQ);
     }
 
-    public void endADDQ() {
+    /**
+     * Leave a block delimited by brackets if this one is closed. Else Go on.
+     * <br>
+     * This method should be called when the lexer match "}" or "}{" only.
+     */
+    public void endBracketBlock() {
+
+        this.currentBracketCount--; // at least a "}" must have been matched
         if (!this.isEndOfBlock()) {
+            // if the block is not closed.
             String txt = yytext();
-            if (txt.contains("\n")) {
-                this.currentLine += txt.replace("\n", "");
-                this.endLine();
+            if (txt.contains("{")) {
+                this.currentLine += "}{";
             } else {
-                this.currentLine += yytext();
+                this.currentLine += "}";
+            }
+
+            while (txt.contains("\n")) { // multiple blank lines catched this way must be carefully dealt with.
+                txt = txt.replaceFirst("\n", "");
+                this.endLine();
+            }
+
+            if (txt.contains("{")) {
+                this.currentBracketCount++;
             }
             return;
         }
+        // here, we expect a closed block
 
         if (!"".equals(this.currentLine)) {
             // non empty line : the previous line must be ended
             this.endLine();
         }
-        this.currentIndent--;
-        this.currentLine += "}{";
-        this.endLine();
-        this.currentIndent++;
-        this.returnToOldState();
-        this.switchToNewState(ADDA);
+
+        if (!yytext().contains("{")) {
+            // the bracket block is finished and no more are expected.
+            this.currentIndent--;
+            this.currentLine += "}";
+            this.endLine();    // TODO : add more logic to deal with different amount of blank lines after bracket blocks
+            this.endLine();
+            this.returnToOldState();
+        } else {
+            // the bracket block is finished but another one is expected
+
+            this.currentIndent--;
+            this.currentLine += "}{";
+            this.currentBracketCount++;
+            this.endLine();
+            this.currentIndent++;
+        }
 
     }
-
-    public void endADDA() {
-        this.bracketCount--;
-        if (!this.isEndOfBlock()) {
-            String txt = yytext();
-            if (txt.contains("\n")) {
-                this.currentLine += txt.replace("\n", "");
-                this.endLine();
-            } else {
-                this.currentLine += yytext();
-            }
-            return;
-        }
-
-        if (!"".equals(this.currentLine)) {
-            // non empty line : the previous line must be ended
-            this.endLine();
-        }
-        this.currentIndent--;
-        this.currentLine += "}";
-        this.endLine();
-        this.endLine();
-        this.endLine();
-        this.returnToOldState();
-    }
-
-    public void startEq() {
-        this.outerBracketBalance = this.bracketCount;
-        this.bracketCount = 1;
-        if (!"".equals(this.currentLine)) {
-            // non empty line : the previous line must be ended
-            this.endLine();
-        }
-        this.currentLine += "\\eq{";
-        this.endLine();
-        this.currentIndent++;
-        this.switchToNewState(MLE);
-    }
-
-    public void endEq() {
-        this.bracketCount--;
-
-        if (!this.isEndOfBlock()) {
-            String txt = yytext();
-            if (txt.contains("\n")) {
-                this.currentLine += txt.replace("\n", "");
-                this.endLine();
-            } else {
-                this.currentLine += yytext();
-            }
-            return;
-        }
-        this.bracketCount = this.outerBracketBalance;
-
-        if (!"".equals(this.currentLine)) {
-            // non empty line : the previous line must be ended
-            this.endLine();
-        }
-        this.currentIndent--;
-        this.currentLine += "}";
-        this.endLine();
-        this.returnToOldState();
-    }
-
-    public void startTcolsA() {
-        this.bracketCount++;
-        if (!"".equals(this.currentLine)) {
-            // non empty line : the previous line must be ended
-            this.endLine();
-        }
-        this.currentLine += yytext().replace(" ", "");
-        this.endLine();
-        this.currentIndent++;
-        this.switchToNewState(TCOLSA);
-    }
-
-    public void endTcolsA() {
-        if (!this.isEndOfBlock()) {
-            String txt = yytext();
-            if (txt.contains("\n")) {
-                this.currentLine += txt.replace("\n", "");
-                this.endLine();
-            } else {
-                this.currentLine += yytext();
-            }
-            return;
-        }
-
-        if (!"".equals(this.currentLine)) {
-            // non empty line : the previous line must be ended
-            this.endLine();
-        }
-        this.currentIndent--;
-        this.currentLine += "}{";
-        this.endLine();
-        this.currentIndent++;
-        this.returnToOldState();
-        this.switchToNewState(TCOLSB);
-
-    }
-
-    public void endTcolsB() {
-        this.bracketCount--;
-        if (!this.isEndOfBlock()) {
-            String txt = yytext();
-            if (txt.contains("\n")) {
-                this.currentLine += txt.replace("\n", "");
-                this.endLine();
-            } else {
-                this.currentLine += yytext();
-            }
-            return;
-        }
-
-        if (!"".equals(this.currentLine)) {
-            // non empty line : the previous line must be ended
-            this.endLine();
-        }
-        this.currentIndent--;
-        this.currentLine += "}";
-        this.endLine();
-        this.endLine();
-        this.returnToOldState();
+    
+    
+    /*
+    *
+    *          Adapting badly written exercices syntax
+    *
+    */
+    
+    /**
+     * This method is called when a badly written exercice is catched
+     * It should be written in the format <br> <code>
+     * &emsp {titre} <br>
+     * &emsp {enonce} <br>
+     * &emsp {corrige} <br>
+     * </code>
+     * <br>
+     * Every parent group of kind begin{enumerate} will be cast into multiples questions starting with addQ
+     * Every answers will be assotiaced with the correct question
+     * Warning will be printed to text if the amount of answers and questions differ.
+     */
+    public void startCatchingBadExercice(){
+    
     }
 
 }

@@ -373,7 +373,7 @@ Whitespace				= ([ \t\f])
 LineCommentBegin		= "%"
 
 
-URLSubDelim				= ([#><\^?\!\&\(\)\*\+:\.,\/;=\[\]\\])
+URLSubDelim				= ([#><\^?\!\&\(\)\*\+:\.,\/;=\[\]\\|\"\~])
 OpenBracket                              =([\{])
 CloseBracket                              =([\}])
 RAnyChar                                 = ({AnyChar} | {OpenBracket} | {CloseBracket} | {URLSubDelim}  )

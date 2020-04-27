@@ -51,7 +51,7 @@ Appost                                   = (['])
 Whitespace				= ([ \t\f])
 
 
-URLSubDelim				= ([#><\^?\!\&\(\)\*\+:\.,\/;=\[\]\\])
+URLSubDelim				= ([#><\^?\!\&\(\)\*\+:\.,\/;=\[\]\\~|\"])
 OpenBracket                              =([\{])
 CloseBracket                              =([\}])
 RAnyChar                                 = ({AnyChar} | {OpenBracket} | {CloseBracket} | {URLSubDelim}  )
@@ -60,41 +60,34 @@ RAnyCharWB                                 = ({AnyChar} |  {URLSubDelim} | (\\\{
 Sentence                                 = ({RAnyChar} | {Whitespace} |{Appost} )
 SentenceWB                                 = ({RAnyCharWB} | {Whitespace} |{Appost} )
 
-BLOCKbegin = ("\\begin{"{AnyChar}+"}")("\n")?
-BLOCKend = ("\\end{"{AnyChar}+"}")("\n")?
-ADDQbegin = ("\\addQ{")("\n")?
-MLEbegin = ("\\eq{")("\n")?
+BLOCKbegin = ("\\begin{"{AnyChar}+"}") {Sentence} ("\n")+
+BLOCKend = ("\\end{"{AnyChar}+"}")("\n")*
+ADDQbegin = ("\\addQ{")("\n")*
+MLEbegin = ("\\eq{")("\n")*
 ADDQloginBegin = ("\\addQ["{AnyChar}+"]{")
-TCOLSAbegin = ("\\tcols{"{Number}"}{"{Number}"}{")
+TCOLSbegin = ("\\tcols{"{Number}"}{"{Number}"}{")("\n")*
+ENONCEbegin = ("\\enonce{")("\n")*
 
-%state BLOCK
-%state ADDQ
-%state ADDA
-%state MLE
-%state TCOLSA
-%state TCOLSB
+%state BLOCK_Q
+%state BLOCK_A
+%state BRACKET_BLOCK
+
 
 %%
 
-<YYINITIAL, ADDQ, ADDA,BLOCK,MLE,TCOLSA,TCOLSB>{
+<YYINITIAL, BRACKET_BLOCK>{
 
-{MLEbegin}                                  {startEq();}
+{MLEbegin}                                 {startBracketBloc(yytext());}
+{TCOLSbegin}                               {startBracketBloc(yytext());}
+{ENONCEbegin}                              {startBracketBloc(yytext());}
+{ADDQbegin}                                {startBracketBloc(yytext());}
 
-{BLOCKbegin}                                {
-                                             // find block name in \begin{name}
-                                             String name = yytext().substring(7, yytext().length()-2);
-                                             // start new block
-                                                this.startBlock(name);
-                                              }
+{BLOCKbegin}                                {this.startBlock();}
 
-{BLOCKend}                                   {
-                                             // end previous block
-                                             this.endBlock();
-                                              }
+{BLOCKend}                                   {this.endBlock();}
 
-{TCOLSAbegin}                               {this.startTcolsA();}
 
-("%"{Sentence}+)                         {this.currentLine += yytext();}
+("%"{Sentence}+)                            {this.currentLine += yytext(); }
 
 ([\\]{AnyChar}+)			           {this.currentLine+=yytext(); }
 ("$"{Sentence}+"$")                         {this.currentLine+=yytext(); }
@@ -102,21 +95,18 @@ TCOLSAbegin = ("\\tcols{"{Number}"}{"{Number}"}{")
 {Appost}                                    {this.currentLine+=yytext();}
 {RAnyCharWB}+                               {this.currentLine+=yytext();}
 ("\n")                                      {this.endLine();}
-
 }
 
 <YYINITIAL> {
 
-        {ADDQbegin}                                 { this.startADDQ(); }
-        {OpenBracket}                               {this.currentLine+=yytext();}
-        {CloseBracket}                              {this.currentLine+=yytext();}      
-        "\\titreExercice{"{SentenceWB}*"}"           { }
 
-        "\\partie{"{SentenceWB}*"}"                  { }
-
-        "\\sousPartie{"{SentenceWB}*"}"              { }
+        {OpenBracket}                                    {this.currentLine+=yytext();}
+        {CloseBracket}                                   {this.currentLine+=yytext();}      
+        "\\titreExercice{"{SentenceWB}*"}"("\n")?        {this.currentLine+=yytext().trim(); this.endLine(); }
+        "\\partie{"{SentenceWB}*"}"("\n")?               {this.currentLine+=yytext().trim(); this.endLine(); }
+        "\\sousPartie{"{SentenceWB}*"}"("\n")?           {this.currentLine+=yytext().trim(); this.endLine(); }
 	
-	<<EOF>>				             { return false; }
+	<<EOF>>                                         { this.endLine(); return false; }
 
 	/* Catch any other (unhandled) characters and flag them as identifiers. */
 	
@@ -126,58 +116,21 @@ TCOLSAbegin = ("\\tcols{"{Number}"}{"{Number}"}{")
 
 
 
-
-
-/* equation */
-<BLOCK>{        
+<BLOCK_Q>{        
        {OpenBracket}                                     {   addOpenBracket();}
-       {CloseBracket}                                    {   addCloseBracket(); }
+       {CloseBracket}                                    {   addCloseBracket();}
         <<EOF>>					        { return false; }
         .					        { System.err.println("not catched : " + yytext()); }
 }
 
 
-/* question */
-<ADDQ>{
+
+<BRACKET_BLOCK>{
        
-       ({CloseBracket} ({Whitespace} | "\n")* {OpenBracket}({Whitespace} | "\n")*) { bracketCount--; endADDQ() ; bracketCount++;}
+       ({CloseBracket} ({Whitespace} | "\n")* {OpenBracket}?({Whitespace} | "\n")*) {  endBracketBlock() ; }
        {OpenBracket}                                     { addOpenBracket();}
-       {CloseBracket}                                    { addCloseBracket();}
         <<EOF>>					        { return false; }
         .					        { System.err.println("not catched : " + yytext()); }
-}
-
-/* answer */
-<ADDA>{
-       {OpenBracket}                                     {   addOpenBracket();}
-       {CloseBracket}({Whitespace}|"\n")*                {   endADDA();}
-        <<EOF>>					        { return false;  }
-        .					        { System.err.println("not catched : " + yytext());  }
-}
-
-
-/* equation */
-<MLE>{
-       {OpenBracket}                                     {   addOpenBracket();}
-       {CloseBracket}({Whitespace}|"\n")*                {   endEq();}
-        <<EOF>>					        {   return false;  }
-        .					        {   System.err.println("not catched : " + yytext());  }
-}
-
-
-/* multicols */
-<TCOLSA>{
-       {OpenBracket}                                     {   addOpenBracket();}
-       ({CloseBracket} ({Whitespace} | "\n")* {OpenBracket}({Whitespace} | "\n")*) { bracketCount--; endTcolsA() ; bracketCount++;}
-        <<EOF>>					        {   return false;  }
-        .					        {   System.err.println("not catched : " + yytext());  }
-}
-
-<TCOLSB>{
-       {OpenBracket}                                     {   addOpenBracket();}
-       {CloseBracket}({Whitespace}|"\n")*                {   endTcolsB();}
-        <<EOF>>					        { return false;  }
-        .					        { System.err.println("not catched : " + yytext());  }
 }
 
 
