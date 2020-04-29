@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package TextEditor.Tex;
+package TextEditor.Tex.Indenting;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -14,7 +14,7 @@ import java.util.LinkedList;
  *
  * @author mbrebion
  */
-public abstract class LatexParserBase {
+public abstract class LatexIndenterBase {
 
     protected ArrayList<String> lines = new ArrayList<>();
     protected LinkedList<Integer> formerStates = new LinkedList<>();
@@ -35,7 +35,7 @@ public abstract class LatexParserBase {
       public static final int BRACKET_BLOCK = 3;
   
 
-    public LatexParserBase() {
+    public LatexIndenterBase() {
         formerStates.add(YYINITIAL);
         formerBracketCount.add(0);
     }
@@ -229,6 +229,9 @@ public abstract class LatexParserBase {
 
         if (!"".equals(this.currentLine)) {
             // non empty line : the previous line must be ended
+            this.endLine();
+        }
+        if (command.contains("addQ")){
             this.endLine();
         }
 

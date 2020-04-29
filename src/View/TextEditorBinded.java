@@ -11,7 +11,7 @@ import Helper.Utils;
 import TexRessources.TexWriter;
 import TextEditor.Base.BaseTextEditor;
 import TextEditor.Tex.LatexTextEditor;
-import TextEditor.Tex.LatexTokenMaker;
+import TextEditor.Tex.Coloring.LatexTokenMaker;
 import TextEditor.Text.NormalTextEditor;
 import java.io.File;
 import java.nio.charset.Charset;

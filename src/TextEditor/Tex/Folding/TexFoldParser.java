@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package TextEditor.Tex;
+package TextEditor.Tex.Folding;
 
 /**
  *
@@ -28,9 +28,9 @@ public class TexFoldParser implements FoldParser {
 
     protected Pattern p;
     // basic parsing of the whole file is done while procecing folding locations
-    protected List<Integer> questionsList = new ArrayList<>();
-    protected List<String> tagsList = new ArrayList<>();
-    protected MyObservable obs;
+    public List<Integer> questionsList = new ArrayList<>();
+    public List<String> tagsList = new ArrayList<>();
+    public MyObservable obs;
 
     public TexFoldParser() {
         this.buildPattern();

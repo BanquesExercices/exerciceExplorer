@@ -5,6 +5,11 @@
  */
 package TextEditor.Tex;
 
+import TextEditor.Tex.Folding.TexFoldParser;
+import TextEditor.Tex.Coloring.LatexTokenMaker;
+import TextEditor.Tex.Indenting.LatexIndenterImpl;
+import TextEditor.Tex.Importing.LatexExerciceConverter;
+import TextEditor.Tex.Indenting.LatexIndenterBase;
 import Helper.SavedVariables;
 import TextEditor.Base.BaseTextEditor;
 import java.awt.Color;
@@ -274,7 +279,7 @@ public class LatexTextEditor extends BaseTextEditor {
         debugMenu.add(createMenuItem(new TextAction("parseText") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LatexParserBase  lpi = new LatexParserImpl();
+                LatexIndenterBase  lpi = new LatexIndenterImpl();
                 lpi.parseText( LatexTextEditor.this.getText());
                 LatexTextEditor.this.setText(lpi.outputResult());
             }

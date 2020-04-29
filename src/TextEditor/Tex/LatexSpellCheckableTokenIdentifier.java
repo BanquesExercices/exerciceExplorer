@@ -9,6 +9,7 @@
  */
 package TextEditor.Tex;
 
+import TextEditor.Tex.Coloring.LatexTokenMaker;
 import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.spell.SpellCheckableTokenIdentifier;
 

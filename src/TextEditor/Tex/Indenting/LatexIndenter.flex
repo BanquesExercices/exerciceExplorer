@@ -7,14 +7,14 @@
  * 
  * 
  */
-package TextEditor.Tex;
+package TextEditor.Tex.Indenting;
 import java.io.IOException;
 %%
 
 %public
-%class LatexParserImpl
+%class LatexIndenterImpl
 %unicode
-%extends LatexParserBase
+%extends LatexIndenterBase
 %type boolean
 
 %{
@@ -23,7 +23,7 @@ import java.io.IOException;
 	 * Constructor.  This must be here because JFlex does not generate a
 	 * no-parameter constructor.
 	 */
-	public LatexParserImpl() {
+	public LatexIndenterImpl() {
             super();
 	}
 

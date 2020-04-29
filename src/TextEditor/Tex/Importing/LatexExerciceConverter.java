@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package TextEditor.Tex;
+package TextEditor.Tex.Importing;
 
+import TextEditor.Tex.Indenting.LatexIndenterBase;
+import TextEditor.Tex.Indenting.LatexIndenterImpl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +64,7 @@ public class LatexExerciceConverter {
         text=text.replace("fake_closed_bracket", "\\}");
 
         // result should be formated : 
-        LatexParserBase lpi = new LatexParserImpl();
+        LatexIndenterBase lpi = new LatexIndenterImpl();
         lpi.parseText(output);
         //return lpi.outputResult();
         return output;

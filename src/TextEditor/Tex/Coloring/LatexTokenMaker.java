@@ -10,7 +10,7 @@
  * This library is distributed under a modified BSD license.  See the included
  * LICENSE file for details.
  */
-package TextEditor.Tex;
+package TextEditor.Tex.Coloring;
 
 import java.io.*;
 import javax.swing.text.Segment;

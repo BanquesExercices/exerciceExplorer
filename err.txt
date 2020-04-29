@@ -66,11 +66,3 @@ Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
 	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
 	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
-not catched : «
-not catched : »
-not catched : %
-not catched : %
-not catched : %
-not catched : %
-not catched : %
-not catched : %
