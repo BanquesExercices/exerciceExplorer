@@ -4,3 +4,6 @@ qu
 colinéaires
 volumique
 inductance
+ferromagnétique
+tore
+hystérésis

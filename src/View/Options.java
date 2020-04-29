@@ -64,7 +64,6 @@ public class Options extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel3 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
         jPanel2 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
@@ -108,10 +107,6 @@ public class Options extends JPanel {
         jSeparator4 = new javax.swing.JSeparator();
 
         setMaximumSize(new java.awt.Dimension(430, 32767));
-        setPreferredSize(new java.awt.Dimension(360, 660));
-
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 20)); // NOI18N
-        jLabel3.setText("Options");
 
         jLabel9.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
         jLabel9.setText("Actions :");
@@ -127,7 +122,7 @@ public class Options extends JPanel {
 
         jCheckBox2.setSelected(SavedVariables.getMultiEdit());
         jCheckBox2.setText("Mode avancé");
-        jCheckBox2.setToolTipText("<html> Permet d'activer le mode <em>avancé</em> <br> \nqui permet de modifier simultanément plusieurs exercices <br>\n(find and replace) sur les mots clefs ou bien des expressions présentes <br>\ndans les fichiers sujet.tex et aussi de verifier la compilation de l'ensemble des exercices.\n</html>");
+        jCheckBox2.setToolTipText("<html> Permet d'activer le mode <em>avancé</em> <br> \nqui permet de modifier simultanément plusieurs exercices <br>\n(find and replace) sur les mots clefs ou bien des expressions présentes <br>\ndans les fichiers sujet.tex et aussi de verifier si l'ensemble des exercices compile sans erreur.\n</html>");
         jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox2ActionPerformed(evt);
@@ -165,6 +160,7 @@ public class Options extends JPanel {
         jPanel5.setLayout(new java.awt.GridLayout(1, 0));
 
         statusButton.setText("Status");
+        statusButton.setToolTipText("Vérifie les actions GIT à effectuer.");
         statusButton.setMaximumSize(new java.awt.Dimension(60, 22));
         statusButton.setMinimumSize(new java.awt.Dimension(60, 22));
         statusButton.setPreferredSize(new java.awt.Dimension(60, 22));
@@ -176,7 +172,7 @@ public class Options extends JPanel {
         jPanel5.add(statusButton);
 
         pushButton.setText("Push");
-        pushButton.setToolTipText("<html>\nEnvoie le dernier commit sur le serveur. \n<br>\nLes conflits n'étant pas gérés à partir de l'interface graphique. Il faudra dans ce cas utiliser un logiciel dédié ou bien le terminal.\n</html>");
+        pushButton.setToolTipText("<html>\nEnvoie le dernier commit effetué (sauvegarde) sur le serveur. \n<br>\nLes conflits (plusieurs personnes modifiant le même fichier en même temps) n'étant pas gérés à partir de l'interface graphique. Il faudra dans ce cas utiliser un logiciel dédié ou bien le terminal.\n</html>");
         pushButton.setEnabled(false);
         pushButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -186,7 +182,7 @@ public class Options extends JPanel {
         jPanel5.add(pushButton);
 
         pullButton.setText("Pull");
-        pullButton.setToolTipText("Réccupère les nouvelles données depuis le serveur.");
+        pullButton.setToolTipText("Réccupère les nouvelles données (dernier commit) depuis le serveur.");
         pullButton.setEnabled(false);
         pullButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -196,7 +192,7 @@ public class Options extends JPanel {
         jPanel5.add(pullButton);
 
         commitButton.setText("Commit");
-        commitButton.setToolTipText("Réalise un commit du repo git. Les fichiers existant et modifiés sont automatiqument ajoutés.");
+        commitButton.setToolTipText("Réalise une sauvegarde (commit) de la base de donnée. Ce commit pourra ensuite être envoyé sur le serveur (push)");
         commitButton.setEnabled(false);
         commitButton.setMaximumSize(new java.awt.Dimension(70, 29));
         commitButton.setMinimumSize(new java.awt.Dimension(70, 29));
@@ -308,6 +304,7 @@ public class Options extends JPanel {
         );
 
         parsingCheckBox.setText("Analyse du document");
+        parsingCheckBox.setToolTipText("Permet d'utiliser le folding et de visualiser rapidement le nombre de questions présentes dans un sujet.");
         parsingCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 parsingCheckBoxActionPerformed(evt);
@@ -315,6 +312,7 @@ public class Options extends JPanel {
         });
 
         coloringCheckBox.setText("Coloration syntaxique");
+        coloringCheckBox.setToolTipText("Active (ou non) la coloration syntaxique. Cette option peut ralentir la saisie/modification du texte.");
         coloringCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 coloringCheckBoxActionPerformed(evt);
@@ -323,6 +321,7 @@ public class Options extends JPanel {
 
         coloringPanel.setVisible(SavedVariables.getColoring());
 
+        tokenComboBox.setToolTipText("Type d'élément");
         for (String s:LatexTextEditor.getTokenNames()){
             tokenComboBox.addItem(s);
         }
@@ -333,6 +332,7 @@ public class Options extends JPanel {
         });
 
         colorSetTextField.setText("jTextField1");
+        colorSetTextField.setToolTipText("Couleur au format r,g,b");
         tokenComboBoxAction();
         colorSetTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -342,6 +342,7 @@ public class Options extends JPanel {
 
         titlesCheckBox.setSelected(SavedVariables.getBigTitles());
         titlesCheckBox.setText("Titres et parties en grand");
+        titlesCheckBox.setToolTipText("Affiche les titres des parties et sous parties en plus grand");
         titlesCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 titlesCheckBoxActionPerformed(evt);
@@ -533,10 +534,6 @@ public class Options extends JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(4, 4, 4)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jSeparator2)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -554,9 +551,7 @@ public class Options extends JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -572,7 +567,7 @@ public class Options extends JPanel {
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -769,7 +764,6 @@ public class Options extends JPanel {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

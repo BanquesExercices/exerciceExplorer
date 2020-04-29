@@ -22,6 +22,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Observer;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -52,7 +53,7 @@ public class LatexTextEditor extends BaseTextEditor {
 
     static final String MY_LATEX_STYLE = "text/mls";
     protected TexFoldParser tfp;
-    protected JMenu debugMenu;
+    protected JMenu viewMenu;
     protected long time = 0;
     protected static Dictionary<String, Integer> tokenDict = null;
     protected static Dictionary<Integer, String> defaultColorDict = null;
@@ -135,7 +136,6 @@ public class LatexTextEditor extends BaseTextEditor {
         defaultColorDict.put(LatexTokenMaker.TOKEN_MLE, "0,80,0");
         defaultColorDict.put(LatexTokenMaker.TOKEN_ADDQ_H, "200,200,200");
 
-       
     }
 
     public void advert() {
@@ -167,7 +167,7 @@ public class LatexTextEditor extends BaseTextEditor {
         int offset = this.getCaretLineNumber();
 
         for (int i : tfp.questionsList) {
-            if (i > offset+1) {
+            if (i > offset + 1) {
                 return out;
             }
             out++;
@@ -194,8 +194,8 @@ public class LatexTextEditor extends BaseTextEditor {
 
         if (SavedVariables.getBigTitles()) {
             scheme.getStyle(LatexTokenMaker.TOKEN_TITLE).font = new Font("Times New Roman", Font.PLAIN, 20);
-            scheme.getStyle(LatexTokenMaker.TOKEN_PART).font= new Font("Times New Roman", Font.PLAIN, 16);
-            scheme.getStyle(LatexTokenMaker.TOKEN_SUB_PART).font= new Font("Times New Roman", Font.PLAIN, 14);
+            scheme.getStyle(LatexTokenMaker.TOKEN_PART).font = new Font("Times New Roman", Font.PLAIN, 16);
+            scheme.getStyle(LatexTokenMaker.TOKEN_SUB_PART).font = new Font("Times New Roman", Font.PLAIN, 14);
         }
 
         for (int token : Collections.list(defaultColorDict.keys())) {
@@ -219,13 +219,12 @@ public class LatexTextEditor extends BaseTextEditor {
         acb.setAutoCompleteSingleChoices(false);
         acb.setParameterAssistanceEnabled(true);
         acb.setChoicesWindowSize(260, 90);
-        
+
         // general latex templates
         provider.addCompletion(new TemplateCompletion(provider, "begin{itemize}", "begin{itemize} ... \\end{itemize}", "begin{itemize}\n\t\\item ${cursor}\n\t\\item \n\\end{itemize} ", "Liste", "Liste"));
         provider.addCompletion(new TemplateCompletion(provider, "begin{enumerate}", "begin{enumerate} ... \\end{enumerate}", "begin{enumerate}\n\t\\item ${cursor}\n\t\\item \n\\end{enumerate} ", "Liste numérotée", "Liste numérotée"));
         provider.addCompletion(new TemplateCompletion(provider, "begin{env}", "begin{env} ... \\end{env}", "begin{${env}}\n\t \n\\end{${env}} ", "nouvel environnement", "nouvel environnement"));
-        
-        
+
         // specific latex templates
         provider.addCompletion(new TemplateCompletion(provider, "partie{", "partie{...}", "partie{${cursor}}\n", "Partie", "Partie"));
         provider.addCompletion(new TemplateCompletion(provider, "sousPartie{", "sousPartie{...}", "sousPartie{${cursor}}\n", "Sous-partie", "Sous-partie"));
@@ -239,61 +238,56 @@ public class LatexTextEditor extends BaseTextEditor {
         // maths accelerators templates
         provider.addCompletion(new TemplateCompletion(provider, "frac{", "frac{...}{...}", "frac{${cursor}}{}", "Fraction", "Fraction"));
 
-        
         acb.install(this);
     }
 
     private void setupJMenus() {
 
-        // debug : 
-        debugMenu = new JMenu("Debug");
-        debugMenu.add(createMenuItem(new TextAction("printLastTokens") {
+        ////////////// setup edit menu
+        editMenu.addSeparator();
+        int mod = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+
+        AbstractAction indent = new AbstractAction("Indentation automatisée") {
+
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                for (int i = 0; i < LatexTextEditor.this.getLineCount(); i++) {
-                    System.out.println((i + 1) + " :  " + ((RSyntaxDocument) LatexTextEditor.this.getDocument()).getLastTokenTypeOnLine(i));
-                }
-
-            }
-        }));
-
-        debugMenu.add(createMenuItem(new TextAction("switchToOriginal") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LatexTokenMaker.login = "original";
-                LatexTextEditor.this.updateWholeDocumentHighlighting();
-
-            }
-        }));
-                
-
-        debugMenu.add(createMenuItem(new TextAction("switchToMMB") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LatexTokenMaker.login = "mmb";
-                LatexTextEditor.this.updateWholeDocumentHighlighting();
-            }
-        }));
-        
-        debugMenu.add(createMenuItem(new TextAction("parseText") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LatexIndenterBase  lpi = new LatexIndenterImpl();
-                lpi.parseText( LatexTextEditor.this.getText());
+                LatexIndenterBase lpi = new LatexIndenterImpl();
+                lpi.parseText(LatexTextEditor.this.getText());
                 LatexTextEditor.this.setText(lpi.outputResult());
             }
-            
-        }));
-        
-        debugMenu.add(createMenuItem(new TextAction("importFromText") {
+        };
+
+        JMenuItem indentItem = new JMenuItem(indent);
+        indentItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.SHIFT_MASK + mod));
+        editMenu.add(indentItem);
+        indentItem.setToolTipText("Indente automatiquement le fichier sujet.tex");
+
+        AbstractAction importAction = new AbstractAction("Conversion automatisée") {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 LatexExerciceConverter lec = new LatexExerciceConverter(LatexTextEditor.this.getText());
                 LatexTextEditor.this.setText(lec.convertToCorrectSyntax());
             }
-            
-        }));
+        };
+
+        JMenuItem importItem = new JMenuItem(importAction);
+        editMenu.add(importItem);
+        importItem.setToolTipText("Convertie automatiquement le texte au bon format :\n"
+                + "Le texte à convertir doit être de la forme \n"
+                + "\n"
+                + "     \\exo{ titre }  \n"
+                + "     { enoncé et question}  \n"
+                + "     { réponses}  \n"
+                + "\n"
+                + " - côté énoncé, les items des environnements \\begin{enumerate} ... \\end{enumerate} seront convertis en questions \n"
+                + " - côté réponses, les items des environnements \\begin{enumerate} ... \\end{enumerate} seront ajoutés aux questions en tant que réponses \n"
+                + ""
+        );
+        
+
+        ////////////// setup view menu
+        viewMenu = new JMenu("Affichage");
 
         RecordableTextAction tq = new RecordableTextAction("toggle questions") {
 
@@ -313,10 +307,9 @@ public class LatexTextEditor extends BaseTextEditor {
                 return "tq";
             }
         };
-        int mod = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
-        tq.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, mod));
-        editMenu.add(tq);
+        tq.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.SHIFT_MASK + mod));
+        viewMenu.add(tq);
 
         RecordableTextAction tr = new RecordableTextAction("toggle réponses") {
 
@@ -336,9 +329,9 @@ public class LatexTextEditor extends BaseTextEditor {
                 return "tr";
             }
         };
-        
-        tr.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,ActionEvent.SHIFT_MASK+ mod));
-        editMenu.add(tr);
+
+        tr.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.SHIFT_MASK + mod));
+        viewMenu.add(tr);
 
         RecordableTextAction te = new RecordableTextAction("toggle énoncés") {
 
@@ -359,9 +352,8 @@ public class LatexTextEditor extends BaseTextEditor {
             }
         };
 
-        te.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.SHIFT_MASK+mod));
-        editMenu.add(te);
-        editMenu.addSeparator();
+        te.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.SHIFT_MASK + mod));
+        viewMenu.add(te);
 
     }
 
@@ -372,7 +364,7 @@ public class LatexTextEditor extends BaseTextEditor {
             JMenuesEdited = true;
         }
         menuBar.add(editMenu);
-        menuBar.add(debugMenu);
+        menuBar.add(viewMenu);
     }
 
     @Override
@@ -382,7 +374,7 @@ public class LatexTextEditor extends BaseTextEditor {
             JMenuesEdited = true;
         }
         menuBar.remove(editMenu);
-        menuBar.remove(debugMenu);
+        menuBar.remove(viewMenu);
     }
 
     private JMenuItem createMenuItem(Action action) {

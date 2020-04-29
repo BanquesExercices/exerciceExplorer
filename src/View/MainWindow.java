@@ -70,13 +70,13 @@ public final class MainWindow extends javax.swing.JFrame {
 
         setMainMenuBarItems();
         updateMenuBar();
+        //rightPane.setVisible(false);
 
     }
 
     protected void setMainMenuBarItems() {
-        
+
         // file : 
-        
         file = new JMenu("Fichier");
         JMenuItem newExo = new JMenuItem("Nouvel exercice");
         newExo.addActionListener(new ActionListener() {
@@ -86,9 +86,9 @@ public final class MainWindow extends javax.swing.JFrame {
             }
         });
         int mod = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-        newExo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,mod));
+        newExo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, mod));
         file.add(newExo);
-        
+
         // global : 
         replaceKeywordAction = new AbstractAction() {
             @Override
@@ -145,30 +145,26 @@ public final class MainWindow extends javax.swing.JFrame {
         menuBar.removeAll();
         menuBar.add(file);
         // file menu
-        
-        
-        
+
         this.updateGlobalMenuBarStatus();
 
         ArrayList<MenuBarItemProvider> editingPanels = new ArrayList<>();
-        
+
         editingPanels.add(re);
         editingPanels.add(ke);
-        if (ce!=null){
+        if (ce != null) {
             editingPanels.add(ce);
         }
         editingPanels.add(se);
-        
-        
+
         for (MenuBarItemProvider mbip : editingPanels) {
             SwingUtilities.invokeLater(() -> {
-                mbip.setMenuBar(menuBar);
-                mbip.updateMenuBarView(MainWindow.this.editorTabbedPane.getSelectedComponent() == mbip || mbip == ce);
+                if (mbip != null) {
+                    mbip.setMenuBar(menuBar);
+                    mbip.updateMenuBarView(MainWindow.this.editorTabbedPane.getSelectedComponent() == mbip || mbip == ce);
+                }
             });
         }
-
-       
-       
 
     }
 
@@ -232,7 +228,6 @@ public final class MainWindow extends javax.swing.JFrame {
         this.editorTabbedPane.insertTab("Readme", null, re, "", 0);
         this.editorTabbedPane.setSelectedComponent(re);
 
-        
         ke = new KeywordsEditor(ex);
         editorTabbedPane.insertTab("Mots clés", null, ke, "", 1);
 
@@ -385,8 +380,12 @@ public final class MainWindow extends javax.swing.JFrame {
                     System.setProperty("apple.laf.useScreenMenuBar", "true");
                     System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Exercice Explorer");
                 }
+
                 FlatLightLaf.install(); // nice flat look and feel
-                
+
+                javax.swing.ToolTipManager.sharedInstance().setDismissDelay(10000);
+                javax.swing.ToolTipManager.sharedInstance().setInitialDelay(500);
+
                 new MainWindow().setVisible(true);
 
                 // error reporting : 
@@ -395,7 +394,7 @@ public final class MainWindow extends javax.swing.JFrame {
                 try {
                     fos = new FileOutputStream(file);
                     PrintStream ps = new PrintStream(fos);
-                    System.setErr(ps);
+                    //System.setErr(ps);
                 } catch (FileNotFoundException ex) {
                     System.err.println("Le fichier d'erreur n'a pu être créé/lu");
                 }

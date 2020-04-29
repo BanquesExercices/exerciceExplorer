@@ -12,7 +12,8 @@ import javax.swing.JMenuBar;
  * @author mbrebion
  */
 public interface MenuBarItemProvider {
-     public void setMenuBar(JMenuBar jmb) ;
+    
+    public void setMenuBar(JMenuBar jmb) ;
 
     public void updateMenuBarView(boolean show) ;
 }
