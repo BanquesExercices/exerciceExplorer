@@ -205,13 +205,31 @@ public static final int FIRST_MULT = FORMER_BALANCE_MULT*10;
             return bracketCount==0;
         }
 
-        public void conditionalReturnToInitial(int state){
-            // check wheter in bracker block is closed and switch state if yes.
-            if (isEndOfBlock()){
-                leaveBracketBlock();
-                yybegin(state);
+    public void conditionalReturnToInitial(int state) {
+        // check wheter in bracker block is closed and switch state if yes.
+        if (isEndOfBlock()) {
+            leaveBracketBlock();
+            switch(zzLexicalState){
+                case  ADDQ:
+                    this.addToken(TOKEN_ADDQ);
+                    break;
+                    
+                case ADDA:
+                    this.addToken(TOKEN_ADDA);
+                    break;
+                    
+                default:
+                    this.addToken(Token.SEPARATOR);
+                    break;
+            
             }
+
+            yybegin(state);
+
+        } else {
+            this.addToken(Token.SEPARATOR);
         }
+    }
 
         
         public void conditionalSwitch(String logins, int stateTrue, int stateFalse){
@@ -226,14 +244,14 @@ public static final int FIRST_MULT = FORMER_BALANCE_MULT*10;
             addToken(zzStartRead,zzMarkedPos-2, Token.FUNCTION);
             addToken(zzMarkedPos-1,zzMarkedPos-1, Token.SEPARATOR);
             first=true;
-            initBracketBlock();
+            enterBracketBlock();
             addOpenBracket();
             yybegin(newState);
         }
 
         public void beginADDQ(int newState){
             addToken(zzStartRead,zzMarkedPos-2, TOKEN_ADDQ);
-            addToken(zzMarkedPos-1,zzMarkedPos-1, Token.SEPARATOR);
+            addToken(zzMarkedPos-1,zzMarkedPos-1, TOKEN_ADDQ);
             first=true;
             initBracketBlock();
             addOpenBracket();
@@ -484,7 +502,7 @@ ADDQloginBegin = ("\\addQ["{AnyChar}+"]{")
 <MLE>{        
        {RAnyCharWB}+					{  addToken( TOKEN_MLE);  }
        {OpenBracket}                                     {  addToken( Token.SEPARATOR); addOpenBracket();}
-       {CloseBracket}                                    {  addToken( Token.SEPARATOR); addCloseBracket(); conditionalReturnToInitial(YYINITIAL);}
+       {CloseBracket}                                    {  addCloseBracket(); conditionalReturnToInitial(YYINITIAL);}
         <<EOF>>					        {  addToken( getLastTokenVal(TOKEN_MLE)); return firstToken; }
         .					        {  addToken( TOKEN_MLE);  }
 }
@@ -493,7 +511,7 @@ ADDQloginBegin = ("\\addQ["{AnyChar}+"]{")
 <MLE_IN_Q>{
        {RAnyCharWB}+					{  addToken( TOKEN_MLE_IN_Q);  }
        {OpenBracket}                                     {  addToken( Token.SEPARATOR); addOpenBracket();}
-       {CloseBracket}                                    {  addToken( Token.SEPARATOR); addCloseBracket(); conditionalReturnToInitial(ADDQ);}
+       {CloseBracket}                                    {  addCloseBracket(); conditionalReturnToInitial(ADDQ);}
         <<EOF>>					        {  addToken( getLastTokenVal(TOKEN_MLE_IN_Q)); return firstToken; }
         .					        {  addToken( TOKEN_MLE_IN_Q);  }
 }
@@ -502,7 +520,7 @@ ADDQloginBegin = ("\\addQ["{AnyChar}+"]{")
 <MLE_IN_A>{
        {RAnyCharWB}+					{  addToken( TOKEN_MLE_IN_A);  }
        {OpenBracket}                                     {  addToken( Token.SEPARATOR); addOpenBracket();}
-       {CloseBracket}                                    {  addToken( Token.SEPARATOR); addCloseBracket(); conditionalReturnToInitial(ADDA);}
+       {CloseBracket}                                    {  addCloseBracket(); conditionalReturnToInitial(ADDA);}
         <<EOF>>					        {  addToken( getLastTokenVal(TOKEN_MLE_IN_A)); return firstToken; }
         .					        {  addToken( TOKEN_MLE_IN_A);  }
 }
@@ -513,7 +531,7 @@ ADDQloginBegin = ("\\addQ["{AnyChar}+"]{")
        
        {MLEbegin}                                        {  beginMLE(MLE_IN_Q); }
        {OpenBracket}                                     {  addToken( Token.SEPARATOR); addOpenBracket();}
-       {CloseBracket}                                    {  addToken( Token.SEPARATOR); addCloseBracket(); conditionalReturnToInitial(ADDA);}
+       {CloseBracket}                                    {  addCloseBracket(); conditionalReturnToInitial(ADDA);}
                                                           /*    after the question comes the answer    */
         <<EOF>>					        {  addToken( getLastTokenVal(TOKEN_ADDQ)); return firstToken; }
         .					        {  addToken( TOKEN_ADDQ); }
@@ -522,8 +540,8 @@ ADDQloginBegin = ("\\addQ["{AnyChar}+"]{")
 /* answer */
 <ADDA>{
        {MLEbegin}                                        {  beginMLE(MLE_IN_A); }
-       {OpenBracket}                                     {  addToken( Token.SEPARATOR); addOpenBracket();}
-       {CloseBracket}                                    {  addToken( Token.SEPARATOR); addCloseBracket(); conditionalReturnToInitial(YYINITIAL);}
+       {OpenBracket}                                     {  addToken( bracketCount == 0 ? TOKEN_ADDA : Token.SEPARATOR); addOpenBracket();}
+       {CloseBracket}                                    {  addCloseBracket(); conditionalReturnToInitial(YYINITIAL);}
                                                           /*    after the answer comes the normal mode    */
         <<EOF>>					        {  addToken( getLastTokenVal(TOKEN_ADDA)); return firstToken; }
         .					        {  addToken( TOKEN_ADDA); }

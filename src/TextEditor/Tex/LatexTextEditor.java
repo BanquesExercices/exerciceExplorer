@@ -280,6 +280,15 @@ public class LatexTextEditor extends BaseTextEditor {
             }
             
         }));
+        
+        debugMenu.add(createMenuItem(new TextAction("importFromText") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LatexExerciceConverter lec = new LatexExerciceConverter(LatexTextEditor.this.getText());
+                LatexTextEditor.this.setText(lec.convertToCorrectSyntax());
+            }
+            
+        }));
 
         RecordableTextAction tq = new RecordableTextAction("toggle questions") {
 

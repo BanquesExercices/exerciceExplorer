@@ -1,6 +1,6 @@
 Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 	at View.MainWindow.lambda$updateMenuBar$1(MainWindow.java:165)
-	at View.MainWindow$$Lambda$26/302056488.run(Unknown Source)
+	at View.MainWindow$$Lambda$26/1949374015.run(Unknown Source)
 	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
 	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
 	at java.awt.EventQueue.access$400(EventQueue.java:97)
@@ -17,7 +17,7 @@ Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
 Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 	at View.MainWindow.lambda$updateMenuBar$1(MainWindow.java:165)
-	at View.MainWindow$$Lambda$26/302056488.run(Unknown Source)
+	at View.MainWindow$$Lambda$26/1949374015.run(Unknown Source)
 	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
 	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
 	at java.awt.EventQueue.access$400(EventQueue.java:97)
@@ -34,7 +34,7 @@ Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
 Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 	at View.MainWindow.lambda$updateMenuBar$1(MainWindow.java:165)
-	at View.MainWindow$$Lambda$26/302056488.run(Unknown Source)
+	at View.MainWindow$$Lambda$26/1949374015.run(Unknown Source)
 	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
 	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
 	at java.awt.EventQueue.access$400(EventQueue.java:97)
@@ -51,7 +51,7 @@ Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
 Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 	at View.MainWindow.lambda$updateMenuBar$1(MainWindow.java:165)
-	at View.MainWindow$$Lambda$26/302056488.run(Unknown Source)
+	at View.MainWindow$$Lambda$26/1949374015.run(Unknown Source)
 	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
 	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:744)
 	at java.awt.EventQueue.access$400(EventQueue.java:97)
@@ -66,3 +66,11 @@ Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
 	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
 	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+not catched : «
+not catched : »
+not catched : %
+not catched : %
+not catched : %
+not catched : %
+not catched : %
+not catched : %

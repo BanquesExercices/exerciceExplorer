@@ -45,7 +45,7 @@ public class LatexTokenMaker extends AbstractJFlexTokenMaker {
   public static final int YYEOF = -1;
 
   /** initial size of the lookahead buffer */
-  private static final int ZZ_BUFFERSIZE = 0;
+  private static final int ZZ_BUFFERSIZE = 16384;
 
   /** lexical states */
   public static final int HIDDEN_ADDQ = 5;
@@ -85,16 +85,16 @@ public class LatexTokenMaker extends AbstractJFlexTokenMaker {
     "\11\0\2\1\1\2\1\3\1\4\2\1\1\5\1\3"+
     "\2\6\1\7\1\10\1\6\2\11\1\12\1\11\2\13"+
     "\1\14\1\13\2\15\1\16\1\17\1\15\2\20\1\21"+
-    "\1\22\1\20\1\23\1\1\1\23\1\24\1\1\1\24"+
-    "\1\1\1\25\1\26\6\25\1\0\11\25\1\27\2\25"+
-    "\1\30\6\25\1\31\1\32\1\0\5\25\1\0\1\33"+
-    "\1\1\4\25\1\34\1\1\1\0\3\25\1\1\1\0"+
-    "\1\25\1\0\1\25\1\35\1\36\1\25\1\37\1\0"+
-    "\2\25\1\37\4\25\1\0\1\25\1\40\1\0\1\25"+
-    "\1\40\1\0\1\41\1\0\1\41";
+    "\1\22\1\20\1\23\1\1\1\23\1\24\1\25\1\1"+
+    "\1\24\1\1\1\26\1\27\6\26\1\0\11\26\1\30"+
+    "\2\26\1\31\6\26\1\32\1\33\1\0\5\26\1\0"+
+    "\1\34\1\1\4\26\1\35\1\1\1\0\3\26\1\1"+
+    "\1\0\1\26\1\0\1\26\1\36\1\37\1\26\1\40"+
+    "\1\0\2\26\1\40\4\26\1\0\1\26\1\41\1\0"+
+    "\1\26\1\41\1\0\1\42\1\0\1\42";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[124];
+    int [] result = new int[125];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -124,20 +124,20 @@ public class LatexTokenMaker extends AbstractJFlexTokenMaker {
     "\0\u0120\0\u0120\0\u0120\0\u01c0\0\u0120\0\u0120\0\u01e0\0\u0120"+
     "\0\u0200\0\u0120\0\u0220\0\u0120\0\u0240\0\u0120\0\u0260\0\u0120"+
     "\0\u0280\0\u0120\0\u0120\0\u02a0\0\u0120\0\u02c0\0\u0120\0\u0120"+
-    "\0\u02e0\0\u0120\0\u0300\0\u01a0\0\u0120\0\u0320\0\u01a0\0\u0340"+
-    "\0\u0360\0\u0120\0\u0380\0\u03a0\0\u03c0\0\u03e0\0\u0400\0\u0420"+
-    "\0\u0440\0\u0460\0\u0480\0\u04a0\0\u04c0\0\u04e0\0\u0500\0\u0520"+
-    "\0\u0540\0\u0560\0\u0120\0\u0580\0\u05a0\0\u0120\0\u05c0\0\u05e0"+
-    "\0\u0600\0\u0620\0\u0640\0\u0660\0\u0120\0\u0120\0\u0680\0\u06a0"+
-    "\0\u06c0\0\u06e0\0\u0700\0\u0720\0\u0740\0\u0120\0\u0760\0\u0780"+
-    "\0\u07a0\0\u07c0\0\u07e0\0\u0120\0\u0800\0\u0820\0\u0840\0\u0860"+
-    "\0\u0880\0\u08a0\0\u08c0\0\u08e0\0\u0900\0\u0920\0\u0120\0\u0120"+
-    "\0\u0940\0\u0120\0\u0960\0\u0980\0\u09a0\0\u0900\0\u09c0\0\u09e0"+
-    "\0\u0a00\0\u0a20\0\u0a40\0\u0a60\0\u0120\0\u0a80\0\u0aa0\0\u0a40"+
-    "\0\u0ac0\0\u0120\0\u0ae0\0\u0ac0";
+    "\0\u02e0\0\u0120\0\u0300\0\u01a0\0\u0120\0\u0120\0\u0320\0\u01a0"+
+    "\0\u0340\0\u0360\0\u0120\0\u0380\0\u03a0\0\u03c0\0\u03e0\0\u0400"+
+    "\0\u0420\0\u0440\0\u0460\0\u0480\0\u04a0\0\u04c0\0\u04e0\0\u0500"+
+    "\0\u0520\0\u0540\0\u0560\0\u0120\0\u0580\0\u05a0\0\u0120\0\u05c0"+
+    "\0\u05e0\0\u0600\0\u0620\0\u0640\0\u0660\0\u0120\0\u0120\0\u0680"+
+    "\0\u06a0\0\u06c0\0\u06e0\0\u0700\0\u0720\0\u0740\0\u0120\0\u0760"+
+    "\0\u0780\0\u07a0\0\u07c0\0\u07e0\0\u0120\0\u0800\0\u0820\0\u0840"+
+    "\0\u0860\0\u0880\0\u08a0\0\u08c0\0\u08e0\0\u0900\0\u0920\0\u0120"+
+    "\0\u0120\0\u0940\0\u0120\0\u0960\0\u0980\0\u09a0\0\u0900\0\u09c0"+
+    "\0\u09e0\0\u0a00\0\u0a20\0\u0a40\0\u0a60\0\u0120\0\u0a80\0\u0aa0"+
+    "\0\u0a40\0\u0ac0\0\u0120\0\u0ae0\0\u0ac0";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[124];
+    int [] result = new int[125];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -171,12 +171,12 @@ public class LatexTokenMaker extends AbstractJFlexTokenMaker {
     "\1\46\1\47\1\50\1\51\7\46\1\45\16\46\1\0"+
     "\1\52\1\13\1\12\1\14\1\15\1\13\1\25\1\36"+
     "\1\53\7\13\1\54\16\13\1\0\1\55\1\13\1\12"+
-    "\1\14\1\15\1\13\1\25\1\26\1\56\7\13\1\57"+
-    "\16\13\42\0\1\13\3\0\1\13\2\0\1\60\7\13"+
-    "\1\0\16\13\2\0\3\15\1\0\32\15\2\0\1\61"+
-    "\2\0\1\62\3\13\1\60\1\63\1\61\1\64\2\61"+
-    "\2\13\1\0\1\65\3\61\1\66\4\61\1\67\1\70"+
-    "\3\61\2\0\3\71\1\0\13\71\1\0\16\71\2\0"+
+    "\1\14\1\15\1\13\1\56\1\26\1\57\7\13\1\60"+
+    "\16\13\42\0\1\13\3\0\1\13\2\0\1\61\7\13"+
+    "\1\0\16\13\2\0\3\15\1\0\32\15\2\0\1\62"+
+    "\2\0\1\63\3\13\1\61\1\64\1\62\1\65\2\62"+
+    "\2\13\1\0\1\66\3\62\1\67\4\62\1\70\1\71"+
+    "\3\62\2\0\3\72\1\0\13\72\1\0\16\72\2\0"+
     "\1\24\3\0\1\24\2\0\1\27\7\24\1\0\16\24"+
     "\2\0\1\24\3\0\3\24\1\27\7\24\1\0\16\24"+
     "\2\0\1\31\3\0\1\31\2\0\1\33\7\31\1\0"+
@@ -187,95 +187,95 @@ public class LatexTokenMaker extends AbstractJFlexTokenMaker {
     "\7\41\1\0\16\41\2\0\1\41\3\0\3\41\1\44"+
     "\7\41\1\0\16\41\2\0\1\46\3\0\1\46\2\0"+
     "\1\51\7\46\1\0\16\46\2\0\1\46\3\0\3\46"+
-    "\1\51\7\46\1\0\16\46\2\0\1\61\2\0\1\62"+
-    "\3\13\1\60\1\72\4\61\2\13\1\0\1\65\15\61"+
-    "\2\0\1\61\2\0\1\62\3\13\1\60\1\73\4\61"+
-    "\2\13\1\0\1\65\15\61\2\0\1\13\3\0\3\13"+
-    "\1\60\7\13\1\0\16\13\2\0\1\61\3\0\1\13"+
-    "\2\0\1\60\5\61\2\13\1\0\16\61\2\0\1\61"+
-    "\3\0\1\13\2\0\1\60\1\61\1\74\3\61\2\13"+
-    "\1\0\3\61\1\75\12\61\2\0\1\61\3\0\1\13"+
-    "\2\0\1\60\3\61\1\76\1\61\2\13\1\0\16\61"+
-    "\2\0\1\61\3\0\1\13\2\0\1\60\1\77\4\61"+
-    "\2\13\1\0\16\61\2\0\1\61\3\0\1\13\2\0"+
-    "\1\60\5\61\2\13\1\0\2\61\1\100\13\61\2\0"+
-    "\1\61\3\0\1\13\2\0\1\60\2\61\1\101\2\61"+
-    "\2\13\1\0\16\61\2\0\1\61\3\0\1\13\2\0"+
-    "\1\60\5\61\2\13\1\0\13\61\1\102\2\61\2\0"+
-    "\3\71\1\0\13\71\1\103\16\71\2\0\1\61\3\0"+
-    "\1\13\2\0\1\60\1\61\1\104\3\61\2\13\1\0"+
-    "\3\61\1\75\12\61\2\0\1\61\3\0\1\13\2\0"+
-    "\1\60\1\61\1\105\3\61\2\13\1\0\3\61\1\75"+
-    "\12\61\2\0\1\61\3\0\1\13\1\106\1\0\1\60"+
-    "\5\61\2\13\1\0\16\61\2\0\1\61\3\0\1\13"+
-    "\2\0\1\60\3\61\1\107\1\61\2\13\1\0\16\61"+
-    "\2\0\1\61\3\0\1\13\2\0\1\60\3\61\1\110"+
-    "\1\61\2\13\1\0\16\61\2\0\1\61\3\0\1\13"+
-    "\2\0\1\60\5\61\2\13\1\0\1\61\1\111\14\61"+
-    "\2\0\1\61\3\0\1\13\2\0\1\60\5\61\2\13"+
-    "\1\0\4\61\1\112\11\61\2\0\1\61\3\0\1\13"+
-    "\2\0\1\60\5\61\2\13\1\0\5\61\1\113\10\61"+
-    "\2\0\1\61\3\0\1\13\2\0\1\60\5\61\2\13"+
-    "\1\0\14\61\1\114\1\61\2\0\1\61\3\0\1\13"+
-    "\1\115\1\0\1\60\5\61\2\13\1\0\16\61\2\0"+
-    "\1\61\3\0\1\13\1\116\1\0\1\60\5\61\2\13"+
-    "\1\0\16\61\2\0\1\61\3\0\1\13\1\117\1\0"+
-    "\1\60\5\61\2\13\1\0\16\61\2\0\1\61\3\0"+
-    "\1\13\2\0\1\60\4\61\1\120\2\13\1\0\16\61"+
-    "\2\0\1\61\3\0\1\13\2\0\1\60\5\61\2\13"+
-    "\1\0\2\61\1\121\13\61\2\0\1\61\3\0\1\13"+
-    "\2\0\1\60\5\61\2\13\1\0\5\61\1\122\10\61"+
-    "\2\0\1\61\3\0\1\13\2\0\1\60\5\61\2\13"+
-    "\1\0\4\61\1\123\11\61\2\0\1\61\3\0\1\13"+
-    "\2\0\1\60\5\61\2\13\1\0\12\61\1\124\3\61"+
-    "\2\0\1\125\7\0\5\125\3\0\16\125\2\0\1\61"+
-    "\3\0\1\13\1\126\1\0\1\60\5\61\1\127\1\13"+
-    "\1\0\16\61\2\0\1\61\3\0\1\13\2\0\1\60"+
-    "\5\61\2\13\1\0\3\61\1\130\12\61\2\0\1\61"+
-    "\3\0\1\13\2\0\1\60\1\131\4\61\2\13\1\0"+
-    "\16\61\2\0\1\61\3\0\1\13\2\0\1\60\5\61"+
-    "\2\13\1\0\2\61\1\132\13\61\2\0\1\61\3\0"+
-    "\1\13\2\0\1\60\5\61\2\13\1\0\15\61\1\133"+
-    "\2\0\1\125\5\0\1\134\1\0\5\125\3\0\16\125"+
-    "\2\0\1\135\3\0\1\13\2\0\1\60\5\135\2\13"+
-    "\1\0\16\135\2\0\1\61\3\0\1\13\1\136\1\0"+
-    "\1\60\5\61\2\13\1\0\16\61\2\0\1\61\3\0"+
-    "\1\13\2\0\1\60\5\61\2\13\1\0\6\61\1\137"+
-    "\7\61\2\0\1\61\3\0\1\13\2\0\1\60\1\140"+
-    "\4\61\2\13\1\0\16\61\2\0\1\61\3\0\1\13"+
-    "\2\0\1\60\2\61\1\141\2\61\2\13\1\0\16\61"+
-    "\2\0\1\135\3\0\1\13\2\0\1\60\5\135\1\13"+
-    "\1\142\1\0\16\135\2\0\1\143\7\0\5\143\3\0"+
-    "\16\143\2\0\1\61\3\0\1\13\2\0\1\60\5\61"+
-    "\2\13\1\0\7\61\1\144\6\61\2\0\1\61\3\0"+
-    "\1\13\1\145\1\0\1\60\5\61\2\13\1\0\16\61"+
-    "\2\0\1\61\3\0\1\13\2\0\1\60\5\61\2\13"+
-    "\1\0\5\61\1\146\10\61\2\0\1\13\3\0\1\13"+
-    "\1\147\1\0\1\60\7\13\1\0\16\13\2\0\1\143"+
-    "\5\0\1\150\1\0\5\143\3\0\16\143\2\0\1\61"+
-    "\3\0\1\13\2\0\1\60\1\151\4\61\2\13\1\0"+
-    "\16\61\2\0\3\145\1\0\1\145\1\0\1\152\1\153"+
-    "\7\145\1\0\16\145\2\0\1\61\3\0\1\13\2\0"+
-    "\1\60\5\61\2\13\1\0\4\61\1\154\11\61\2\0"+
-    "\1\61\3\0\1\13\2\0\1\60\5\61\2\13\1\0"+
-    "\5\61\1\155\10\61\2\0\3\145\1\0\2\145\1\156"+
-    "\1\153\7\145\1\0\16\145\2\0\1\61\3\0\1\13"+
-    "\2\0\1\60\5\61\2\13\1\0\2\61\1\157\13\61"+
-    "\2\0\1\61\3\0\1\13\2\0\1\60\5\61\2\13"+
-    "\1\0\10\61\1\160\5\61\2\0\1\61\3\0\1\13"+
-    "\2\0\1\60\1\161\4\61\2\13\1\0\16\61\2\0"+
-    "\1\61\3\0\1\13\2\0\1\60\5\61\2\13\1\0"+
-    "\2\61\1\162\13\61\2\0\1\61\3\0\1\13\1\163"+
-    "\1\0\1\60\5\61\2\13\1\0\16\61\2\0\1\61"+
-    "\3\0\1\13\2\0\1\60\5\61\2\13\1\0\10\61"+
-    "\1\164\5\61\2\0\3\163\1\0\1\163\1\0\1\165"+
-    "\1\166\7\163\1\0\16\163\2\0\1\61\3\0\1\13"+
-    "\2\0\1\60\1\167\4\61\2\13\1\0\16\61\2\0"+
-    "\3\163\1\0\2\163\1\170\1\166\7\163\1\0\16\163"+
-    "\2\0\1\61\3\0\1\13\1\171\1\0\1\60\5\61"+
-    "\2\13\1\0\16\61\2\0\3\171\1\0\1\171\1\0"+
-    "\1\172\1\173\7\171\1\0\16\171\2\0\3\171\1\0"+
-    "\2\171\1\174\1\173\7\171\1\0\16\171\1\0";
+    "\1\51\7\46\1\0\16\46\2\0\1\62\2\0\1\63"+
+    "\3\13\1\61\1\73\4\62\2\13\1\0\1\66\15\62"+
+    "\2\0\1\62\2\0\1\63\3\13\1\61\1\74\4\62"+
+    "\2\13\1\0\1\66\15\62\2\0\1\13\3\0\3\13"+
+    "\1\61\7\13\1\0\16\13\2\0\1\62\3\0\1\13"+
+    "\2\0\1\61\5\62\2\13\1\0\16\62\2\0\1\62"+
+    "\3\0\1\13\2\0\1\61\1\62\1\75\3\62\2\13"+
+    "\1\0\3\62\1\76\12\62\2\0\1\62\3\0\1\13"+
+    "\2\0\1\61\3\62\1\77\1\62\2\13\1\0\16\62"+
+    "\2\0\1\62\3\0\1\13\2\0\1\61\1\100\4\62"+
+    "\2\13\1\0\16\62\2\0\1\62\3\0\1\13\2\0"+
+    "\1\61\5\62\2\13\1\0\2\62\1\101\13\62\2\0"+
+    "\1\62\3\0\1\13\2\0\1\61\2\62\1\102\2\62"+
+    "\2\13\1\0\16\62\2\0\1\62\3\0\1\13\2\0"+
+    "\1\61\5\62\2\13\1\0\13\62\1\103\2\62\2\0"+
+    "\3\72\1\0\13\72\1\104\16\72\2\0\1\62\3\0"+
+    "\1\13\2\0\1\61\1\62\1\105\3\62\2\13\1\0"+
+    "\3\62\1\76\12\62\2\0\1\62\3\0\1\13\2\0"+
+    "\1\61\1\62\1\106\3\62\2\13\1\0\3\62\1\76"+
+    "\12\62\2\0\1\62\3\0\1\13\1\107\1\0\1\61"+
+    "\5\62\2\13\1\0\16\62\2\0\1\62\3\0\1\13"+
+    "\2\0\1\61\3\62\1\110\1\62\2\13\1\0\16\62"+
+    "\2\0\1\62\3\0\1\13\2\0\1\61\3\62\1\111"+
+    "\1\62\2\13\1\0\16\62\2\0\1\62\3\0\1\13"+
+    "\2\0\1\61\5\62\2\13\1\0\1\62\1\112\14\62"+
+    "\2\0\1\62\3\0\1\13\2\0\1\61\5\62\2\13"+
+    "\1\0\4\62\1\113\11\62\2\0\1\62\3\0\1\13"+
+    "\2\0\1\61\5\62\2\13\1\0\5\62\1\114\10\62"+
+    "\2\0\1\62\3\0\1\13\2\0\1\61\5\62\2\13"+
+    "\1\0\14\62\1\115\1\62\2\0\1\62\3\0\1\13"+
+    "\1\116\1\0\1\61\5\62\2\13\1\0\16\62\2\0"+
+    "\1\62\3\0\1\13\1\117\1\0\1\61\5\62\2\13"+
+    "\1\0\16\62\2\0\1\62\3\0\1\13\1\120\1\0"+
+    "\1\61\5\62\2\13\1\0\16\62\2\0\1\62\3\0"+
+    "\1\13\2\0\1\61\4\62\1\121\2\13\1\0\16\62"+
+    "\2\0\1\62\3\0\1\13\2\0\1\61\5\62\2\13"+
+    "\1\0\2\62\1\122\13\62\2\0\1\62\3\0\1\13"+
+    "\2\0\1\61\5\62\2\13\1\0\5\62\1\123\10\62"+
+    "\2\0\1\62\3\0\1\13\2\0\1\61\5\62\2\13"+
+    "\1\0\4\62\1\124\11\62\2\0\1\62\3\0\1\13"+
+    "\2\0\1\61\5\62\2\13\1\0\12\62\1\125\3\62"+
+    "\2\0\1\126\7\0\5\126\3\0\16\126\2\0\1\62"+
+    "\3\0\1\13\1\127\1\0\1\61\5\62\1\130\1\13"+
+    "\1\0\16\62\2\0\1\62\3\0\1\13\2\0\1\61"+
+    "\5\62\2\13\1\0\3\62\1\131\12\62\2\0\1\62"+
+    "\3\0\1\13\2\0\1\61\1\132\4\62\2\13\1\0"+
+    "\16\62\2\0\1\62\3\0\1\13\2\0\1\61\5\62"+
+    "\2\13\1\0\2\62\1\133\13\62\2\0\1\62\3\0"+
+    "\1\13\2\0\1\61\5\62\2\13\1\0\15\62\1\134"+
+    "\2\0\1\126\5\0\1\135\1\0\5\126\3\0\16\126"+
+    "\2\0\1\136\3\0\1\13\2\0\1\61\5\136\2\13"+
+    "\1\0\16\136\2\0\1\62\3\0\1\13\1\137\1\0"+
+    "\1\61\5\62\2\13\1\0\16\62\2\0\1\62\3\0"+
+    "\1\13\2\0\1\61\5\62\2\13\1\0\6\62\1\140"+
+    "\7\62\2\0\1\62\3\0\1\13\2\0\1\61\1\141"+
+    "\4\62\2\13\1\0\16\62\2\0\1\62\3\0\1\13"+
+    "\2\0\1\61\2\62\1\142\2\62\2\13\1\0\16\62"+
+    "\2\0\1\136\3\0\1\13\2\0\1\61\5\136\1\13"+
+    "\1\143\1\0\16\136\2\0\1\144\7\0\5\144\3\0"+
+    "\16\144\2\0\1\62\3\0\1\13\2\0\1\61\5\62"+
+    "\2\13\1\0\7\62\1\145\6\62\2\0\1\62\3\0"+
+    "\1\13\1\146\1\0\1\61\5\62\2\13\1\0\16\62"+
+    "\2\0\1\62\3\0\1\13\2\0\1\61\5\62\2\13"+
+    "\1\0\5\62\1\147\10\62\2\0\1\13\3\0\1\13"+
+    "\1\150\1\0\1\61\7\13\1\0\16\13\2\0\1\144"+
+    "\5\0\1\151\1\0\5\144\3\0\16\144\2\0\1\62"+
+    "\3\0\1\13\2\0\1\61\1\152\4\62\2\13\1\0"+
+    "\16\62\2\0\3\146\1\0\1\146\1\0\1\153\1\154"+
+    "\7\146\1\0\16\146\2\0\1\62\3\0\1\13\2\0"+
+    "\1\61\5\62\2\13\1\0\4\62\1\155\11\62\2\0"+
+    "\1\62\3\0\1\13\2\0\1\61\5\62\2\13\1\0"+
+    "\5\62\1\156\10\62\2\0\3\146\1\0\2\146\1\157"+
+    "\1\154\7\146\1\0\16\146\2\0\1\62\3\0\1\13"+
+    "\2\0\1\61\5\62\2\13\1\0\2\62\1\160\13\62"+
+    "\2\0\1\62\3\0\1\13\2\0\1\61\5\62\2\13"+
+    "\1\0\10\62\1\161\5\62\2\0\1\62\3\0\1\13"+
+    "\2\0\1\61\1\162\4\62\2\13\1\0\16\62\2\0"+
+    "\1\62\3\0\1\13\2\0\1\61\5\62\2\13\1\0"+
+    "\2\62\1\163\13\62\2\0\1\62\3\0\1\13\1\164"+
+    "\1\0\1\61\5\62\2\13\1\0\16\62\2\0\1\62"+
+    "\3\0\1\13\2\0\1\61\5\62\2\13\1\0\10\62"+
+    "\1\165\5\62\2\0\3\164\1\0\1\164\1\0\1\166"+
+    "\1\167\7\164\1\0\16\164\2\0\1\62\3\0\1\13"+
+    "\2\0\1\61\1\170\4\62\2\13\1\0\16\62\2\0"+
+    "\3\164\1\0\2\164\1\171\1\167\7\164\1\0\16\164"+
+    "\2\0\1\62\3\0\1\13\1\172\1\0\1\61\5\62"+
+    "\2\13\1\0\16\62\2\0\3\172\1\0\1\172\1\0"+
+    "\1\173\1\174\7\172\1\0\16\172\2\0\3\172\1\0"+
+    "\2\172\1\175\1\174\7\172\1\0\16\172\1\0";
 
   private static int [] zzUnpackTrans() {
     int [] result = new int[2816];
@@ -319,7 +319,7 @@ public class LatexTokenMaker extends AbstractJFlexTokenMaker {
     "\11\0\1\11\1\1\1\11\1\1\1\11\2\1\3\11"+
     "\1\1\2\11\1\1\1\11\1\1\1\11\1\1\1\11"+
     "\1\1\1\11\1\1\1\11\1\1\2\11\1\1\1\11"+
-    "\1\1\2\11\1\1\1\11\2\1\1\11\4\1\1\11"+
+    "\1\1\2\11\1\1\1\11\2\1\2\11\4\1\1\11"+
     "\6\1\1\0\11\1\1\11\2\1\1\11\6\1\2\11"+
     "\1\0\5\1\1\0\1\11\5\1\1\11\1\1\1\0"+
     "\4\1\1\0\1\1\1\0\1\1\2\11\1\1\1\11"+
@@ -327,7 +327,7 @@ public class LatexTokenMaker extends AbstractJFlexTokenMaker {
     "\1\11\1\0\1\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[124];
+    int [] result = new int[125];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -554,13 +554,31 @@ public static final int FIRST_MULT = FORMER_BALANCE_MULT*10;
             return bracketCount==0;
         }
 
-        public void conditionalReturnToInitial(int state){
-            // check wheter in bracker block is closed and switch state if yes.
-            if (isEndOfBlock()){
-                leaveBracketBlock();
-                yybegin(state);
+    public void conditionalReturnToInitial(int state) {
+        // check wheter in bracker block is closed and switch state if yes.
+        if (isEndOfBlock()) {
+            leaveBracketBlock();
+            switch(zzLexicalState){
+                case  ADDQ:
+                    this.addToken(TOKEN_ADDQ);
+                    break;
+                    
+                case ADDA:
+                    this.addToken(TOKEN_ADDA);
+                    break;
+                    
+                default:
+                    this.addToken(Token.SEPARATOR);
+                    break;
+            
             }
+
+            yybegin(state);
+
+        } else {
+            this.addToken(Token.SEPARATOR);
         }
+    }
 
         
         public void conditionalSwitch(String logins, int stateTrue, int stateFalse){
@@ -575,14 +593,14 @@ public static final int FIRST_MULT = FORMER_BALANCE_MULT*10;
             addToken(zzStartRead,zzMarkedPos-2, Token.FUNCTION);
             addToken(zzMarkedPos-1,zzMarkedPos-1, Token.SEPARATOR);
             first=true;
-            initBracketBlock();
+            enterBracketBlock();
             addOpenBracket();
             yybegin(newState);
         }
 
         public void beginADDQ(int newState){
             addToken(zzStartRead,zzMarkedPos-2, TOKEN_ADDQ);
-            addToken(zzMarkedPos-1,zzMarkedPos-1, Token.SEPARATOR);
+            addToken(zzMarkedPos-1,zzMarkedPos-1, TOKEN_ADDQ);
             first=true;
             initBracketBlock();
             addOpenBracket();
@@ -752,6 +770,7 @@ public static final int FIRST_MULT = FORMER_BALANCE_MULT*10;
 
 
   
+
     
   /**
    * Closes the input stream.
@@ -937,19 +956,23 @@ public static final int FIRST_MULT = FORMER_BALANCE_MULT*10;
       zzMarkedPos = zzMarkedPosL;
 
       switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
-        case 32: 
+        case 10: 
+          { addCloseBracket(); conditionalReturnToInitial(ADDQ);
+          }
+        case 35: break;
+        case 33: 
           { int temp = zzStartRead+4;
                                                      addToken(temp-4,temp+6,Token.FUNCTION); 
                                                      addToken(temp+7,temp+7,Token.SEPARATOR); 
                                                      addToken(temp+8,zzMarkedPos-2,TOKEN_SUB_PART); 
                                                      addToken(zzMarkedPos-1,zzMarkedPos-1,Token.SEPARATOR);
           }
-        case 34: break;
+        case 36: break;
         case 19: 
           { addToken( TOKEN_ADDQ);
           }
-        case 35: break;
-        case 30: 
+        case 37: break;
+        case 31: 
           { int temp = zzStartRead;
                                                 addToken(temp, temp+5, Token.RESERVED_WORD);
                                                 addToken(temp+6, temp+6, Token.RESERVED_WORD);
@@ -957,128 +980,132 @@ public static final int FIRST_MULT = FORMER_BALANCE_MULT*10;
                                                 addToken(zzMarkedPos-1, zzMarkedPos-1, Token.RESERVED_WORD);
                                                 first = true;
           }
-        case 36: break;
-        case 28: 
+        case 38: break;
+        case 29: 
           { int temp = zzStartRead;
                                                 addToken(temp, temp+3, Token.RESERVED_WORD);
                                                 addToken(temp+4, temp+4, Token.RESERVED_WORD);
                                                 addToken(temp+5, zzMarkedPos-2, Token.RESERVED_WORD);
                                                 addToken(zzMarkedPos-1, zzMarkedPos-1, Token.RESERVED_WORD);
           }
-        case 37: break;
-        case 22: 
+        case 39: break;
+        case 23: 
           { int temp = zzStartRead; addToken(temp, temp, Token.SEPARATOR); addToken(temp + 1, temp + 1, Token.IDENTIFIER);
           }
-        case 38: break;
+        case 40: break;
         case 5: 
           { addNullToken(); return firstToken;
           }
-        case 39: break;
+        case 41: break;
         case 14: 
           { addToken( TOKEN_ADDQ_H); addOpenBracket();
           }
-        case 40: break;
-        case 31: 
+        case 42: break;
+        case 8: 
+          { addCloseBracket(); conditionalReturnToInitial(YYINITIAL);
+          }
+        case 43: break;
+        case 32: 
           { int temp = zzStartRead;
                                                      addToken(temp,temp+6,Token.FUNCTION); 
                                                      addToken(temp+7,temp+7,Token.SEPARATOR); 
                                                      addToken(temp+8,zzMarkedPos-2,TOKEN_PART); 
                                                      addToken(zzMarkedPos-1,zzMarkedPos-1,Token.SEPARATOR);
           }
-        case 41: break;
+        case 44: break;
         case 9: 
           { addToken( TOKEN_MLE_IN_Q);
           }
-        case 42: break;
+        case 45: break;
+        case 12: 
+          { addCloseBracket(); conditionalReturnToInitial(ADDA);
+          }
+        case 46: break;
         case 17: 
           { addToken( TOKEN_ADDA_H); addOpenBracket();
           }
-        case 43: break;
+        case 47: break;
         case 20: 
           { addToken( TOKEN_ADDA);
           }
-        case 44: break;
+        case 48: break;
         case 15: 
           { addToken( TOKEN_ADDQ_H); addCloseBracket(); conditionalReturnToInitial(HIDDEN_ADDA);
           }
-        case 45: break;
-        case 10: 
-          { addToken( Token.SEPARATOR); addCloseBracket(); conditionalReturnToInitial(ADDQ);
-          }
-        case 46: break;
+        case 49: break;
         case 2: 
           { addToken(Token.WHITESPACE);
           }
-        case 47: break;
+        case 50: break;
         case 11: 
           { addToken( TOKEN_MLE_IN_A);
           }
-        case 48: break;
-        case 24: 
+        case 51: break;
+        case 25: 
           { beginMLE(MLE);
           }
-        case 49: break;
-        case 12: 
-          { addToken( Token.SEPARATOR); addCloseBracket(); conditionalReturnToInitial(ADDA);
-          }
-        case 50: break;
+        case 52: break;
         case 4: 
           { addToken(Token.SEPARATOR);
           }
-        case 51: break;
+        case 53: break;
+        case 21: 
+          { addToken( bracketCount == 0 ? TOKEN_ADDA : Token.SEPARATOR); addOpenBracket();
+          }
+        case 54: break;
         case 18: 
           { addToken( TOKEN_ADDA_H); addCloseBracket(); conditionalReturnToInitial(YYINITIAL);
           }
-        case 52: break;
+        case 55: break;
         case 1: 
           { addToken(Token.IDENTIFIER);
           }
-        case 53: break;
-        case 23: 
+        case 56: break;
+        case 24: 
           { int temp = zzStartRead; addToken(temp, zzMarkedPos-1, TOKEN_INLINE_EQ);
           }
-        case 54: break;
-        case 21: 
+        case 57: break;
+        case 22: 
           { addToken(Token.FUNCTION);
           }
-        case 55: break;
+        case 58: break;
         case 13: 
           { addToken( TOKEN_ADDQ_H);
           }
-        case 56: break;
+        case 59: break;
         case 6: 
           { addToken( TOKEN_MLE);
           }
-        case 57: break;
-        case 33: 
+        case 60: break;
+        case 34: 
           { int temp = zzStartRead+7;
                                                      addToken(temp-7,temp+6,Token.FUNCTION); 
                                                      addToken(temp+7,temp+7,Token.SEPARATOR); 
                                                      addToken(temp+8,zzMarkedPos-2,TOKEN_TITLE); 
                                                      addToken(zzMarkedPos-1,zzMarkedPos-1,Token.SEPARATOR);
           }
-        case 58: break;
-        case 25: 
+        case 61: break;
+        case 26: 
           { beginMLE(MLE_IN_Q);
           }
-        case 59: break;
+        case 62: break;
         case 16: 
           { addToken( TOKEN_ADDA_H);
           }
-        case 60: break;
+        case 63: break;
         case 7: 
           { addToken( Token.SEPARATOR); addOpenBracket();
           }
-        case 61: break;
-        case 27: 
+        case 64: break;
+        case 28: 
           { beginADDQ(ADDQ);
           }
-        case 62: break;
-        case 26: 
+        case 65: break;
+        case 27: 
           { beginMLE(MLE_IN_A);
           }
-        case 63: break;
-        case 29: 
+        case 66: break;
+        case 30: 
           { String logins = yytext(); first=true;
                                                        //addToken(zzStartRead,zzStartRead+5,TOKEN_ADDQ_H);
                                                        //addToken(zzStartRead+6,zzMarkedPos-3,TOKEN_ADDQ); 
@@ -1088,15 +1115,11 @@ public static final int FIRST_MULT = FORMER_BALANCE_MULT*10;
                                                       logins=logins.substring(6,logins.length()-2);
                                                       conditionalSwitch(logins,ADDQ,HIDDEN_ADDQ);
           }
-        case 64: break;
+        case 67: break;
         case 3: 
           { addToken(Token.COMMENT_EOL);
           }
-        case 65: break;
-        case 8: 
-          { addToken( Token.SEPARATOR); addCloseBracket(); conditionalReturnToInitial(YYINITIAL);
-          }
-        case 66: break;
+        case 68: break;
         default: 
           if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
             zzAtEOF = true;
@@ -1104,39 +1127,39 @@ public static final int FIRST_MULT = FORMER_BALANCE_MULT*10;
             case HIDDEN_ADDQ: {
               addToken( getLastTokenVal(TOKEN_ADDQ_H)); return firstToken;
             }
-            case 125: break;
+            case 126: break;
             case EOL_COMMENT: {
               addToken( Token.NULL); return firstToken;
             }
-            case 126: break;
+            case 127: break;
             case MLE_IN_A: {
               addToken( getLastTokenVal(TOKEN_MLE_IN_A)); return firstToken;
             }
-            case 127: break;
+            case 128: break;
             case MLE: {
               addToken( getLastTokenVal(TOKEN_MLE)); return firstToken;
             }
-            case 128: break;
+            case 129: break;
             case ADDA: {
               addToken( getLastTokenVal(TOKEN_ADDA)); return firstToken;
             }
-            case 129: break;
+            case 130: break;
             case MLE_IN_Q: {
               addToken( getLastTokenVal(TOKEN_MLE_IN_Q)); return firstToken;
             }
-            case 130: break;
+            case 131: break;
             case ADDQ: {
               addToken( getLastTokenVal(TOKEN_ADDQ)); return firstToken;
             }
-            case 131: break;
+            case 132: break;
             case YYINITIAL: {
               addNullToken(); return firstToken;
             }
-            case 132: break;
+            case 133: break;
             case HIDDEN_ADDA: {
               addToken( getLastTokenVal(TOKEN_ADDA_H)); return firstToken;
             }
-            case 133: break;
+            case 134: break;
             default:
             return null;
             }

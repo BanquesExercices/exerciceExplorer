@@ -60,10 +60,12 @@ RAnyCharWB                                 = ({AnyChar} |  {URLSubDelim} | (\\\{
 Sentence                                 = ({RAnyChar} | {Whitespace} |{Appost} )
 SentenceWB                                 = ({RAnyCharWB} | {Whitespace} |{Appost} )
 
-BLOCKbegin = ("\\begin{"{AnyChar}+"}") {Sentence} ("\n")+
+
+/* BLOCKbegin may catch various options enclosed in brackets */
+BLOCKbegin = ("\\begin{"{AnyChar}+"}") ("["{RAnyCharWB}*"]")? ("{"{RAnyCharWB}*"}")* ("\n")+
 BLOCKend = ("\\end{"{AnyChar}+"}")("\n")*
-ADDQbegin = ("\\addQ{")("\n")*
-MLEbegin = ("\\eq{")("\n")*
+ADDQbegin = ("\\addQ{")("\n"|{Whitespace})*
+MLEbegin = ("\\eq{")("\n"|{Whitespace})*
 ADDQloginBegin = ("\\addQ["{AnyChar}+"]{")
 TCOLSbegin = ("\\tcols{"{Number}"}{"{Number}"}{")("\n")*
 ENONCEbegin = ("\\enonce{")("\n")*
@@ -81,10 +83,10 @@ ENONCEbegin = ("\\enonce{")("\n")*
 {TCOLSbegin}                               {startBracketBloc(yytext());}
 {ENONCEbegin}                              {startBracketBloc(yytext());}
 {ADDQbegin}                                {startBracketBloc(yytext());}
+{ADDQloginBegin}                           {startBracketBloc(yytext());}
 
 {BLOCKbegin}                                {this.startBlock();}
-
-{BLOCKend}                                   {this.endBlock();}
+{BLOCKend}                                  {this.endBlock();}
 
 
 ("%"{Sentence}+)                            {this.currentLine += yytext(); }
@@ -127,7 +129,7 @@ ENONCEbegin = ("\\enonce{")("\n")*
 
 <BRACKET_BLOCK>{
        
-       ({CloseBracket} ({Whitespace} | "\n")* {OpenBracket}?({Whitespace} | "\n")*) {  endBracketBlock() ; }
+       (\n|{Whitespace})* ({CloseBracket} ({Whitespace} | "\n")* {OpenBracket}?({Whitespace} | "\n")*) {  endBracketBlock() ; }
        {OpenBracket}                                     { addOpenBracket();}
         <<EOF>>					        { return false; }
         .					        { System.err.println("not catched : " + yytext()); }
