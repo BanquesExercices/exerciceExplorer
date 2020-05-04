@@ -26,7 +26,8 @@ import javax.swing.TransferHandler;
 public class ListTransferHandler extends TransferHandler {
 
     DefaultListModel<Exercice> model;
-
+    protected boolean onDrag=false;
+    
     public ListTransferHandler(DefaultListModel<Exercice> model) {
         this.model = model;
     }
@@ -39,6 +40,7 @@ public class ListTransferHandler extends TransferHandler {
     @Override
     public boolean importData(TransferSupport support) {
         boolean accept = false;
+
         if (canImport(support)) {
             try {
                 Transferable t = support.getTransferable();
@@ -58,6 +60,7 @@ public class ListTransferHandler extends TransferHandler {
                 exp.printStackTrace();
             }
         }
+       
         return accept;
     }
 
@@ -69,6 +72,7 @@ public class ListTransferHandler extends TransferHandler {
     @Override
     protected Transferable createTransferable(JComponent c) {
         Transferable t = null;
+        
         if (c instanceof JList) {
             @SuppressWarnings("unchecked")
             JList<Exercice> list = (JList<Exercice>) c;
@@ -76,6 +80,7 @@ public class ListTransferHandler extends TransferHandler {
             if (value instanceof Exercice) {
                 Exercice li = (Exercice) value;
                 t = new ListItemTransferable(li);
+                onDrag=true;
             }
         }
         return t;
@@ -84,6 +89,8 @@ public class ListTransferHandler extends TransferHandler {
     @Override
     protected void exportDone(JComponent source, Transferable data, int action) {
         // Here you need to decide how to handle the completion of the transfer,
+        
+        onDrag=false;
         if (source instanceof JList ) {
             @SuppressWarnings("unchecked")
             JList<Exercice> l = (JList<Exercice>) source;
@@ -102,5 +109,12 @@ public class ListTransferHandler extends TransferHandler {
             }
         }
     }
+
+    public boolean isOnDrag() {
+        return onDrag;
+    }
+    
+    
+    
   
 }

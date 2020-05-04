@@ -35,8 +35,8 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="middlePane" alignment="0" pref="613" max="32767" attributes="0"/>
-          <Component id="jTabbedPane1" alignment="1" pref="613" max="32767" attributes="0"/>
+          <Component id="middlePane" alignment="0" pref="533" max="32767" attributes="0"/>
+          <Component id="jTabbedPane1" alignment="1" pref="533" max="32767" attributes="0"/>
           <Component id="rightPane" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
@@ -101,11 +101,14 @@
       </Layout>
     </Container>
     <Container class="javax.swing.JPanel" name="rightPane">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="rightPane.setVisible(false);&#xa;"/>
+      </AuxValues>
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="487" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="403" max="32767" attributes="0"/>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="editorTabbedPane" pref="481" max="32767" attributes="0"/>
@@ -116,7 +119,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="613" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="533" max="32767" attributes="0"/>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Component id="editorTabbedPane" alignment="1" max="32767" attributes="0"/>
               </Group>

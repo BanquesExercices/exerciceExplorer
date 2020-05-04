@@ -34,6 +34,11 @@ public class KeyWordView extends javax.swing.JPanel {
         this.setBorder(new LineBorder(Color.BLACK, 1, true));
     }
 
+    public String getNameString() {
+        return nameString;
+    }
+    
+
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(jLabel1.getPreferredSize().width+12, super.getPreferredSize().height);

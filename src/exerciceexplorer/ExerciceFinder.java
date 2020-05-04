@@ -53,7 +53,7 @@ public final class ExerciceFinder {
 
         // .txt files
         List<String> lines = new ArrayList<>();
-        lines.add("");
+        //lines.add("");
         TexWriter.writeToFile(lines, folder.getAbsolutePath() + "/mots_clefs.txt");
 
         lines.clear();
@@ -66,7 +66,9 @@ public final class ExerciceFinder {
         TexWriter.writeToFile(lines, folder.getAbsolutePath() + "/README.txt");
 
         lines.clear();
+        lines.add("%");
         lines.add("\\titreExercice{ ...  }");
+        lines.add("%");
         lines.add("%##############################");
         lines.add("%### commandes  spécifiques ###");
         lines.add("%##############################");

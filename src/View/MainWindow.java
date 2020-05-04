@@ -42,11 +42,12 @@ public final class MainWindow extends javax.swing.JFrame {
     public static final int modeReadme = 1, modeComposition = 2, modeNone = 0;
     protected int mode;
 
-    ReadmeEditor re = null;
-    KeywordsEditor ke = null;
-    CompoEditor ce = null;
-    SubjectEditor se = null;
-    ChangeListener cl = null;
+    protected boolean firstDocumentOpened=false;
+    protected ReadmeEditor re = null;
+    protected KeywordsEditor ke = null;
+    protected CompoEditor ce = null;
+    protected SubjectEditor se = null;
+    protected ChangeListener cl = null;
 
     JMenuBar menuBar;
     protected AbstractAction replaceKeywordAction, replaceWordAction, checkAllExercicesAction;
@@ -70,7 +71,6 @@ public final class MainWindow extends javax.swing.JFrame {
 
         setMainMenuBarItems();
         updateMenuBar();
-        //rightPane.setVisible(false);
 
     }
 
@@ -174,7 +174,11 @@ public final class MainWindow extends javax.swing.JFrame {
     }
 
     public void setExerciceDisplay(Exercice ex) {
-
+        if (!this.firstDocumentOpened){
+            firstDocumentOpened=true;
+            rightPane.setVisible(true);
+            this.pack();
+        }
         this.editorTabbedPane.removeChangeListener(cl);
         boolean warning = false;
         boolean toDelete = false;
@@ -303,13 +307,15 @@ public final class MainWindow extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        rightPane.setVisible(false);
+
         editorTabbedPane.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
 
         javax.swing.GroupLayout rightPaneLayout = new javax.swing.GroupLayout(rightPane);
         rightPane.setLayout(rightPaneLayout);
         rightPaneLayout.setHorizontalGroup(
             rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 487, Short.MAX_VALUE)
+            .addGap(0, 403, Short.MAX_VALUE)
             .addGroup(rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightPaneLayout.createSequentialGroup()
                     .addComponent(editorTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
@@ -317,7 +323,7 @@ public final class MainWindow extends javax.swing.JFrame {
         );
         rightPaneLayout.setVerticalGroup(
             rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 613, Short.MAX_VALUE)
+            .addGap(0, 533, Short.MAX_VALUE)
             .addGroup(rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(editorTabbedPane, javax.swing.GroupLayout.Alignment.TRAILING))
         );
@@ -338,8 +344,8 @@ public final class MainWindow extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(middlePane, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
+            .addComponent(middlePane, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
             .addComponent(rightPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -375,6 +381,7 @@ public final class MainWindow extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 if (System.getProperty("os.name").startsWith("Mac OS X")) {
                     System.setProperty("apple.laf.useScreenMenuBar", "true");

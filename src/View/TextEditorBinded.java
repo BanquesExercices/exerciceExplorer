@@ -108,6 +108,11 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
             }
         });
 
+        
+        //jButton2.setBorderPainted(false); 
+        jButton2.setContentAreaFilled(false); 
+        //jButton2.setFocusPainted(false); 
+        //jButton2.setOpaque(false);
     }
 
     protected void changeOccured() {
@@ -427,6 +432,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_ic_save_48px_352084.png"))); // NOI18N
         jButton1.setToolTipText("Sauvegarder");
         jButton1.setBorder(null);
+        jButton1.setContentAreaFilled(false);
         jButton1.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_ic_save_48px_352084 _disabled.png"))); // NOI18N
         jButton1.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_ic_save_48px_352084_selected.png"))); // NOI18N
         jButton1.setRolloverEnabled(true);
@@ -442,6 +448,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_pen-checkbox_353430.png"))); // NOI18N
         jButton2.setToolTipText("Ouvrir dans un editeur externe");
         jButton2.setBorderPainted(false);
+        jButton2.setContentAreaFilled(false);
         jButton2.setPreferredSize(new java.awt.Dimension(32, 32));
         jButton2.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_pen-checkbox_353430_selected.png"))); // NOI18N
         jButton2.setRolloverEnabled(true);
@@ -484,21 +491,20 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
             .addGroup(texPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(amountQLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
-                .addGap(2, 2, 2)
-                .addComponent(versionChooserComboBox, 0, 105, Short.MAX_VALUE)
-                .addGap(2, 2, 2))
+                .addGap(0, 0, 0)
+                .addComponent(versionChooserComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         texPanelLayout.setVerticalGroup(
             texPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, texPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(texPanelLayout.createSequentialGroup()
                 .addGroup(texPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(amountQLabel)
                     .addComponent(versionChooserComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addContainerGap())
+                .addGap(5, 5, 5))
         );
 
         findPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Find", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 0, 14))); // NOI18N
@@ -603,21 +609,23 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(1, 1, 1))
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addComponent(texPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(reloadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(4, 4, 4))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(5, 5, 5)))
+                .addGap(0, 0, 0))
             .addComponent(findPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(replacePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(replacePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
                 .addGap(2, 2, 2)
                 .addComponent(replacePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -627,8 +635,8 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
                     .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(reloadButton)))
-                .addGap(2, 2, 2))
+                        .addComponent(reloadButton, javax.swing.GroupLayout.Alignment.TRAILING)))
+                .addGap(0, 0, 0))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -649,20 +657,6 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         // In this case, it is not possible to save the file anymore
         this.updateView();
     }//GEN-LAST:event_reloadButtonActionPerformed
-
-    private void versionChooserComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_versionChooserComboBoxActionPerformed
-        LatexTokenMaker.login = (String) versionChooserComboBox.getSelectedItem();
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                ((LatexTextEditor) textArea).updateWholeDocumentHighlighting();
-            }
-        });
-
-    }//GEN-LAST:event_versionChooserComboBoxActionPerformed
-
-    private void texPanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_texPanelComponentShown
-    }//GEN-LAST:event_texPanelComponentShown
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
     }//GEN-LAST:event_formFocusGained
@@ -694,6 +688,20 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
     private void replaceAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceAllButtonActionPerformed
        this.replaceAll();
     }//GEN-LAST:event_replaceAllButtonActionPerformed
+
+    private void texPanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_texPanelComponentShown
+
+    }//GEN-LAST:event_texPanelComponentShown
+
+    private void versionChooserComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_versionChooserComboBoxActionPerformed
+        LatexTokenMaker.login = (String) versionChooserComboBox.getSelectedItem();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                ((LatexTextEditor) textArea).updateWholeDocumentHighlighting();
+            }
+        });
+    }//GEN-LAST:event_versionChooserComboBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
