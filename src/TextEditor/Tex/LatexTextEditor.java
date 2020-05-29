@@ -29,12 +29,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
-import javax.swing.text.TextAction;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.fife.ui.autocomplete.TemplateCompletion;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
-import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
 import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
@@ -212,20 +210,24 @@ public class LatexTextEditor extends BaseTextEditor {
     public void setupAutoCompletion() {
 
         DefaultCompletionProvider provider = new DefaultCompletionProvider();
-        provider.setAutoActivationRules(true, "");
+        provider.setAutoActivationRules(false, "\\");
+        
         AutoCompletion acb = new AutoCompletion(provider);
+        acb.setParameterDescriptionTruncateThreshold(20);
+        //acb.setShowDescWindow(true);
         acb.setAutoCompleteEnabled(true);
         acb.setAutoActivationEnabled(true);
         acb.setAutoCompleteSingleChoices(false);
         acb.setParameterAssistanceEnabled(true);
         acb.setChoicesWindowSize(260, 90);
+        acb.setAutoActivationDelay(5);
 
-        // general latex templates
+        // general latex env
         provider.addCompletion(new TemplateCompletion(provider, "begin{itemize}", "begin{itemize} ... \\end{itemize}", "begin{itemize}\n\t\\item ${cursor}\n\t\\item \n\\end{itemize} ", "Liste", "Liste"));
         provider.addCompletion(new TemplateCompletion(provider, "begin{enumerate}", "begin{enumerate} ... \\end{enumerate}", "begin{enumerate}\n\t\\item ${cursor}\n\t\\item \n\\end{enumerate} ", "Liste numérotée", "Liste numérotée"));
         provider.addCompletion(new TemplateCompletion(provider, "begin{env}", "begin{env} ... \\end{env}", "begin{${env}}\n\t \n\\end{${env}} ", "nouvel environnement", "nouvel environnement"));
 
-        // specific latex templates
+        // specific BPEP latex templates
         provider.addCompletion(new TemplateCompletion(provider, "partie{", "partie{...}", "partie{${cursor}}\n", "Partie", "Partie"));
         provider.addCompletion(new TemplateCompletion(provider, "sousPartie{", "sousPartie{...}", "sousPartie{${cursor}}\n", "Sous-partie", "Sous-partie"));
         provider.addCompletion(new TemplateCompletion(provider, "fig{", "fig{0.8}{...}", "fig{0.8}{${cursor}}\n", "Figure", "Figure"));
@@ -235,9 +237,16 @@ public class LatexTextEditor extends BaseTextEditor {
         provider.addCompletion(new TemplateCompletion(provider, "enonce{", "enonce{...}", "enonce{\n\t${cursor}\n}", "Enonce", "Enonce"));
         provider.addCompletion(new TemplateCompletion(provider, "tcols{", "tcols{0.49}{0.49}{...}{...}", "tcols{0.49}{0.49}{\n\t${cursor}\n}{\n\t\n}", "Double colonne", "Double Colonne"));
 
-        // maths accelerators templates
+        // maths & Latex accelerators templates
         provider.addCompletion(new TemplateCompletion(provider, "frac{", "frac{...}{...}", "frac{${cursor}}{}", "Fraction", "Fraction"));
-
+        provider.addCompletion(new TemplateCompletion(provider, "Rightarrow", "Rightarrow", "Rightarrow ${cursor}", "Implication", "Implication"));
+        provider.addCompletion(new TemplateCompletion(provider, "RightLeftarrow", "RightLeftarrow", "RightLeftarrow ${cursor}", "equivalence", "equivalence"));
+        provider.addCompletion(new TemplateCompletion(provider, "medskip", "medskip", "medskip \n${cursor}", "petit espace vertical", "petit espace vertical"));
+        provider.addCompletion(new TemplateCompletion(provider, "ub{", "ub{...}{...}", "ub{${cursor}}{   }", "indication sous l'expression", "indication sous l'expression"));
+        provider.addCompletion(new TemplateCompletion(provider, "sqrt{", "sqrt{", "sqrt{${cursor}}", "racine", "racine"));
+        provider.addCompletion(new TemplateCompletion(provider, "boxed{", "boxed{", "boxed{${cursor}}", "résultat encadré", "résultat encadré"));
+        
+        
         acb.install(this);
     }
 

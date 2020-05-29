@@ -153,7 +153,7 @@ public class SavedVariables {
         if (prefs != null) {
             return prefs.get("globalDict", "");
         } else {
-            return "";
+            return "../src/Content/dic_fra.txt";
         }
     }
 

@@ -42,7 +42,7 @@ import java.io.IOException;
 %}
 
 
-Letter					= ([azertyuiopmlkjhgfdsqwxcvbnAZERTYUIOPMLKJHGFDSQWXCVBNéèêëàâùûüöôç@ÉïîÀ])
+Letter					= ([azertyuiopmlkjhgfdsqwxcvbnAZERTYUIOPMLKJHGFDSQWXCVBNéèêëàâùûüöôç@ÉïîÀ°])
 Digit					= ([0-9])
 Number                                   =  {Digit}+("."{Digit}*)?
 LetterOrUnderscore		        = ({Letter}|[_])

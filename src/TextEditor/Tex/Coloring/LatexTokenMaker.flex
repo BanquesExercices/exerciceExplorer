@@ -240,6 +240,29 @@ public static final int FIRST_MULT = FORMER_BALANCE_MULT*10;
         /**
         *   Dealing with blocks
         **/
+
+        /**
+        * function called when an inline eq is parsed
+        */
+        public void parseInlineEq() {
+            int s = zzStartRead;
+            int e = zzMarkedPos - 1;
+            String txt = yytext().replace("\\{", "XX").replace("\\}", "YY");
+            for (int i=0; i<txt.length();i++){
+                if (txt.charAt(i)=='{'){
+                    this.addOpenBracket();
+                    this.addToken(s+i, s+i, Token.SEPARATOR);
+                } 
+                else if (txt.charAt(i)=='}') {
+                    this.addCloseBracket();
+                    this.addToken(s+i, s+i, Token.SEPARATOR);
+                }else{
+                    this.addToken(s+i, s+i, TOKEN_INLINE_EQ);
+                }
+            }
+         }
+
+
         public void beginMLE(int newState){
             addToken(zzStartRead,zzMarkedPos-2, Token.FUNCTION);
             addToken(zzMarkedPos-1,zzMarkedPos-1, Token.SEPARATOR);
@@ -382,7 +405,7 @@ public static final int FIRST_MULT = FORMER_BALANCE_MULT*10;
 %}
 
 
-Letter					= ([azertyuiopmlkjhgfdsqwxcvbnAZERTYUIOPMLKJHGFDSQWXCVBNéèêëàâùûüöôç@ÉïîÀ])
+Letter					= ([azertyuiopmlkjhgfdsqwxcvbnAZERTYUIOPMLKJHGFDSQWXCVBNéèêëàâùûüöôç@ÉïîÀ°])
 Digit					= ([0-9])
 LetterOrUnderscore		        = ({Letter}|[_])
 AnyChar					= ({LetterOrUnderscore}|{Digit}|[\-])
@@ -419,7 +442,7 @@ ADDQloginBegin = ("\\addQ["{AnyChar}+"]{")
 <YYINITIAL, ADDQ,ADDA>{
 ([\\]{AnyChar}+)			            { addToken(Token.FUNCTION); }
 ([\\]%)					    { int temp = zzStartRead; addToken(temp, temp, Token.SEPARATOR); addToken(temp + 1, temp + 1, Token.IDENTIFIER);}
-("$"{Sentence}+"$")                          { int temp = zzStartRead; addToken(temp, zzMarkedPos-1, TOKEN_INLINE_EQ);}
+("$"{Sentence}+"$")                          { parseInlineEq();}
 ("\\begin{"{AnyChar}+"}")   { int temp = zzStartRead;
                                                 addToken(temp, temp+5, Token.RESERVED_WORD);
                                                 addToken(temp+6, temp+6, Token.RESERVED_WORD);
