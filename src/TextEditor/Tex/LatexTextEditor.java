@@ -55,6 +55,7 @@ public class LatexTextEditor extends BaseTextEditor {
     protected long time = 0;
     protected static Dictionary<String, Integer> tokenDict = null;
     protected static Dictionary<Integer, String> defaultColorDict = null;
+    protected AutoCompletion acb;
 
     public LatexTextEditor(String text) {
         super(text);
@@ -208,11 +209,19 @@ public class LatexTextEditor extends BaseTextEditor {
 
     @Override
     public void setupAutoCompletion() {
-
+        //advertizing the setup is done
+        System.out.println("setup of AC is done");
+        
+        
         DefaultCompletionProvider provider = new DefaultCompletionProvider();
         provider.setAutoActivationRules(false, "\\");
         
-        AutoCompletion acb = new AutoCompletion(provider);
+        if (acb!=null){
+            // uninstall acb if it already exists
+            acb.uninstall();
+        }
+        
+        acb = new AutoCompletion(provider);
         acb.setParameterDescriptionTruncateThreshold(20);
         //acb.setShowDescWindow(true);
         acb.setAutoCompleteEnabled(true);

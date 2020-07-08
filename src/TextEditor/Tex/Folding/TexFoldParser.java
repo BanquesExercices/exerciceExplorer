@@ -102,7 +102,6 @@ public class TexFoldParser implements FoldParser {
                             String trimed = t.trim();
                             if (!tagsList.contains(trimed) && !trimed.equals("")){
                                 tagsList.add(trimed);
-                                 System.out.println(trimed);
                             }
                         }
                     } catch (Exception e) {

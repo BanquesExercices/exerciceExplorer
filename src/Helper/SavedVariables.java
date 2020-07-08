@@ -7,7 +7,11 @@ package Helper;
 
 import static Helper.Utils.getColorFromString;
 import TextEditor.Tex.LatexTextEditor;
+import View.MainWindow;
 import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 /**
@@ -16,7 +20,19 @@ import java.util.prefs.Preferences;
  */
 public class SavedVariables {
 
-    public static Preferences prefs;
+    protected static Preferences prefs;
+
+    public static void instanciate(Class c) {
+        prefs = Preferences.userNodeForPackage(c);
+    }
+
+    public static void removeAllPrefs() {
+        try {
+            prefs.clear();
+        } catch (BackingStoreException ex) {
+            Logger.getLogger(SavedVariables.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public static String getOpenCmd() {
 
@@ -206,25 +222,23 @@ public class SavedVariables {
 
     public static void setMainGitDir(String in) {
         prefs.put("mainGit", in);
-        
+
     }
 
     public static void setColor(int token, String color) {
         try {
             getColorFromString(color); // if this fails, we don't store the color.
-            prefs.put("color"+token, color);
+            prefs.put("color" + token, color);
         } catch (Exception e) {
             System.out.println("no saving !");
         }
     }
-    
-   
 
     public static Color getColor(int token) {
         String out = LatexTextEditor.getDefaultColor(token);
         if (prefs != null) {
             out = prefs.get("color" + token, out);
-        } 
+        }
         return getColorFromString(out);
     }
 

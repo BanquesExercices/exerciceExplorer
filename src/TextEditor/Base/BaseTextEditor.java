@@ -45,7 +45,6 @@ public class BaseTextEditor extends RSyntaxTextArea {
         this.setLineWrap(true);
         this.setTabSize(3);
         this.initiateEditMenu();
-        
 
     }
 
@@ -83,25 +82,24 @@ public class BaseTextEditor extends RSyntaxTextArea {
             SpellDictionaryHashMap dict = new SpellDictionaryHashMap(reader);
             parser = new SpellingParser(dict);
             //parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());
+            try {
+                parser.setUserDictionary(new File(customFile));
+            } catch (IOException ex) {
+                System.err.println("problem with custom dict file");
+            }
             dictLoaded = true;
         } catch (FileNotFoundException ex) {
             System.err.println("dict file not found");
         } catch (IOException ex) {
             System.err.println("dict of bad format");
         }
-        try {
-            parser.setUserDictionary(new File(customFile));
-        } catch (IOException ex) {
-            System.err.println("problem with custom dict file");
-        }
+
     }
 
     public static JScrollPane getMyTextAreaInScrollPane(BaseTextEditor instance) {
         RTextScrollPane sp = new RTextScrollPane(instance);
         return sp;
     }
-
-   
 
     public void dealWithFileProcessorJMenu(FileProcessor s) {
         RecordableTextAction ts = new RecordableTextAction("Sauvegarder") {
@@ -120,7 +118,7 @@ public class BaseTextEditor extends RSyntaxTextArea {
         ts.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, mod));
         editMenu.add(ts);
         editMenu.addSeparator();
-        
+
         AbstractAction find = new AbstractAction("Find") {
 
             @Override
@@ -132,7 +130,7 @@ public class BaseTextEditor extends RSyntaxTextArea {
         JMenuItem findItem = new JMenuItem(find);
         findItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, mod));
         editMenu.add(findItem);
-        
+
         AbstractAction replace = new AbstractAction("Replace") {
 
             @Override
@@ -144,6 +142,17 @@ public class BaseTextEditor extends RSyntaxTextArea {
         JMenuItem replaceItem = new JMenuItem(replace);
         replaceItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, mod));
         editMenu.add(replaceItem);
+
+        // add reload autocomplete edit here
+        AbstractAction reload = new AbstractAction("Reload AC") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BaseTextEditor.this.setupAutoCompletion();
+            }
+        };
+        JMenuItem reloadACItem = new JMenuItem(reload);
+        editMenu.add(reloadACItem);
 
     }
 

@@ -50,11 +50,11 @@ public final class MainWindow extends javax.swing.JFrame {
     protected ChangeListener cl = null;
 
     JMenuBar menuBar;
-    protected AbstractAction replaceKeywordAction, replaceWordAction, checkAllExercicesAction;
+    protected AbstractAction replaceKeywordAction, replaceWordAction, checkAllExercicesAction,toZeroAction;
     protected JMenu global, file;
 
     public MainWindow() {
-        SavedVariables.prefs = Preferences.userNodeForPackage(this.getClass());
+        SavedVariables.instanciate(this.getClass());
 
         initComponents();
         this.creationSujetView1.setMw(this);
@@ -113,9 +113,16 @@ public final class MainWindow extends javax.swing.JFrame {
                 MainWindow.this.editorTabbedPane.setSelectedIndex(0);
             }
         };
+        
+        toZeroAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SavedVariables.removeAllPrefs();
+            }
+        };
 
         // menu items
-        global = new JMenu("Global");
+        global = new JMenu("Avancé");
 
         JMenuItem replaceKeywordMI = new JMenuItem("Remplacer un mot_clef");
         global.add(replaceKeywordMI);
@@ -128,6 +135,10 @@ public final class MainWindow extends javax.swing.JFrame {
         JMenuItem checkExercicesMI = new JMenuItem("Compiler tous les exercices");
         global.add(checkExercicesMI);
         checkExercicesMI.addActionListener(checkAllExercicesAction);
+        
+        JMenuItem toZeroMI = new JMenuItem("Remise à zero des preferences");
+        global.add(toZeroMI);
+        checkExercicesMI.addActionListener(toZeroAction);
 
         this.updateGlobalMenuBarStatus();
 

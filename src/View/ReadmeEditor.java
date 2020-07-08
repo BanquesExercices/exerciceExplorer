@@ -53,6 +53,7 @@ public class ReadmeEditor extends javax.swing.JPanel implements Observer,MenuBar
         countLabel = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
 
+        setPreferredSize(new java.awt.Dimension(420, 186));
         setLayout(new java.awt.BorderLayout());
         add(textEditorBinded1, java.awt.BorderLayout.CENTER);
 
