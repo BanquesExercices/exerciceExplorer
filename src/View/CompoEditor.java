@@ -136,6 +136,7 @@ public class CompoEditor extends javax.swing.JPanel implements MenuBarItemProvid
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_pen-checkbox_353430.png"))); // NOI18N
         jButton2.setToolTipText("Ouvrir dans un editeur externe");
         jButton2.setBorderPainted(false);
+        jButton2.setContentAreaFilled(false);
         jButton2.setPreferredSize(new java.awt.Dimension(32, 32));
         jButton2.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_pen-checkbox_353430_selected.png"))); // NOI18N
         jButton2.setRolloverEnabled(true);

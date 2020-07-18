@@ -18,7 +18,6 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -59,6 +58,10 @@ public final class MainWindow extends javax.swing.JFrame {
         initComponents();
         this.creationSujetView1.setMw(this);
         this.options2.setMw(this);
+        
+        if (options2.isCompletionRequired()){
+            this.jTabbedPane1.setSelectedComponent(jScrollPane1);
+        }
 
         // menubar
         menuBar = new JMenuBar();
@@ -78,6 +81,8 @@ public final class MainWindow extends javax.swing.JFrame {
 
         // file : 
         file = new JMenu("Fichier");
+        
+        // new exercice
         JMenuItem newExo = new JMenuItem("Nouvel exercice");
         newExo.addActionListener(new ActionListener() {
             @Override
@@ -88,6 +93,26 @@ public final class MainWindow extends javax.swing.JFrame {
         int mod = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
         newExo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, mod));
         file.add(newExo);
+        
+        // export the set of exercices
+        JMenuItem exportItem = new JMenuItem("Exporter la composition");
+        exportItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               MainWindow.this.creationSujetView1.exportSetOFExercices();
+            }
+        });
+        file.add(exportItem);
+        
+        // load a set of exercices
+        JMenuItem loadSetItem = new JMenuItem("Charger une composition");
+        loadSetItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               MainWindow.this.creationSujetView1.loadSet();
+            }
+        });
+        file.add(loadSetItem);
 
         // global : 
         replaceKeywordAction = new AbstractAction() {
@@ -138,7 +163,7 @@ public final class MainWindow extends javax.swing.JFrame {
         
         JMenuItem toZeroMI = new JMenuItem("Remise à zero des preferences");
         global.add(toZeroMI);
-        checkExercicesMI.addActionListener(toZeroAction);
+        toZeroMI.addActionListener(toZeroAction);
 
         this.updateGlobalMenuBarStatus();
 

@@ -14,15 +14,22 @@ import exerciceexplorer.Exercice;
 import exerciceexplorer.ExerciceFinder;
 import exerciceexplorer.KeyWords;
 import java.awt.Color;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
+import javax.swing.JFileChooser;
 import javax.swing.ListModel;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
@@ -58,13 +65,12 @@ public class CreationCompoView extends javax.swing.JPanel {
         this.keywordsScrollPane.setVisible(false);
 
         jLabel1.setText("1");
-        
-        
+
         choixExercice.addListSelectionListener((ListSelectionEvent e) -> {
-            
-            ListTransferHandler lth =  (ListTransferHandler)choixExercice.getTransferHandler();
-            
-            if (choixExercice.getSelectedValue() != null && ! lth.isOnDrag()) {
+
+            ListTransferHandler lth = (ListTransferHandler) choixExercice.getTransferHandler();
+
+            if (choixExercice.getSelectedValue() != null && !lth.isOnDrag()) {
                 this.mw.setExerciceDisplay((Exercice) choixExercice.getSelectedValue());
                 this.listeExercices.clearSelection();
                 this.jLabel1.setText(String.valueOf(choixExercice.getSelectedIndex() + 1));
@@ -72,14 +78,12 @@ public class CreationCompoView extends javax.swing.JPanel {
         });
 
         listeExercices.addListSelectionListener((ListSelectionEvent e) -> {
-            ListTransferHandler lth =  (ListTransferHandler)listeExercices.getTransferHandler();
-            if (listeExercices.getSelectedValue() != null && ! lth.isOnDrag()) {
+            ListTransferHandler lth = (ListTransferHandler) listeExercices.getTransferHandler();
+            if (listeExercices.getSelectedValue() != null && !lth.isOnDrag()) {
                 this.mw.setExerciceDisplay((Exercice) listeExercices.getSelectedValue());
                 this.choixExercice.clearSelection();
             }
         });
-        
-        
 
         this.newExercicePane.setVisible(false);
         this.newTitleTextField.getDocument().addDocumentListener(new DocumentListener() {
@@ -99,14 +103,14 @@ public class CreationCompoView extends javax.swing.JPanel {
             }
         });
     }
-    
-    public void validateTitle(){
+
+    public void validateTitle() {
         String title = this.newTitleTextField.getText();
         boolean valid = this.ef.isNameAvailable(title);
-        if (valid){
+        if (valid) {
             this.newTitleTextField.setForeground(Color.black);
             this.createNewExoButton.setEnabled(true);
-        }else{
+        } else {
             this.newTitleTextField.setForeground(Color.red);
             this.createNewExoButton.setEnabled(false);
         }
@@ -119,15 +123,15 @@ public class CreationCompoView extends javax.swing.JPanel {
         this.newTitleTextField.requestFocusInWindow();
     }
 
-    public void toggleCreateNewExercicePanel(){
-        if (this.newExercicePane.isVisible()){
+    public void toggleCreateNewExercicePanel() {
+        if (this.newExercicePane.isVisible()) {
             this.hideCreateNewExercicePanel();
-        }else{
+        } else {
             this.showCreateNewExercicePanel();
         }
-        
+
     }
-    
+
     public void hideCreateNewExercicePanel() {
         this.newExercicePane.setVisible(false);
     }
@@ -150,7 +154,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         keyWordsHolder.remove(kwv);
         keyWordsHolder.revalidate();
         keyWordsHolder.repaint();
-        if (selectedKeyWords.size()==0){
+        if (selectedKeyWords.size() == 0) {
             this.keywordsScrollPane.setVisible(false);
         }
         this.updateModel();
@@ -433,7 +437,7 @@ public class CreationCompoView extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(newExercicePane, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -446,13 +450,13 @@ public class CreationCompoView extends javax.swing.JPanel {
                 .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 34, Short.MAX_VALUE)
+                        .addGap(0, 35, Short.MAX_VALUE)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -460,7 +464,7 @@ public class CreationCompoView extends javax.swing.JPanel {
                     .addComponent(editButton)
                     .addComponent(exportButton))
                 .addGap(4, 4, 4)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -495,7 +499,12 @@ public class CreationCompoView extends javax.swing.JPanel {
         this.newExercicePane.setVisible(false);
     }//GEN-LAST:event_createNewExoButtonActionPerformed
 
-    private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
+    public void exportSetOFExercices() {
+        ExportWindow ew = new ExportWindow(this);
+        ew.setVisible(true);
+    }
+
+    private void oldExportButton() {
         String kind = "" + outputTypes.getSelectedItem();
         String outDir = SavedVariables.getOutputDir() + "/" + kind;
 
@@ -544,7 +553,10 @@ public class CreationCompoView extends javax.swing.JPanel {
         // copy of file raccourcis_communs.sty : 
         ExecCommand.execo(new String[]{"cp", "-r", SavedVariables.getMainGitDir() + "/fichiers_utiles/raccourcis_communs.sty", compoDir + "/"}, 100);
 
+    }
 
+    private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
+        exportSetOFExercices();
     }//GEN-LAST:event_exportButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -555,6 +567,9 @@ public class CreationCompoView extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_newTitleTextFieldActionPerformed
 
+    public String getOutputType() {
+        return (String) outputTypes.getSelectedItem();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
@@ -584,4 +599,62 @@ public class CreationCompoView extends javax.swing.JPanel {
     private javax.swing.JTextField newTitleTextField;
     private javax.swing.JComboBox outputTypes;
     // End of variables declaration//GEN-END:variables
+
+    public void loadSet() {
+        JFileChooser choix = new JFileChooser();
+        choix.setCurrentDirectory(new File(SavedVariables.getMainGitDir()+"/feuilles_exercices"));
+        choix.addChoosableFileFilter(new javax.swing.filechooser.FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if (f.isDirectory()) {
+                    return true;
+                }
+                String s = f.getName();
+                return s.endsWith(".txt");
+            }
+
+            @Override
+            public String getDescription() {
+                return "blabla";
+            }
+        });
+        int retour = choix.showOpenDialog(this);
+        if (retour == JFileChooser.APPROVE_OPTION) {
+         
+         
+         
+         BufferedReader b;
+            try {
+                b = new BufferedReader(new FileReader(new File(choix.getSelectedFile().getAbsolutePath())));
+            } catch (FileNotFoundException ex) {
+                System.err.println("Problème lors de l'ouverture du fichier " + choix.getSelectedFile().getAbsolutePath());
+                return;
+            }
+
+        String readLine = "";
+        String kind;
+        String number;
+        String name;
+        selectedExericesModel.clear();
+            try {
+                kind = b.readLine().split(":")[1].trim();
+                number = b.readLine().split(":")[1].trim();
+                name = b.readLine().split(":")[1].trim();
+                
+                while ((readLine = b.readLine()) != null) {
+                    System.out.println(readLine);
+                    this.selectedExericesModel.addElement(ExerciceFinder.getExerciceByPath(readLine.trim()));
+                }
+            } catch (IOException ex) {
+                System.err.println("Problème lors de la lecture du fichier " + choix.getSelectedFile().getAbsolutePath());
+                return;
+            }
+            this.outputTypes.setSelectedItem(kind);
+            
+            
+         
+         
+        }
+    }
+
 }

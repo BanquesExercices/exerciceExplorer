@@ -78,7 +78,7 @@ public class LatexTextEditor extends BaseTextEditor {
 
         this.setAutoIndentEnabled(true);
 
-        // adding spell checker
+        // adding spell checker        
         this.setupSpellChecker();
 
         // adding folding abilities
@@ -176,7 +176,15 @@ public class LatexTextEditor extends BaseTextEditor {
 
     @Override
     public void setupSpellChecker() {
+        if (!SavedVariables.getSpellCheck()) {
+            // no need for spell check
+            return;
+        }
+
         this.setDictParser();
+        if (!dictLoaded) {
+            return;
+        }
         parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());
         parser.setSquiggleUnderlineColor(Color.BLACK);
         this.clearParsers();
@@ -186,6 +194,12 @@ public class LatexTextEditor extends BaseTextEditor {
 
     @Override
     public void setupSyntaxColoring() {
+        
+        if (!SavedVariables.getColoring()) {
+            // no need for coloring
+            return;
+        }
+        
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping(MY_LATEX_STYLE, LatexTokenMaker.class.getName());
         this.setSyntaxEditingStyle(MY_LATEX_STYLE);
@@ -209,18 +223,20 @@ public class LatexTextEditor extends BaseTextEditor {
 
     @Override
     public void setupAutoCompletion() {
-        //advertizing the setup is done
-        System.out.println("setup of AC is done");
-        
+
+         if (!SavedVariables.getAutoCompletion()) {
+            // no need for AC
+            return;
+        }
         
         DefaultCompletionProvider provider = new DefaultCompletionProvider();
         provider.setAutoActivationRules(false, "\\");
-        
-        if (acb!=null){
+
+        if (acb != null) {
             // uninstall acb if it already exists
             acb.uninstall();
         }
-        
+
         acb = new AutoCompletion(provider);
         acb.setParameterDescriptionTruncateThreshold(20);
         //acb.setShowDescWindow(true);
@@ -254,8 +270,7 @@ public class LatexTextEditor extends BaseTextEditor {
         provider.addCompletion(new TemplateCompletion(provider, "ub{", "ub{...}{...}", "ub{${cursor}}{   }", "indication sous l'expression", "indication sous l'expression"));
         provider.addCompletion(new TemplateCompletion(provider, "sqrt{", "sqrt{", "sqrt{${cursor}}", "racine", "racine"));
         provider.addCompletion(new TemplateCompletion(provider, "boxed{", "boxed{", "boxed{${cursor}}", "résultat encadré", "résultat encadré"));
-        
-        
+
         acb.install(this);
     }
 
@@ -302,7 +317,6 @@ public class LatexTextEditor extends BaseTextEditor {
                 + " - côté réponses, les items des environnements \\begin{enumerate} ... \\end{enumerate} seront ajoutés aux questions en tant que réponses \n"
                 + ""
         );
-        
 
         ////////////// setup view menu
         viewMenu = new JMenu("Affichage");

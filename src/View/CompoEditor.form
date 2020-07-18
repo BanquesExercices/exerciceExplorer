@@ -78,6 +78,7 @@
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Ouvrir dans un editeur externe"/>
             <Property name="borderPainted" type="boolean" value="false"/>
+            <Property name="contentAreaFilled" type="boolean" value="false"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[32, 32]"/>
             </Property>

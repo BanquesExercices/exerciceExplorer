@@ -10,10 +10,9 @@ import Helper.SavedVariables;
 import Helper.Utils;
 import TextEditor.Tex.LatexTextEditor;
 import java.awt.Color;
-import java.awt.Dimension;
-import javax.swing.ComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
 
 /**
  *
@@ -35,6 +34,52 @@ public class Options extends JPanel {
             this.openEditorLabel.setText("xdg-open");
         }
 
+        // better dealing with jTextField : input is saved whenever the text changes ( we do not wait for return key anymore
+        Utils.addChangeListener(pdflatexInput, (ChangeEvent e) -> {
+            SavedVariables.setPdflatexCmd(pdflatexInput.getText());
+        });
+
+        Utils.addChangeListener(openInput, (ChangeEvent e) -> {
+            SavedVariables.setOpenCmd(openInput.getText());
+        });
+
+        Utils.addChangeListener(gitFolderInput, (ChangeEvent e) -> {
+            SavedVariables.setMainGitDir(gitFolderInput.getText());
+        });
+
+        Utils.addChangeListener(templatesFolderInput, (ChangeEvent e) -> {
+            SavedVariables.setTexModelsPaths(templatesFolderInput.getText());
+        });
+
+        Utils.addChangeListener(outputDirInput, (ChangeEvent e) -> {
+            SavedVariables.setOutputDir(outputDirInput.getText());
+        });
+
+        Utils.addChangeListener(globalDictTextField, (ChangeEvent e) -> {
+            SavedVariables.setGlobalDict(globalDictTextField.getText());
+        });
+
+        Utils.addChangeListener(customDictTextField, (ChangeEvent e) -> {
+            SavedVariables.setCustomDict(customDictTextField.getText());
+        });
+
+        Utils.addChangeListener(colorSetTextField, (ChangeEvent e) -> {
+            String color = colorSetTextField.getText();
+            int token = LatexTextEditor.getToken((String) tokenComboBox.getSelectedItem());
+            try {
+                colorSetTextField.setForeground(Utils.getColorFromString(color));
+                SavedVariables.setColor(token, color);
+            } catch (Exception ex) {
+                color = Utils.getStringFromColor(SavedVariables.getColor(token));
+                colorSetTextField.setText(color);
+                colorSetTextField.setForeground(Utils.getColorFromString(color));
+            }
+        });
+
+    }
+
+    public boolean isCompletionRequired() {
+        return "".equals(this.gitFolderInput.getText());
     }
 
     public void setMw(MainWindow mw) {
@@ -86,7 +131,7 @@ public class Options extends JPanel {
         jLabel11 = new javax.swing.JLabel();
         globalDictTextField = new javax.swing.JTextField();
         customDictTextField = new javax.swing.JTextField();
-        parsingCheckBox = new javax.swing.JCheckBox();
+        autoCompletionCheckBox = new javax.swing.JCheckBox();
         coloringCheckBox = new javax.swing.JCheckBox();
         coloringPanel = new javax.swing.JPanel();
         tokenComboBox = new javax.swing.JComboBox<>();
@@ -160,7 +205,7 @@ public class Options extends JPanel {
         jPanel5.setLayout(new java.awt.GridLayout(1, 0));
 
         statusButton.setText("Status");
-        statusButton.setToolTipText("Vérifie les actions GIT à effectuer.");
+        statusButton.setToolTipText("<html>\nVérifie les actions GIT à effectuer.\n<br>\nCette commande est équivalente à la saisie sur le terminal de :  \n<ol>\n    <li> git fetch \n    <li> git status\n</ol>\n</html>");
         statusButton.setMaximumSize(new java.awt.Dimension(60, 22));
         statusButton.setMinimumSize(new java.awt.Dimension(60, 22));
         statusButton.setPreferredSize(new java.awt.Dimension(60, 22));
@@ -258,21 +303,16 @@ public class Options extends JPanel {
 
         globalDictTextField.setText(SavedVariables.getGlobalDict()
         );
-        globalDictTextField.setToolTipText("<html>\nChemin d'acces (absolu) vers le dictionnaire principal\n<ul>\n    <li> Fichier à encodage UTF-8  </li>\n    <li> Un seul mot par ligne  </li>\n    <li> Ce fichier ne sera pas modifié par l'application   </li>\n</ul>\nLe dictionnaire sera utilisé pour la verification orthographique (aucune vérification sur la grammaire n'est effectuée !).\n</html>");
+        globalDictTextField.setToolTipText("<html>\nChemin d'acces (absolu) vers le dictionnaire principal\n<ul>\n    <li> Fichier à encodage UTF-8  </li>\n    <li> Un seul mot par ligne  </li>\n    <li> Ce fichier ne sera pas modifié par l'application   </li>\n</ul>\nLe dictionnaire sera utilisé pour la verification orthographique (aucune vérification sur la grammaire n'est effectuée !). <br>\nUn exmple de dictionnaire se trouve dans le repertoire \"fichiers_utiles\" de la BPEP.\n</html>");
         globalDictTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                globalDictTextFieldActionPerformed(evt);
+                nPerformed(evt);
             }
         });
 
         customDictTextField.setText(SavedVariables.getCustomDict()
         );
-        customDictTextField.setToolTipText("<html>\nChemin d'acces (absolu) vers le dictionnaire personnel\n<ul>\n    <li> Fichier à encodage UTF-8  </li>\n    <li> Un seul mot par ligne  </li>\n    <li> L'application pourr ajouter de nouveaux mots de manière définitive à ce dictionnaire  </li>\n</ul>\nLe dictionnaire à pour vocation de contenir des termes de jargons spécifiques aux contenus des exercices.\n</html>");
-        customDictTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                customDictTextFieldActionPerformed(evt);
-            }
-        });
+        customDictTextField.setToolTipText("<html>\nChemin d'acces (absolu) vers le dictionnaire personnel\n<ul>\n    <li> Fichier à encodage UTF-8  </li>\n    <li> Un seul mot par ligne  </li>\n    <li> L'application pourra ajouter de nouveaux mots de manière définitive à ce dictionnaire  </li>\n</ul>\nCe dictionnaire pourra acceuillir par exemple des termes scientifiques liés aux exercices et absent du dictionnaire principal.\n</html>");
 
         javax.swing.GroupLayout spellPanelLayout = new javax.swing.GroupLayout(spellPanel);
         spellPanel.setLayout(spellPanelLayout);
@@ -303,16 +343,18 @@ public class Options extends JPanel {
                 .addGap(4, 4, 4))
         );
 
-        parsingCheckBox.setText("Analyse du document");
-        parsingCheckBox.setToolTipText("Permet d'utiliser le folding et de visualiser rapidement le nombre de questions présentes dans un sujet.");
-        parsingCheckBox.addActionListener(new java.awt.event.ActionListener() {
+        autoCompletionCheckBox.setSelected(SavedVariables.getAutoCompletion());
+        autoCompletionCheckBox.setText("auto-completion");
+        autoCompletionCheckBox.setToolTipText("Permet d'utiliser l'auto-complétion (déclanchée après la saisie du caractère \"\\\").");
+        autoCompletionCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                parsingCheckBoxActionPerformed(evt);
+                autoCompletionCheckBoxActionPerformed(evt);
             }
         });
 
+        coloringCheckBox.setSelected(SavedVariables.getColoring());
         coloringCheckBox.setText("Coloration syntaxique");
-        coloringCheckBox.setToolTipText("Active (ou non) la coloration syntaxique. Cette option peut ralentir la saisie/modification du texte.");
+        coloringCheckBox.setToolTipText("<html>\nPermet  d'utiliser la coloration syntaxique.\n<br>\n Bien qu'optimisée, cette option peut rallentir la saisie de texte <br> sur certaines anciennes machines et peut donc être desactivée.\n</html>");
         coloringCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 coloringCheckBoxActionPerformed(evt);
@@ -387,7 +429,7 @@ public class Options extends JPanel {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(spellCheckBox)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(parsingCheckBox)
+                        .addComponent(autoCompletionCheckBox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(coloringCheckBox))
                     .addComponent(coloringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -406,7 +448,7 @@ public class Options extends JPanel {
                 .addComponent(spellPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(parsingCheckBox)
+                    .addComponent(autoCompletionCheckBox)
                     .addComponent(coloringCheckBox))
                 .addGap(4, 4, 4)
                 .addComponent(coloringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -418,57 +460,32 @@ public class Options extends JPanel {
 
         pdflatexInput.setText(SavedVariables.getPdflatexCmd()
         );
-        pdflatexInput.setToolTipText("Chemin d'acces (absolu) vers l'executable pdflatex");
+        pdflatexInput.setToolTipText("<html>\nChemin d'acces (absolu) vers l'executable pdflatex. <br>\n(Peut être obtenu en tappant \"which pdflatex\" dans un terminal)\n</html>");
         pdflatexInput.setCaretPosition(0);
         pdflatexInput.setMinimumSize(new java.awt.Dimension(6, 6));
         pdflatexInput.setPreferredSize(new java.awt.Dimension(240, 24));
-        pdflatexInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pdflatexInputActionPerformed(evt);
-            }
-        });
 
         templatesFolderInput.setText(SavedVariables.getTexModelsPaths());
-        templatesFolderInput.setToolTipText("<html>\nChemin d'acces (absolu) vers le dossier contenant les templates latex :\n<ul>\n    <li> DSModel.tex  </li>\n    <li> DMModel.tex  </li>\n    <li> ColleModel.tex  </li>\n    <li> TDModel.tex  </li>\n</ul>\nCes documents servent de template pour l'unclusion des exercices et doivent inclure le fichier fichiers_utiles/raccourcis_communs.sty et contenir une ligne : <br>\n****\n<br> \nqui sera remplacée par l'import des exercice lors de l'édition d'une composition.\n<br>\n<br>\nUn exemple de fichier se trouve dans le répertoire path/To/Git/Dir/fichiers_utiles/defaultLatexTemplates\n</html>");
+        templatesFolderInput.setToolTipText("<html>\nChemin d'acces (absolu) vers le dossier contenant les templates latex :\n<ul>\n    <li> DSModel.tex  </li>\n    <li> DMModel.tex  </li>\n    <li> ColleModel.tex  </li>\n    <li> TDModel.tex  </li>\n</ul>\nCes documents servent de template pour l'inclusion des exercices et doivent inclure le fichier fichiers_utiles/raccourcis_communs.sty et contenir une ligne : <br>\n****\n<br> \nqui sera remplacée par l'import des exercices lors de l'édition d'une composition.\n<br>\n<br>\nDes exemples de fichiers fonctionnels se trouvent dans le répertoire path/To/Git/Dir/fichiers_utiles/defaultLatexTemplates\n</html>");
         templatesFolderInput.setPreferredSize(new java.awt.Dimension(240, 24));
-        templatesFolderInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                templatesFolderInputActionPerformed(evt);
-            }
-        });
 
         jLabel6.setText("dossier d'export");
 
         openEditorLabel.setText("open");
 
         outputDirInput.setText(SavedVariables.getOutputDir());
-        outputDirInput.setToolTipText("<html>\nChemin d'acces (absolu) vers le dossier contenant vos DS/DM de l'année en cours. <br>\nCe dossier doit contenir un sous dossier nommé DM et un autre nommé DS. <br>\nAinsi, une composition type DS exportée sera placé dans le sous dossier DS de manière incrémentielle (exemple DS5 si un dossier DS4 est déjà présent).\n</html>");
+        outputDirInput.setToolTipText("<html>\nChemin d'acces (absolu) vers le dossier contenant vos DSs/DMs de l'année en cours. <br>\nCe dossier doit contenir un sous dossier nommé DM et un autre nommé DS. <br>\nAinsi, une composition type DS exportée sera placé dans le sous dossier DS de manière incrémentielle (exemple DS5 si un dossier DS4 est déjà présent).\n<br> <br>\nLes composition exportées seront copiées de manière pérènne à cet endroit et ne seront pas affectées par des modifications ultérieurs de la BPEP.\n</html>");
         outputDirInput.setPreferredSize(new java.awt.Dimension(240, 24));
-        outputDirInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                outputDirInputActionPerformed(evt);
-            }
-        });
 
         jLabel1.setText("pdflatex");
 
         openInput.setText(SavedVariables.getOpenCmd());
-        openInput.setToolTipText("Chemin d'acces (absolu) vers la commande open (OSX) ou xdg-open (autres OS type unix)");
+        openInput.setToolTipText("Chemin d'acces (absolu) vers la commande open (MacOS) ou xdg-open (autres OS type unix)");
         openInput.setPreferredSize(new java.awt.Dimension(240, 24));
-        openInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openInputActionPerformed(evt);
-            }
-        });
 
         gitFolderInput.setText(SavedVariables.getMainGitDir());
-        gitFolderInput.setToolTipText("Chemin d'acces (absolu) vers le dossier contenant le repository git local");
+        gitFolderInput.setToolTipText("Chemin d'acces (absolu) vers le dossier contenant le repository git de la BPEP.");
         gitFolderInput.setPreferredSize(new java.awt.Dimension(240, 24));
-        gitFolderInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                gitFolderInputActionPerformed(evt);
-            }
-        });
 
         jLabel4.setText("dossier git");
 
@@ -536,10 +553,9 @@ public class Options extends JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator2)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -571,29 +587,9 @@ public class Options extends JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void templatesFolderInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_templatesFolderInputActionPerformed
-        SavedVariables.setTexModelsPaths(templatesFolderInput.getText());
-    }//GEN-LAST:event_templatesFolderInputActionPerformed
-
-    private void pdflatexInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pdflatexInputActionPerformed
-        SavedVariables.setPdflatexCmd(pdflatexInput.getText());
-    }//GEN-LAST:event_pdflatexInputActionPerformed
-
-    private void gitFolderInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gitFolderInputActionPerformed
-        SavedVariables.setMainGitDir(gitFolderInput.getText());
-    }//GEN-LAST:event_gitFolderInputActionPerformed
-
-    private void openInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openInputActionPerformed
-        SavedVariables.setOpenCmd(openInput.getText());
-    }//GEN-LAST:event_openInputActionPerformed
-
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         SavedVariables.setAutoSave(jCheckBox1.isSelected());
     }//GEN-LAST:event_jCheckBox1ActionPerformed
-
-    private void outputDirInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outputDirInputActionPerformed
-        SavedVariables.setOutputDir(outputDirInput.getText());
-    }//GEN-LAST:event_outputDirInputActionPerformed
 
     private void pushButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pushButtonActionPerformed
         this.setGitOutputText("requête en cours ...");
@@ -646,7 +642,6 @@ public class Options extends JPanel {
             }
         });
 
-      
 
     }//GEN-LAST:event_pullButtonActionPerformed
 
@@ -696,9 +691,9 @@ public class Options extends JPanel {
         this.mw.updateGlobalMenuBarStatus();
     }//GEN-LAST:event_jCheckBox2ActionPerformed
 
-    private void parsingCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parsingCheckBoxActionPerformed
-        SavedVariables.setParsing(parsingCheckBox.isSelected());
-    }//GEN-LAST:event_parsingCheckBoxActionPerformed
+    private void autoCompletionCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoCompletionCheckBoxActionPerformed
+        SavedVariables.setAutoCompletion(autoCompletionCheckBox.isSelected());
+    }//GEN-LAST:event_autoCompletionCheckBoxActionPerformed
 
     private void spellCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spellCheckBoxActionPerformed
         spellPanel.setVisible(spellCheckBox.isSelected());
@@ -710,30 +705,16 @@ public class Options extends JPanel {
         SavedVariables.setColoring(coloringCheckBox.isSelected());
     }//GEN-LAST:event_coloringCheckBoxActionPerformed
 
-    private void globalDictTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_globalDictTextFieldActionPerformed
+    private void nPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nPerformed
         SavedVariables.setGlobalDict(globalDictTextField.getText());
-    }//GEN-LAST:event_globalDictTextFieldActionPerformed
-
-    private void customDictTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customDictTextFieldActionPerformed
-        SavedVariables.setCustomDict(customDictTextField.getText());
-    }//GEN-LAST:event_customDictTextFieldActionPerformed
+    }//GEN-LAST:event_nPerformed
 
     private void titlesCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_titlesCheckBoxActionPerformed
         SavedVariables.setBigTitles(titlesCheckBox.isSelected());
     }//GEN-LAST:event_titlesCheckBoxActionPerformed
 
     private void colorSetTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorSetTextFieldActionPerformed
-        String color = colorSetTextField.getText();
-        int token = LatexTextEditor.getToken((String) tokenComboBox.getSelectedItem());
-        try {
-            colorSetTextField.setForeground(Utils.getColorFromString(color));
 
-            SavedVariables.setColor(token, color);
-        } catch (Exception e) {
-            color = Utils.getStringFromColor(SavedVariables.getColor(token));
-            colorSetTextField.setText(color);
-            colorSetTextField.setForeground(Utils.getColorFromString(color));
-        }
 
     }//GEN-LAST:event_colorSetTextFieldActionPerformed
 
@@ -750,6 +731,7 @@ public class Options extends JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox autoCompletionCheckBox;
     private javax.swing.JTextField colorSetTextField;
     private javax.swing.JCheckBox coloringCheckBox;
     private javax.swing.JPanel coloringPanel;
@@ -781,7 +763,6 @@ public class Options extends JPanel {
     private javax.swing.JLabel openEditorLabel;
     private javax.swing.JTextField openInput;
     private javax.swing.JTextField outputDirInput;
-    private javax.swing.JCheckBox parsingCheckBox;
     private javax.swing.JTextField pdflatexInput;
     private javax.swing.JButton pullButton;
     private javax.swing.JButton pushButton;

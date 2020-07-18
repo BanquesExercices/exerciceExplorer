@@ -38,6 +38,15 @@ public final class ExerciceFinder {
         return exercices;
     }
 
+    public static Exercice getExerciceByPath(String path) {
+        for (Exercice e : exercices) {
+            if (e.getPath() == null ? path == null : e.getPath().equals(path)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
     public boolean createExercice(String kind, String title) {
         System.err.println(kind + " | " + title);
         File folder = new File(SavedVariables.getMainGitDir() + "/exercices/" + kind + "/" + title);
@@ -83,7 +92,7 @@ public final class ExerciceFinder {
         return true;
     }
 
-    public void updateList() {
+    public boolean updateList() {
         this.exercices.clear();
         String[] dirs = {Exercice.DS, Exercice.TD, Exercice.Colle};
         for (String elem : dirs) {
@@ -100,12 +109,15 @@ public final class ExerciceFinder {
                         this.exercices.add(new Exercice(file.getName(), file.getAbsolutePath(), elem));
                     }
                 }
+
             } catch (NullPointerException e) {
                 System.err.println("main git dir does not contain exercices. Check its path");
+                return false;
             }
 
         }
         Collections.sort(exercices);
+        return true;
 
     }
 

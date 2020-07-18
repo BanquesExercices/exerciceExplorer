@@ -7,7 +7,6 @@ package Helper;
 
 import static Helper.Utils.getColorFromString;
 import TextEditor.Tex.LatexTextEditor;
-import View.MainWindow;
 import java.awt.Color;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +28,8 @@ public class SavedVariables {
     public static void removeAllPrefs() {
         try {
             prefs.clear();
+            prefs.flush();
+            
         } catch (BackingStoreException ex) {
             Logger.getLogger(SavedVariables.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -110,18 +111,18 @@ public class SavedVariables {
         }
     }
 
-    public static void setParsing(boolean me) {
+    public static void setAutoCompletion(boolean me) {
         if (me) {
-            prefs.put("parsing", "true");
+            prefs.put("autoCompletion", "true");
         } else {
-            prefs.put("parsing", "false");
+            prefs.put("autoCompletion", "false");
         }
 
     }
 
-    public static boolean getParsing() {
+    public static boolean getAutoCompletion() {
         if (prefs != null) {
-            return "true".equals(prefs.get("parsing", ""));
+            return "true".equals(prefs.get("autoCompletion", ""));
         } else {
             return false;
         }

@@ -20,7 +20,7 @@ public class GitWrapper {
     }
 
     public static String commit() {
-        String commitMessage = "\"" + JOptionPane.showInputDialog("commentaire du commit") + "\"";
+        String commitMessage =  JOptionPane.showInputDialog("commentaire du commit") ;
         String output = ExecCommand.execo(new String[]{"git", "add", "."}, SavedVariables.getMainGitDir())[1];
         output += " \n  " + ExecCommand.execo(new String[]{"git", "commit", "-a", "-m", commitMessage}, SavedVariables.getMainGitDir())[1];
         //JOptionPane.showMessageDialog(null, output);
@@ -37,7 +37,7 @@ public class GitWrapper {
     public static String pull() {
         String output = ExecCommand.execo(new String[]{"git", "pull"}, SavedVariables.getMainGitDir())[1];
         if (output.contains("CONFLICT")){
-            ExecCommand.execo(new String[]{"git", "merge", "--abort" }, SavedVariables.getMainGitDir());
+            ExecCommand.execo(new String[]{"git", "pull", "--rebase" }, SavedVariables.getMainGitDir());
         }
         return output;
     }
