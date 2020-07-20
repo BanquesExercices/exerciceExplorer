@@ -23,7 +23,6 @@ public class Options extends JPanel {
     /**
      * Creates new form Options
      */
-    protected MainWindow mw;
 
     public Options() {
         initComponents();
@@ -45,6 +44,7 @@ public class Options extends JPanel {
 
         Utils.addChangeListener(gitFolderInput, (ChangeEvent e) -> {
             SavedVariables.setMainGitDir(gitFolderInput.getText());
+            MainWindow.getInstance().updateDatabase();
         });
 
         Utils.addChangeListener(templatesFolderInput, (ChangeEvent e) -> {
@@ -80,10 +80,6 @@ public class Options extends JPanel {
 
     public boolean isCompletionRequired() {
         return "".equals(this.gitFolderInput.getText());
-    }
-
-    public void setMw(MainWindow mw) {
-        this.mw = mw;
     }
 
     public void setGitOutputText(String txt) {
@@ -486,6 +482,11 @@ public class Options extends JPanel {
         gitFolderInput.setText(SavedVariables.getMainGitDir());
         gitFolderInput.setToolTipText("Chemin d'acces (absolu) vers le dossier contenant le repository git de la BPEP.");
         gitFolderInput.setPreferredSize(new java.awt.Dimension(240, 24));
+        gitFolderInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gitFolderInputActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("dossier git");
 
@@ -635,6 +636,7 @@ public class Options extends JPanel {
                     Options.this.setGitOutputText("Le même fichier à été modifié à la fois dans le répertoire local et sur le serveur (surement par un autre utlisateur). \n Ce cas n'est pas géré depuis l'interface graphique. \n Effectuez un git pull depuis le terminal, identifiez les conflit à l'aide de git diff, corrigez les, puis effectuez un git commit suivi d'un git push");
                 } else {
                     Options.this.setGitOutputText(out);
+                    MainWindow.getInstance().updateDatabase();
                 }
                 String status = GitWrapper.status();
                 Options.this.checkStatus(status);
@@ -688,7 +690,7 @@ public class Options extends JPanel {
 
     private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
         SavedVariables.setMultiEdit(jCheckBox2.isSelected());
-        this.mw.updateGlobalMenuBarStatus();
+        MainWindow.getInstance().updateGlobalMenuBarStatus();
     }//GEN-LAST:event_jCheckBox2ActionPerformed
 
     private void autoCompletionCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoCompletionCheckBoxActionPerformed
@@ -721,6 +723,10 @@ public class Options extends JPanel {
     private void tokenComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tokenComboBoxActionPerformed
         tokenComboBoxAction();
     }//GEN-LAST:event_tokenComboBoxActionPerformed
+
+    private void gitFolderInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gitFolderInputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_gitFolderInputActionPerformed
 
     public void tokenComboBoxAction() {
         int token = LatexTextEditor.getToken((String) tokenComboBox.getSelectedItem());

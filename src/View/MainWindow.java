@@ -41,7 +41,7 @@ public final class MainWindow extends javax.swing.JFrame {
     public static final int modeReadme = 1, modeComposition = 2, modeNone = 0;
     protected int mode;
 
-    protected boolean firstDocumentOpened=false;
+    protected boolean firstDocumentOpened = false;
     protected ReadmeEditor re = null;
     protected KeywordsEditor ke = null;
     protected CompoEditor ce = null;
@@ -49,17 +49,35 @@ public final class MainWindow extends javax.swing.JFrame {
     protected ChangeListener cl = null;
 
     JMenuBar menuBar;
-    protected AbstractAction replaceKeywordAction, replaceWordAction, checkAllExercicesAction,toZeroAction;
+    protected AbstractAction replaceKeywordAction, replaceWordAction, checkAllExercicesAction, toZeroAction;
     protected JMenu global, file;
 
-    public MainWindow() {
+    private static MainWindow instance = null;
+
+    /*
+    the unique instance of MainWindow may be obtained by static calls
+     -> We should then avoid spaghetti code ! 
+    */
+    public static synchronized MainWindow getInstance() {
+        if (instance==null){
+            instance=new MainWindow();
+        }
+        return instance;
+    }
+
+    private MainWindow() {
+        
+        if (instance!=null){
+            System.err.println("Tentative de création d'une nouvelle instance de MainWindow.");
+            System.err.println("C'est interdit !");
+            return;
+        }
+        
         SavedVariables.instanciate(this.getClass());
 
         initComponents();
-        this.creationSujetView1.setMw(this);
-        this.options2.setMw(this);
-        
-        if (options2.isCompletionRequired()){
+
+        if (options2.isCompletionRequired()) {
             this.jTabbedPane1.setSelectedComponent(jScrollPane1);
         }
 
@@ -81,7 +99,7 @@ public final class MainWindow extends javax.swing.JFrame {
 
         // file : 
         file = new JMenu("Fichier");
-        
+
         // new exercice
         JMenuItem newExo = new JMenuItem("Nouvel exercice");
         newExo.addActionListener(new ActionListener() {
@@ -93,26 +111,37 @@ public final class MainWindow extends javax.swing.JFrame {
         int mod = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
         newExo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, mod));
         file.add(newExo);
-        
+
         // export the set of exercices
         JMenuItem exportItem = new JMenuItem("Exporter la composition");
         exportItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               MainWindow.this.creationSujetView1.exportSetOFExercices();
+                MainWindow.this.creationSujetView1.exportSetOFExercices();
             }
         });
         file.add(exportItem);
-        
+
         // load a set of exercices
         JMenuItem loadSetItem = new JMenuItem("Charger une composition");
         loadSetItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               MainWindow.this.creationSujetView1.loadSet();
+                MainWindow.this.creationSujetView1.loadSet();
             }
         });
         file.add(loadSetItem);
+
+        // exit
+        JMenuItem exitItem = new JMenuItem("Quitter");
+
+        exitItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        file.add(exitItem);
 
         // global : 
         replaceKeywordAction = new AbstractAction() {
@@ -138,7 +167,7 @@ public final class MainWindow extends javax.swing.JFrame {
                 MainWindow.this.editorTabbedPane.setSelectedIndex(0);
             }
         };
-        
+
         toZeroAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -160,7 +189,7 @@ public final class MainWindow extends javax.swing.JFrame {
         JMenuItem checkExercicesMI = new JMenuItem("Compiler tous les exercices");
         global.add(checkExercicesMI);
         checkExercicesMI.addActionListener(checkAllExercicesAction);
-        
+
         JMenuItem toZeroMI = new JMenuItem("Remise à zero des preferences");
         global.add(toZeroMI);
         toZeroMI.addActionListener(toZeroAction);
@@ -206,12 +235,11 @@ public final class MainWindow extends javax.swing.JFrame {
 
     public void updateDatabase() {
         this.creationSujetView1.updateDataBase();
-        // should we do more here ? (removing oppened tabs ?)
     }
 
     public void setExerciceDisplay(Exercice ex) {
-        if (!this.firstDocumentOpened){
-            firstDocumentOpened=true;
+        if (!this.firstDocumentOpened) {
+            firstDocumentOpened = true;
             rightPane.setVisible(true);
             this.pack();
         }
@@ -429,7 +457,7 @@ public final class MainWindow extends javax.swing.JFrame {
                 javax.swing.ToolTipManager.sharedInstance().setDismissDelay(10000);
                 javax.swing.ToolTipManager.sharedInstance().setInitialDelay(500);
 
-                new MainWindow().setVisible(true);
+                MainWindow.getInstance().setVisible(true);
 
                 // error reporting : 
                 File file = new File("err.txt");

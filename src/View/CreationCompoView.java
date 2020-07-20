@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.JFileChooser;
@@ -52,7 +50,6 @@ public class CreationCompoView extends javax.swing.JPanel {
     protected KeyWords kw;
     protected List<KeyWordView> selectedKeyWords;
     protected DefaultListModel<Exercice> selectedExericesModel;
-    protected MainWindow mw;
     public static List<Exercice> displayedExercices = new ArrayList<>();
 
     public CreationCompoView() {
@@ -71,7 +68,7 @@ public class CreationCompoView extends javax.swing.JPanel {
             ListTransferHandler lth = (ListTransferHandler) choixExercice.getTransferHandler();
 
             if (choixExercice.getSelectedValue() != null && !lth.isOnDrag()) {
-                this.mw.setExerciceDisplay((Exercice) choixExercice.getSelectedValue());
+                MainWindow.getInstance().setExerciceDisplay((Exercice) choixExercice.getSelectedValue());
                 this.listeExercices.clearSelection();
                 this.jLabel1.setText(String.valueOf(choixExercice.getSelectedIndex() + 1));
             }
@@ -80,7 +77,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         listeExercices.addListSelectionListener((ListSelectionEvent e) -> {
             ListTransferHandler lth = (ListTransferHandler) listeExercices.getTransferHandler();
             if (listeExercices.getSelectedValue() != null && !lth.isOnDrag()) {
-                this.mw.setExerciceDisplay((Exercice) listeExercices.getSelectedValue());
+                MainWindow.getInstance().setExerciceDisplay((Exercice) listeExercices.getSelectedValue());
                 this.choixExercice.clearSelection();
             }
         });
@@ -145,9 +142,6 @@ public class CreationCompoView extends javax.swing.JPanel {
         return (Exercice) choixExercice.getSelectedValue();
     }
 
-    public void setMw(MainWindow mw) {
-        this.mw = mw;
-    }
 
     public void removeKeyword(KeyWordView kwv) {
         selectedKeyWords.remove(kwv);
@@ -472,7 +466,7 @@ public class CreationCompoView extends javax.swing.JPanel {
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         List<String> cc;
         cc = TexWriter.outputTexFile(selectedExericesModel.elements(), (String) outputTypes.getSelectedItem(), false, false);
-        this.mw.setSubjectDisplay(cc);
+        MainWindow.getInstance().setSubjectDisplay(cc);
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
@@ -495,7 +489,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         String title = Utils.stripAccents(this.newTitleTextField.getText()); // dir with accents causes trouble ...
         this.ef.createExercice((String) jComboBox3.getSelectedItem(), title);
         this.updateDataBase();
-        this.mw.setExerciceDisplay(this.ef.getExercice(title));
+        MainWindow.getInstance().setExerciceDisplay(this.ef.getExercice(title));
         this.newExercicePane.setVisible(false);
     }//GEN-LAST:event_createNewExoButtonActionPerformed
 

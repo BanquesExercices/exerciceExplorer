@@ -81,6 +81,8 @@ public final class ExerciceFinder {
         lines.add("%##############################");
         lines.add("%### commandes  spécifiques ###");
         lines.add("%##############################");
+        lines.add("% Mettez les commandes spécifiques à l'exercice en commençant la ligne par un commentaire");
+        lines.add("% afin qu'elles soient correctement importées lors de la fabrication du devoir");
         lines.add("%debutImport");
         lines.add("");
         lines.add("");

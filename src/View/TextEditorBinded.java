@@ -372,6 +372,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
             resetHasChanged();
             TexWriter.writeToFile(out, f.getAbsolutePath());
             notifyAllObserver("save");
+            
             return true;
         }
         return false;
@@ -452,7 +453,6 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         jButton2.setBorder(null);
         jButton2.setBorderPainted(false);
         jButton2.setContentAreaFilled(false);
-        jButton2.setPreferredSize(new java.awt.Dimension(32, 32));
         jButton2.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_pen-checkbox_353430_selected.png"))); // NOI18N
         jButton2.setRolloverEnabled(true);
         jButton2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_pen-checkbox_353430_rollOver.png"))); // NOI18N
@@ -606,7 +606,6 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         jButton3.setToolTipText("Ouvrir le dossier");
         jButton3.setBorder(null);
         jButton3.setBorderPainted(false);
-        jButton3.setBounds(new java.awt.Rectangle(0, 0, 0, 0));
         jButton3.setContentAreaFilled(false);
         jButton3.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/openFolder_selected.png"))); // NOI18N
         jButton3.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/openFolder_rollOver.png"))); // NOI18N
@@ -636,12 +635,12 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5))
             .addComponent(findPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(replacePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE)
+            .addComponent(replacePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
                 .addGap(2, 2, 2)
                 .addComponent(replacePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)

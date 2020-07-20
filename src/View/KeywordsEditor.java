@@ -156,6 +156,7 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer,MenuB
         }
 
         ex.NotifyKeyWordsChanged();
+        MainWindow.getInstance().updateDatabase();
     }
 
     public void setMenuBar(JMenuBar jmb) {
