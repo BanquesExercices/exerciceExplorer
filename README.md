@@ -9,7 +9,8 @@ git clone git@github.com:mbrebion/exerciceExplorer.git
 ```
 
 Une fois le projet téléchargé/cloné, vous pouvez  : 
- - l'ouvrir à l'aide de Netbeans (ouvrir projet/open project) et l'executer depuis l'IDE
+ - l'ouvrir à l'aide de Netbeans (ouvrir projet/open project) et l'executer depuis l'IDE. Les librairies tierces utilisées dans ce projet sont placées dans le répertoire dist/lib.
+ Veuillez à utiliser uniquement ces dernières.
  - l'executer (le fichier jar se trouve dans le sous-dossier dist) en ligne de commande : 
  ```bash
  java -jar ExerciceExplorer.jar 
