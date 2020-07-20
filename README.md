@@ -40,11 +40,7 @@ de mon côté, je donne les réponses par défaut aux questions posées.
 
 Une fois la paire de clé créée, il faut suivre le tutoriel suivant disponible [ici](https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
-Finalement, vous pouvez reccuperer la base de donnée (environ 200 mo en mars 2018)
-```bash
-git clone git@github.com:mabuchet/commun_PCSI.git
-```
-Attention, cette étape ne pourra être réalisée qu'après m'avoir contacté et donné votre login sous github afin que je puisse vous autoriser l'accès à la base de donnée d'exercices.
+
 
 ### Spécification des chemins d'accès
 Une fois git & github correctement paramétrés, vous pouvez aller dans l'onglet "Options" du logiciel puis remplir les différents champs requis
@@ -56,5 +52,5 @@ Une fois git & github correctement paramétrés, vous pouvez aller dans l'onglet
 
 ## Site web
 Plus d'info sur la page suivante : 
-https://mmb.netlify.com/exerciceexplorer/exerciceexplorer
+https://mmb.netlify.com
 
