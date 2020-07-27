@@ -423,9 +423,9 @@ RAnyCharWB                                 = ({AnyChar} |  {URLSubDelim} | (\\\{
 Sentence                                 = ({RAnyChar} | {Whitespace} |{Appost} )
 SentenceWB                                 = ({RAnyCharWB} | {Whitespace} |{Appost} )
 
-MLEbegin = ("\\eq{")
-ADDQbegin = ("\\addQ{")
-ADDQloginBegin = ("\\addQ["{AnyChar}+"]{")
+MLEbegin = ("\\eq" ("["{AnyChar}+"]")?"{")
+ADDQbegin = ("\\QR{")
+ADDQloginBegin = ("\\QR["({AnyChar} | {Whitespace} | ",")+"]{")
 
 
 %state EOL_COMMENT
@@ -472,7 +472,7 @@ ADDQloginBegin = ("\\addQ["{AnyChar}+"]{")
                                                        //addToken(zzMarkedPos-2,zzMarkedPos-1,TOKEN_ADDQ_H); 
                                                          addToken(TOKEN_ADDQ);
                                                       initBracketBlock(); addOpenBracket();
-                                                      logins=logins.substring(6,logins.length()-2);
+                                                      logins=logins.substring(4,logins.length()-2);
                                                       conditionalSwitch(logins,ADDQ,HIDDEN_ADDQ); }
 
         {MLEbegin}                                   { beginMLE(MLE);  }       

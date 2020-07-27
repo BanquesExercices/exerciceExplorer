@@ -653,17 +653,17 @@ public class Options extends JPanel {
         this.pushButton.setEnabled(false);
         this.pullButton.setEnabled(false);
 
-        if (in.contains("nothing to commit")) {
+        if (in.contains("nothing to commit") || in.contains("rien à valider") ) {
 
-            if (in.contains("Your branch is behind")) {
+            if (in.contains("Your branch is behind") || in.contains("Votre branche est en retard") ) {
                 // we can push safely : 
                 this.pullButton.setEnabled(true);
             }
-            if (in.contains("Your branch is ahead of")) {
+            if (in.contains("Your branch is ahead of") || in.contains("Votre branche est en avance")) {
                 // we can push safely : 
                 this.pushButton.setEnabled(true);
             }
-            if (in.contains("have diverged,")) {
+            if (in.contains("have diverged,") || in.contains("ont divergé,") ) {
                 this.pullButton.setEnabled(true);
             }
 

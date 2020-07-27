@@ -64,38 +64,191 @@ public class Exercice implements Comparable<Exercice> {
         return imports;
     }
 
-    
-    public boolean replaceWordAndUpdate(String before, String after) {
+    public boolean replaceWordAndUpdate(String before, String after,boolean doReplace) {
         // replace a word (or several words) in file sujet.tex and update
-        
-        boolean out=false;
+
+        boolean out = false;
         for (int i = 0; i < content.size(); i++) {
-            String line  = content.get(i);
+            String line = content.get(i);
             if (line.contains(before)) {
                 content.set(i, line.replace(before, after));
-                out=true;
+                out = true;
             }
         }
-        TexWriter.writeToFile(content, this.getSubjectPath());
+        if (doReplace){
+            TexWriter.writeToFile(content, this.getSubjectPath());
+        }
         return out;
     }
-    
-    public boolean replaceKeywordAndUpdate(String before, String after) {
-        boolean out=false;
+
+    /**
+     * #i matched in before expression will be copied into #i in after
+     * expression
+     *
+     * @param before is an epression like "\todo{#1}{#2}"
+     * @param after is another expression like "\padam{#1} and \padam{#2}
+     * @param doChange : changes are only performed when doChange==true;
+     * @return
+     */
+    public boolean replaceExprAndUpdate(String before, String after, boolean doChange) {
+        // replace a word (or several words) in file sujet.tex and update
+        int blocks = before.split("#\\d").length - 1;
+        String begin = before.split("#\\d")[0];
+        List<String> blockContents = new ArrayList<>();
+
+        boolean out = false;
+        boolean goOn = true;
+        int lastLine = 0;
+
+        searchExpr:
+        while (goOn) {
+            goOn=false;
+            searchLine:
+            for (int i = 0; i < content.size(); i++) {
+
+                String line = content.get(i);
+                int endIndex = 0;
+                lastLine = i;
+
+                if (line.contains(begin)) {
+                    // this line might contain the required expression
+                    int beginIndex = line.indexOf(begin);
+                    String next = line.substring(line.indexOf(begin) + begin.length() - 1);
+                    endIndex = beginIndex + begin.length() - 1;
+                    boolean succes = true;
+                    int index = -1;
+
+                    blockContents.clear();
+
+                    searchblock:
+                    for (int j = 0; j < blocks; j++) {
+                        index = 0;
+                        // we then get the next {
+                        while (!(next.charAt(index) == '{' && ((index > 0 && next.charAt(index - 1) != '\\') || index == 0))) {
+                            index++;
+                            if (index==next.length()){
+                                // we reached end of line and did not get the awaited char 
+                                    goOn=false;
+                                    succes=false;
+                                    break searchblock;
+                            }
+                            endIndex++;
+
+                        }
+                        next = next.substring(index + 1);
+
+                        // get block content
+                        int bracketCount = 1;
+                        index = -1;
+
+                        while (bracketCount > 0) {
+                            index++;
+                            endIndex++;
+                            if (index == next.length()) {
+                                if (i < content.size() - 1) {
+                                    // end of line, we need to parse the next one
+                                    next += "\n" + content.get(lastLine + 1);
+                                    lastLine++;
+                                    endIndex = 0;
+                                } else {
+                                    // last line : failed to parse expr
+                                    succes = false;
+                                    break searchblock;
+                                }
+                            }
+
+                            if (next.charAt(index) == '{' && ((index > 0 && next.charAt(index - 1) != '\\') || index == 0)) {
+                                bracketCount++;
+                            }
+                            if (next.charAt(index) == '}' && ((index > 0 && next.charAt(index - 1) != '\\') || index == 0)) {
+                                bracketCount--;
+                            }
+                        }
+                        blockContents.add(next.substring(0, index));
+                        next = next.substring(index + 1);
+
+                    }
+
+                    if (succes) {
+                        goOn=true;
+                        if (doChange==false){
+                            return true;
+                        }
+                        
+                        // get rid of previous expr
+                        // prepare new expr
+                        String replacement = after.replace(before, "BEFORE_BEFORE"); // ensure the new string dont contains the begin expr (else we get an infinite loop)
+                        boolean et = false;
+                        for (int k = 0; k < blocks; k++) {
+                            if (blockContents.get(k).contains("&")){
+                                et=true;
+                            }
+                            // check equations and add align if required
+                            replacement = replacement.replace("#" + (k + 1), "" + blockContents.get(k) + "");
+                        }
+                        
+                        // special parsing for equations
+                        if (et && replacement.contains("eq{")){
+                            replacement = replacement.replace("eq{", "eq[align]{");
+                        }
+                        
+                        replacement = replacement.replace("\\n", "\n"); // forcing new lines
+                        
+
+                        if (i == lastLine) {
+                            // replacement into a single line
+                            content.set(i, content.get(i).substring(0, beginIndex) + replacement + content.get(i).substring(endIndex + 1));
+                        } else {
+                            content.set(i, content.get(i).substring(0, beginIndex));
+                            for (int l = i + 1; l < lastLine; l++) {
+                                content.set(l, "TODELETE");
+                            }
+                            content.set(lastLine, (content.get(lastLine) + " ").substring(endIndex + 1));
+                            content.set(i, content.get(i) + replacement);
+                        }
+
+                        // paste it
+                        
+                        out = true;
+                        break searchLine;
+                    }
+                }
+            }
+            
+
+        }
+
+        if (out && doChange) {
+            for (int i = content.size() - 1; i >= 0; i--) {
+                if ("TODELETE".equals(content.get(i))) {
+                    content.remove(i);
+                }
+                if (content.get(i).contains("BEFORE_BEFORE")) {
+                    content.set(i, content.get(i).replace("BEFORE_BEFORE", before));
+                }
+            }
+
+            TexWriter.writeToFile(content, this.getSubjectPath());
+        }
+        return out;
+    }
+
+    public boolean replaceKeywordAndUpdate(String before, String after,boolean doReplace) {
+        boolean out = false;
         for (int i = 0; i < keywords.size(); i++) {
             if (before.equals(keywords.get(i))) {
                 keywords.set(i, after);
-                out=true;
+                out = true;
             }
         }
-        TexWriter.writeToFile(keywords, this.getKeywordsPath());
+        if (doReplace){
+            TexWriter.writeToFile(keywords, this.getKeywordsPath());
+        }
         return out;
     }
 
     public boolean containsKeyWords(List<String> kws) {
-        if (keywords.isEmpty()) {
-            this.updateKeywords();
-        }
+        this.updateKeywords();
 
         boolean out = true;
         for (String kw : kws) {

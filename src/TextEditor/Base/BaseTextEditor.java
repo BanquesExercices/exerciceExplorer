@@ -44,9 +44,9 @@ public class BaseTextEditor extends RSyntaxTextArea {
         super(text);
         this.setLineWrap(true);
         this.setTabSize(3);
-        this.initiateEditMenu();
-
+        this.initiateEditMenu();        
     }
+
 
     public BaseTextEditor() {
         super();

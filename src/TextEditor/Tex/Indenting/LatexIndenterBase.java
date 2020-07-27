@@ -57,7 +57,7 @@ public abstract class LatexIndenterBase {
     public String outputResult() {
         StringBuilder sb = new StringBuilder(lines.size() * 30);
         for (String l : lines) {
-            sb.append(l);
+            sb.append(l.replace("MY_LEFT_BRACKET","\\{").replace("MY_RIGHT_BRACKET","\\}"));
             sb.append("\n");
         }
         return sb.toString();
@@ -70,7 +70,7 @@ public abstract class LatexIndenterBase {
      * @param txt the String that will be parsed
      */
     public void parseText(String txt) {
-        Reader r = new StringReader(txt);
+        Reader r = new StringReader(txt.replace("\\{", "MY_LEFT_BRACKET").replace("\\}", "MY_RIGHT_BRACKET"));
         this.yyreset(r);
         this.startParsing();
 
@@ -221,18 +221,18 @@ public abstract class LatexIndenterBase {
      * </code>
      *
      * @param command the command that started the bracket block (like <code> eq
-     * </code> or <code> addQ </code>).
+     * </code> or <code> RQ </code>).
      */
     public void startBracketBloc(String command) {
         this.switchToNewState(BRACKET_BLOCK); // save previous state
-        this.currentBracketCount++; // the lexer must has matched an opening bracked
-
+        this.currentBracketCount++; // the lexer must has matched an opening bracket
+        
         if (!"".equals(this.currentLine)) {
             // non empty line : the previous line must be ended
             this.endLine();
         }
-        if (command.contains("addQ")){
-            this.endLine();
+        if (command.contains("QR")){
+            this.endLine(); // add an extra blank line before a question
         }
 
         this.currentLine += command.replace(" ", "").replace("\n", ""); // white spaces are removed
@@ -255,6 +255,16 @@ public abstract class LatexIndenterBase {
                 this.currentLine += "}{";
             } else {
                 this.currentLine += "}";
+                // adding a space if needed
+                int index = txt.indexOf("}");
+                if (txt.length()>index+1  ){
+                    if (txt.charAt(index+1)=='\n'){
+                        this.currentLine+= " ";
+                    }
+                    if (txt.charAt(index+1)==' '){
+                        this.currentLine+= " ";
+                    }
+                }
             }
 
             while (txt.contains("\n")) { // multiple blank lines catched this way must be carefully dealt with.
@@ -294,26 +304,6 @@ public abstract class LatexIndenterBase {
     }
     
     
-    /*
-    *
-    *          Adapting badly written exercices syntax
-    *
-    */
-    
-    /**
-     * This method is called when a badly written exercice is catched
-     * It should be written in the format <br> <code>
-     * &emsp {titre} <br>
-     * &emsp {enonce} <br>
-     * &emsp {corrige} <br>
-     * </code>
-     * <br>
-     * Every parent group of kind begin{enumerate} will be cast into multiples questions starting with addQ
-     * Every answers will be assotiaced with the correct question
-     * Warning will be printed to text if the amount of answers and questions differ.
-     */
-    public void startCatchingBadExercice(){
-    
-    }
+  
 
 }

@@ -7,3 +7,7 @@ inductance
 ferromagnétique
 tore
 hystérésis
+altimétrique
+orthonormé
+rectilignement
+spatio

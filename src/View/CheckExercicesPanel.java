@@ -15,7 +15,6 @@ import javax.swing.SwingUtilities;
  */
 public class CheckExercicesPanel extends javax.swing.JPanel implements NewsReceiver {
 
-    protected MainWindow mw;
     protected int nbToTest = 0;
     protected int nbTested = 0;
     protected int errorOccured = 0;
@@ -23,12 +22,9 @@ public class CheckExercicesPanel extends javax.swing.JPanel implements NewsRecei
     /**
      * Creates new form replaceKeywordPanel
      */
-    public CheckExercicesPanel() {
-        initComponents();
-    }
+    
 
-    public CheckExercicesPanel(MainWindow mw) {
-        this.mw = mw;
+    public CheckExercicesPanel() {
         initComponents();
         this.nbToTest = CreationCompoView.displayedExercices.size();
         this.updateView();
@@ -187,7 +183,7 @@ public class CheckExercicesPanel extends javax.swing.JPanel implements NewsRecei
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        this.mw.editorTabbedPane.remove(this);
+        MainWindow.getInstance().editorTabbedPane.remove(this);
         // verifier qu'un test n'est pas en cours et si oui, l'arreter proprement.
 
     }//GEN-LAST:event_jButton2ActionPerformed

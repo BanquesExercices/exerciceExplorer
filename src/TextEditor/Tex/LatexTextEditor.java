@@ -15,6 +15,9 @@ import TextEditor.Base.BaseTextEditor;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
@@ -29,6 +32,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.Timer;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.fife.ui.autocomplete.TemplateCompletion;
@@ -56,10 +60,12 @@ public class LatexTextEditor extends BaseTextEditor {
     protected static Dictionary<String, Integer> tokenDict = null;
     protected static Dictionary<Integer, String> defaultColorDict = null;
     protected AutoCompletion acb;
+    private static String _lastData = "";
 
     public LatexTextEditor(String text) {
         super(text);
         this.myInit();
+
     }
 
     public LatexTextEditor() {
@@ -92,6 +98,25 @@ public class LatexTextEditor extends BaseTextEditor {
         // adding auto-completion abilities
         this.setupAutoCompletion();
 
+        // altering clipboard content (usefull to paste content from pdfs !)
+        new Timer(500, e -> {
+            Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
+            DataFlavor df = DataFlavor.stringFlavor;
+            if (c.isDataFlavorAvailable(df)) {
+                try {
+                    String data = c.getData(df).toString();
+                    if (!data.equals(_lastData)) {
+                        String temp = data.replace(" ́e","é").replace("ˆo","ô").replace("’","'").replace("`u","ù").replace("`e","è").replace("`a", "à").replace("", "").replace("ˆe", "ê").replace("a`", "à");
+                        StringSelection strSel = new StringSelection(temp);
+                        c.setContents(strSel, null);
+                        _lastData=temp;
+                    }
+                } catch (Exception ex) {
+                    System.err.println(ex);
+                }
+            }
+        }).start();
+
     }
 
     public static List<String> getTokenNames() {
@@ -108,6 +133,7 @@ public class LatexTextEditor extends BaseTextEditor {
     }
 
     protected static void initTokenDict() {
+        // these tokens are used to specify the color, token by token
         if (tokenDict != null) {
             return;
         }
@@ -194,12 +220,12 @@ public class LatexTextEditor extends BaseTextEditor {
 
     @Override
     public void setupSyntaxColoring() {
-        
+
         if (!SavedVariables.getColoring()) {
             // no need for coloring
             return;
         }
-        
+
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping(MY_LATEX_STYLE, LatexTokenMaker.class.getName());
         this.setSyntaxEditingStyle(MY_LATEX_STYLE);
@@ -224,11 +250,11 @@ public class LatexTextEditor extends BaseTextEditor {
     @Override
     public void setupAutoCompletion() {
 
-         if (!SavedVariables.getAutoCompletion()) {
+        if (!SavedVariables.getAutoCompletion()) {
             // no need for AC
             return;
         }
-        
+
         DefaultCompletionProvider provider = new DefaultCompletionProvider();
         provider.setAutoActivationRules(false, "\\");
 

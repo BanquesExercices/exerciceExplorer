@@ -46,7 +46,7 @@ Letter					= ([azertyuiopmlkjhgfdsqwxcvbnAZERTYUIOPMLKJHGFDSQWXCVBNéèêëàâ�
 Digit					= ([0-9])
 Number                                   =  {Digit}+("."{Digit}*)?
 LetterOrUnderscore		        = ({Letter}|[_])
-AnyChar					= ({LetterOrUnderscore}|{Digit}|[\-])
+AnyChar					= ({LetterOrUnderscore}|{Number}|[\-])
 Appost                                   = (['])
 Whitespace				= ([ \t\f])
 
@@ -62,13 +62,14 @@ SentenceWB                                 = ({RAnyCharWB} | {Whitespace} |{Appo
 
 
 /* BLOCKbegin may catch various options enclosed in brackets */
-BLOCKbegin = ("\\begin{"{AnyChar}+"}") ("["{RAnyCharWB}*"]")? ("{"{RAnyCharWB}*"}")* ("\n")+
+BLOCKbegin = ("\n"|{Whitespace})*("\\begin{"{AnyChar}+"}") ("["{RAnyCharWB}*"]")? ("{"{RAnyCharWB}*"}")* ("\n")+
 BLOCKend = ("\\end{"{AnyChar}+"}")("\n")*
-ADDQbegin = ("\\addQ{")("\n"|{Whitespace})*
-MLEbegin = ("\\eq{")("\n"|{Whitespace})*
-ADDQloginBegin = ("\\addQ["{AnyChar}+"]{")
-TCOLSbegin = ("\\tcols{"{Number}"}{"{Number}"}{")("\n")*
-ENONCEbegin = ("\\enonce{")("\n")*
+ADDQbegin = ("\n"|{Whitespace})*("\\QR{")("\n"|{Whitespace})*
+MLEbegin = ("\n"|{Whitespace})*("\\eq")("["{AnyChar}+"]")?("\n"|{Whitespace})*("{")("\n"|{Whitespace})*
+ADDQloginBegin = ("\n"|{Whitespace})*("\\QR["{AnyChar}+"]{")
+TCOLSbegin = ("\n"|{Whitespace})*("\\tcols{"{Number}"}{"{Number}"}{")("\n")*
+ENONCEbegin = ("\n"|{Whitespace})*("\\enonce{")("\n")*
+FIGCAPbegin = ("\n"|{Whitespace})*("\\figCap")  ("{"{AnyChar}+"}{"{AnyChar}+"}{") ("\n")*
 
 %state BLOCK_Q
 %state BLOCK_A
@@ -84,6 +85,7 @@ ENONCEbegin = ("\\enonce{")("\n")*
 {ENONCEbegin}                              {startBracketBloc(yytext());}
 {ADDQbegin}                                {startBracketBloc(yytext());}
 {ADDQloginBegin}                           {startBracketBloc(yytext());}
+{FIGCAPbegin}                              {startBracketBloc(yytext());}
 
 {BLOCKbegin}                                {this.startBlock();}
 {BLOCKend}                                  {this.endBlock();}
@@ -104,15 +106,14 @@ ENONCEbegin = ("\\enonce{")("\n")*
 
         {OpenBracket}                                    {this.currentLine+=yytext();}
         {CloseBracket}                                   {this.currentLine+=yytext();}      
-        "\\titreExercice{"{SentenceWB}*"}"("\n")?        {this.currentLine+=yytext().trim(); this.endLine(); }
-        "\\partie{"{SentenceWB}*"}"("\n")?               {this.currentLine+=yytext().trim(); this.endLine(); }
-        "\\sousPartie{"{SentenceWB}*"}"("\n")?           {this.currentLine+=yytext().trim(); this.endLine(); }
+        "\\titreExercice{"{SentenceWB}*"}"("\n")*        {this.currentLine+=yytext().trim(); this.endLine(); this.endLine(); }
+        "\\partie{"{SentenceWB}*"}"("\n")*               {this.currentLine+=yytext().trim(); this.endLine(); this.endLine(); }
+        "\\sousPartie{"{SentenceWB}*"}"("\n")*           {this.currentLine+=yytext().trim(); this.endLine(); this.endLine(); }
 	
-	<<EOF>>                                         { this.endLine(); return false; }
+	<<EOF>>                                          { this.endLine(); return false; }
 
-	/* Catch any other (unhandled) characters and flag them as identifiers. */
-	
-        .							{ System.err.println("not catched : " + yytext()); }
+	/* Catch any other (unhandled) characters and flag them as identifiers. */	
+        .					        { this.currentLine+=yytext(); }
 
 }
 
@@ -121,18 +122,18 @@ ENONCEbegin = ("\\enonce{")("\n")*
 <BLOCK_Q>{        
        {OpenBracket}                                     {   addOpenBracket();}
        {CloseBracket}                                    {   addCloseBracket();}
-        <<EOF>>					        { return false; }
-        .					        { System.err.println("not catched : " + yytext()); }
+        <<EOF>>					        {   return false; }
+        .					        {   this.currentLine+=yytext(); }
 }
 
 
 
 <BRACKET_BLOCK>{
        
-       (\n|{Whitespace})* ({CloseBracket} ({Whitespace} | "\n")* {OpenBracket}?({Whitespace} | "\n")*) {  endBracketBlock() ; }
+       (\n|{Whitespace})* {CloseBracket} ({Whitespace} | "\n")* ( {OpenBracket} ({Whitespace} | "\n")*)? {  endBracketBlock() ; }
        {OpenBracket}                                     { addOpenBracket();}
         <<EOF>>					        { return false; }
-        .					        { System.err.println("not catched : " + yytext()); }
+        .					        {  this.currentLine+=yytext(); }
 }
 
 

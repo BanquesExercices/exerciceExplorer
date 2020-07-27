@@ -147,7 +147,7 @@ public final class MainWindow extends javax.swing.JFrame {
         replaceKeywordAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainWindow.this.editorTabbedPane.insertTab("remplacement de mot clef", null, new ReplaceKeywordPanel(MainWindow.this), "", 0);
+                MainWindow.this.editorTabbedPane.insertTab("remplacement de mot clef", null, new ReplaceKeywordPanel(), "", 0);
                 MainWindow.this.editorTabbedPane.setSelectedIndex(0);
             }
         };
@@ -155,7 +155,7 @@ public final class MainWindow extends javax.swing.JFrame {
         replaceWordAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainWindow.this.editorTabbedPane.insertTab("remplacement de mot", null, new ReplaceWordPanel(MainWindow.this), "", 0);
+                MainWindow.this.editorTabbedPane.insertTab("remplacement de mot", null, new ReplaceWordPanel(), "", 0);
                 MainWindow.this.editorTabbedPane.setSelectedIndex(0);
             }
         };
@@ -163,7 +163,7 @@ public final class MainWindow extends javax.swing.JFrame {
         checkAllExercicesAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainWindow.this.editorTabbedPane.insertTab("Test de compilation", null, new CheckExercicesPanel(MainWindow.this), "", 0);
+                MainWindow.this.editorTabbedPane.insertTab("Test de compilation", null, new CheckExercicesPanel(), "", 0);
                 MainWindow.this.editorTabbedPane.setSelectedIndex(0);
             }
         };

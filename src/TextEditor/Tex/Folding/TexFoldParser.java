@@ -55,7 +55,7 @@ public class TexFoldParser implements FoldParser {
 
     public void buildPattern() {
         StringBuilder sb = new StringBuilder();
-        for (String token : new String[]{ "\\\\enonce", "\n", "\\\\addQ(\\[.*\\])?"}) {
+        for (String token : new String[]{ "\\\\enonce", "\n", "\\\\QR(\\[.*\\])?"}) {
             sb.append(""); // Start of word boundary
             sb.append(token);
             sb.append("|"); // End of word boundary and an or for the next word
@@ -93,11 +93,11 @@ public class TexFoldParser implements FoldParser {
                 line++; // we know in which line we are 
             }
 
-            if (matcher.group().contains("\\addQ")) {
+            if (matcher.group().contains("\\QR")) {
                 questionsList.add(line);
                 if (matcher.group().contains("]")) {
                     try {
-                        String versions = matcher.group().substring(6, matcher.group().length()-1);
+                        String versions = matcher.group().substring(4, matcher.group().length()-1);
                         for (String t : versions.split(",")){
                             String trimed = t.trim();
                             if (!tagsList.contains(trimed) && !trimed.equals("")){

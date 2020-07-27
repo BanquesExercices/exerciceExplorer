@@ -186,7 +186,7 @@ public class LatexExerciceConverter {
         int count;
         for (int j = 0; j < this.questions.size(); j++) {
             count = j + 1;
-            String qAndA = "\\addQ{\n" + this.questions.get(j) + "\n}{\n";
+            String qAndA = "\\QR{\n" + this.questions.get(j) + "\n}{\n";
             if (this.answers.size() > j) {
                 qAndA += this.answers.get(j) + "\n}\n";
             } else {
