@@ -276,23 +276,31 @@ public class LatexTextEditor extends BaseTextEditor {
         // general latex env
         provider.addCompletion(new TemplateCompletion(provider, "begin{itemize}", "begin{itemize} ... \\end{itemize}", "begin{itemize}\n\t\\item ${cursor}\n\t\\item \n\\end{itemize} ", "Liste", "Liste"));
         provider.addCompletion(new TemplateCompletion(provider, "begin{enumerate}", "begin{enumerate} ... \\end{enumerate}", "begin{enumerate}\n\t\\item ${cursor}\n\t\\item \n\\end{enumerate} ", "Liste numérotée", "Liste numérotée"));
-        provider.addCompletion(new TemplateCompletion(provider, "begin{env}", "begin{env} ... \\end{env}", "begin{${env}}\n\t \n\\end{${env}} ", "nouvel environnement", "nouvel environnement"));
-
+        
+        
         // specific BPEP latex templates
+        provider.addCompletion(new TemplateCompletion(provider, "begin{blocQR}", "begin{blocQR} ... \\end{blocQR}", "begin{blocQR}\n\t ${cursor}\n\\end{blocQR} ", "Liste", "Liste"));
         provider.addCompletion(new TemplateCompletion(provider, "partie{", "partie{...}", "partie{${cursor}}\n", "Partie", "Partie"));
         provider.addCompletion(new TemplateCompletion(provider, "sousPartie{", "sousPartie{...}", "sousPartie{${cursor}}\n", "Sous-partie", "Sous-partie"));
         provider.addCompletion(new TemplateCompletion(provider, "fig{", "fig{0.8}{...}", "fig{0.8}{${cursor}}\n", "Figure", "Figure"));
+        provider.addCompletion(new TemplateCompletion(provider, "figWrapped{", "figWrapped{0.8}{...}", "figWrapped{0.8}{${cursor}}\n", "Figure à droite du texte", "Figure à droite du texte"));
+        provider.addCompletion(new TemplateCompletion(provider, "figCap{", "figCap{0.8}{...}{...}", "fig{0.8}{${cursor}}{\\labl{...}}\n", "Figure avec légende", "Figure avec légende"));
+        provider.addCompletion(new TemplateCompletion(provider, "figCapWrapped{", "figCapWrapped{0.8}{...}{...}", "figWrapped{0.8}{${cursor}}{\\labl{...}}\n", "Figure avec légende à droite du texte", "Figure avec légende à droite du texte"));
         provider.addCompletion(new TemplateCompletion(provider, "eq{", "eq{...}", "eq{\n\t${cursor}\n}", "Equation", "Equation"));
-        provider.addCompletion(new TemplateCompletion(provider, "addQ[", "addQ[...]{...}{...}", "addQ[${cursor}]{\n\t\n}{\n\t\n}", "Question selon version", "Question selon version"));
-        provider.addCompletion(new TemplateCompletion(provider, "addQ{", "addQ{...}{...}", "addQ{\n\t${cursor}\n}{\n\t\n}", "Question", "Question"));
+        provider.addCompletion(new TemplateCompletion(provider, "corrigeBonus{", "corrigeBonus{...}", "corrigeBonus{\n\t${cursor}\n}", "corrigé additionel", "corrige additionel"));
+        provider.addCompletion(new TemplateCompletion(provider, "sujetUniquement{", "sujetUniquement{...}", "sujetUniquement{\n\t${cursor}\n}", "element présent uniquement hors corrigé", "element présent uniquement hors corrigé"));
+        provider.addCompletion(new TemplateCompletion(provider, "siCorrige{", "siCorrige{...}", "siCorrige{\n\t${cursor}\n}", "element présent uniquement avec corrigé", "element présent uniquement avec corrigé"));
+        provider.addCompletion(new TemplateCompletion(provider, "QR[", "QR[...]{...}{...}", "QR[${cursor}]{\n\t\n}{\n\t\n}", "Question selon version", "Question selon version"));
+        provider.addCompletion(new TemplateCompletion(provider, "QR{", "QR{...}{...}", "QR{\n\t${cursor}\n}{\n\t\n}", "Question", "Question"));
         provider.addCompletion(new TemplateCompletion(provider, "enonce{", "enonce{...}", "enonce{\n\t${cursor}\n}", "Enonce", "Enonce"));
         provider.addCompletion(new TemplateCompletion(provider, "tcols{", "tcols{0.49}{0.49}{...}{...}", "tcols{0.49}{0.49}{\n\t${cursor}\n}{\n\t\n}", "Double colonne", "Double Colonne"));
-
+        provider.addCompletion(new TemplateCompletion(provider, "vectoriel", "vectoriel", "vectoriel", "produit vectoriel", "produit vectoriel"));
+        provider.addCompletion(new TemplateCompletion(provider, "scalaire", "scalaire", "scalaire", "produit scalaire", "produit scalaire"));
+        
         // maths & Latex accelerators templates
         provider.addCompletion(new TemplateCompletion(provider, "frac{", "frac{...}{...}", "frac{${cursor}}{}", "Fraction", "Fraction"));
         provider.addCompletion(new TemplateCompletion(provider, "Rightarrow", "Rightarrow", "Rightarrow ${cursor}", "Implication", "Implication"));
-        provider.addCompletion(new TemplateCompletion(provider, "RightLeftarrow", "RightLeftarrow", "RightLeftarrow ${cursor}", "equivalence", "equivalence"));
-        provider.addCompletion(new TemplateCompletion(provider, "medskip", "medskip", "medskip \n${cursor}", "petit espace vertical", "petit espace vertical"));
+        provider.addCompletion(new TemplateCompletion(provider, "RightLeftarrow", "RightLeftarrow", "RightLeftarrow ${cursor}", "equivalence", "equivalence"));       
         provider.addCompletion(new TemplateCompletion(provider, "ub{", "ub{...}{...}", "ub{${cursor}}{   }", "indication sous l'expression", "indication sous l'expression"));
         provider.addCompletion(new TemplateCompletion(provider, "sqrt{", "sqrt{", "sqrt{${cursor}}", "racine", "racine"));
         provider.addCompletion(new TemplateCompletion(provider, "boxed{", "boxed{", "boxed{${cursor}}", "résultat encadré", "résultat encadré"));

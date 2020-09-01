@@ -11,3 +11,5 @@ altimétrique
 orthonormé
 rectilignement
 spatio
+adiabatique
+adiabatiques

@@ -88,7 +88,17 @@ public class TexWriter {
         return writeToFile(in, "output/output.tex");
     }
 
+    /**
+     * Templates tex files are parsed and modified to include exercices
+     * the path of raccourcis_communs is also updated if required
+     * @param exercices the enumeration of exercices to include
+     * @param kind the kind of output asked
+     * @param localLinks if true, hard copies of exercices are created and pathes are updated
+     * @param forceDefault if true, default templates are enforced (usefull to test all exercices)
+     * @return 
+     */
     public static List<String> outputTexFile(Enumeration<Exercice> exercices, String kind, boolean localLinks, boolean forceDefault) {
+        
         List<String> output = new ArrayList<>(); // main file
         List<String> imports = new ArrayList<>(); // packages required by a specific exercice
 
@@ -108,7 +118,7 @@ public class TexWriter {
                 break;
 
         }
-        File f;
+        File f; // template file
         if (!forceDefault) {
             f = new File(SavedVariables.getTexModelsPaths() + fileName);
         } else {
@@ -129,6 +139,7 @@ public class TexWriter {
         String readLine = "";
         boolean blockTokenFound = false;
 
+        // template is parsed line by line
         try {
             while ((readLine = b.readLine()) != null) {
                 
@@ -139,7 +150,7 @@ public class TexWriter {
                 }
                 
                 if (readLine.trim().equals("[[")) {
-                    // we need to store whats before ****, whats after **** and then send to getExercicetoTex
+                    // we need to store what's before ****, what's after **** and then send to getExercicetoTex
                     String nextLine;
 
                     List<String> before = new ArrayList<>();

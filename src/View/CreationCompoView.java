@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.JFileChooser;
@@ -141,7 +142,6 @@ public class CreationCompoView extends javax.swing.JPanel {
     public Exercice getSelectedExercice() {
         return (Exercice) choixExercice.getSelectedValue();
     }
-
 
     public void removeKeyword(KeyWordView kwv) {
         selectedKeyWords.remove(kwv);
@@ -596,7 +596,7 @@ public class CreationCompoView extends javax.swing.JPanel {
 
     public void loadSet() {
         JFileChooser choix = new JFileChooser();
-        choix.setCurrentDirectory(new File(SavedVariables.getMainGitDir()+"/feuilles_exercices"));
+        choix.setCurrentDirectory(new File(SavedVariables.getMainGitDir() + "/feuilles_exercices"));
         choix.addChoosableFileFilter(new javax.swing.filechooser.FileFilter() {
             @Override
             public boolean accept(File f) {
@@ -614,10 +614,8 @@ public class CreationCompoView extends javax.swing.JPanel {
         });
         int retour = choix.showOpenDialog(this);
         if (retour == JFileChooser.APPROVE_OPTION) {
-         
-         
-         
-         BufferedReader b;
+
+            BufferedReader b;
             try {
                 b = new BufferedReader(new FileReader(new File(choix.getSelectedFile().getAbsolutePath())));
             } catch (FileNotFoundException ex) {
@@ -625,29 +623,29 @@ public class CreationCompoView extends javax.swing.JPanel {
                 return;
             }
 
-        String readLine = "";
-        String kind;
-        String number;
-        String name;
-        selectedExericesModel.clear();
+            String readLine = "";
+            String kind;
+            String number;
+            String name;
+            selectedExericesModel.clear();
             try {
                 kind = b.readLine().split(":")[1].trim();
                 number = b.readLine().split(":")[1].trim();
                 name = b.readLine().split(":")[1].trim();
-                
+
                 while ((readLine = b.readLine()) != null) {
                     System.out.println(readLine);
-                    this.selectedExericesModel.addElement(ExerciceFinder.getExerciceByPath(readLine.trim()));
+                    Exercice ex = ExerciceFinder.getExerciceByPath(readLine.trim());
+                    if (ex != null) {
+                        this.selectedExericesModel.addElement(ex);
+                    }
                 }
             } catch (IOException ex) {
                 System.err.println("Problème lors de la lecture du fichier " + choix.getSelectedFile().getAbsolutePath());
                 return;
             }
             this.outputTypes.setSelectedItem(kind);
-            
-            
-         
-         
+
         }
     }
 

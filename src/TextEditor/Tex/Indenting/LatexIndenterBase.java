@@ -231,7 +231,7 @@ public abstract class LatexIndenterBase {
             // non empty line : the previous line must be ended
             this.endLine();
         }
-        if (command.contains("QR")){
+        if (command.contains("QR") || command.contains("tcols")){
             this.endLine(); // add an extra blank line before a question
         }
 

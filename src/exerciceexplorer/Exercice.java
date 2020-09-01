@@ -189,7 +189,7 @@ public class Exercice implements Comparable<Exercice> {
                         
                         // special parsing for equations
                         if (et && replacement.contains("eq{")){
-                            replacement = replacement.replace("eq{", "eq[align]{");
+                            //replacement = replacement.replace("eq{", "eq[align]{");
                         }
                         
                         replacement = replacement.replace("\\n", "\n"); // forcing new lines

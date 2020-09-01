@@ -65,11 +65,12 @@ SentenceWB                                 = ({RAnyCharWB} | {Whitespace} |{Appo
 BLOCKbegin = ("\n"|{Whitespace})*("\\begin{"{AnyChar}+"}") ("["{RAnyCharWB}*"]")? ("{"{RAnyCharWB}*"}")* ("\n")+
 BLOCKend = ("\\end{"{AnyChar}+"}")("\n")*
 ADDQbegin = ("\n"|{Whitespace})*("\\QR{")("\n"|{Whitespace})*
+ADDQloginBegin = ("\n"|{Whitespace})*("\\QR["{AnyChar}+"]{")("\n"|{Whitespace})*
 MLEbegin = ("\n"|{Whitespace})*("\\eq")("["{AnyChar}+"]")?("\n"|{Whitespace})*("{")("\n"|{Whitespace})*
-ADDQloginBegin = ("\n"|{Whitespace})*("\\QR["{AnyChar}+"]{")
+
 TCOLSbegin = ("\n"|{Whitespace})*("\\tcols{"{Number}"}{"{Number}"}{")("\n")*
 ENONCEbegin = ("\n"|{Whitespace})*("\\enonce{")("\n")*
-FIGCAPbegin = ("\n"|{Whitespace})*("\\figCap")  ("{"{AnyChar}+"}{"{AnyChar}+"}{") ("\n")*
+FIGCAPbegin = ("\n"|{Whitespace}) * ("\\figCap")  ( "{" ({AnyChar}|".")+"}{"{RAnyCharWB}+"}{") ("\n")*
 
 %state BLOCK_Q
 %state BLOCK_A

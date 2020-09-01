@@ -14,8 +14,11 @@ import javax.swing.JOptionPane;
 public class GitWrapper {
 
     public static String status() {
-        ExecCommand.execo(new String[]{"git", "fetch"}, SavedVariables.getMainGitDir());
-        String output = ExecCommand.execo(new String[]{"git", "status"}, SavedVariables.getMainGitDir())[1];
+        String output= ExecCommand.execo(new String[]{"git", "fetch"}, SavedVariables.getMainGitDir())[2];
+        if (output.contains("Permission denied") || output.contains("refusé")){
+            JOptionPane.showMessageDialog(null, "<html> l'accès au dépot Github est refusé, assurez vous que votre clé publique à bien été déposée sur Github. <br>  Vous pouvez suivre le tutoriel sur la page <a href=\"https://mmb.netlify.app/bpep/bdd/bdd\">https://mmb.netlify.app/bpep/bdd/bdd </a>  <br> (item 5 du parcours d'installation)");
+        }
+        output = ExecCommand.execo(new String[]{"git", "status"}, SavedVariables.getMainGitDir())[1];
         return output;
     }
 
