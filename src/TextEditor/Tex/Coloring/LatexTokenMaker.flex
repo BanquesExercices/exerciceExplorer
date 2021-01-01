@@ -423,7 +423,7 @@ RAnyCharWB                                 = ({AnyChar} |  {URLSubDelim} | (\\\{
 Sentence                                 = ({RAnyChar} | {Whitespace} |{Appost} )
 SentenceWB                                 = ({RAnyCharWB} | {Whitespace} |{Appost} )
 
-MLEbegin = ("\\eq" ("["{AnyChar}+"]")?"{")
+MLEbegin = ("\\eq" ("["{AnyChar}+"*"?"]")?"{")
 ADDQbegin = ("\\QR{")
 ADDQloginBegin = ("\\QR["({AnyChar} | {Whitespace} | ",")+"]{")
 

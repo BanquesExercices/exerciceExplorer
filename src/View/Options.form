@@ -27,20 +27,25 @@
                   <Component id="jSeparator2" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jPanel6" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jPanel4" alignment="0" min="-2" pref="346" max="-2" attributes="0"/>
+                          <Component id="pathsPanel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="editorPanel" alignment="0" min="-2" pref="346" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-          </Group>
-          <Component id="jPanel2" alignment="0" min="-2" max="-2" attributes="0"/>
           <Component id="jSeparator3" alignment="1" max="32767" attributes="0"/>
           <Component id="jSeparator4" alignment="0" max="32767" attributes="0"/>
+          <Group type="102" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="actionsPanels" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="gitPanel" min="-2" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -49,22 +54,22 @@
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
+                      <Component id="gitPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Component id="jSeparator2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="180" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="152" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
+                  <Component id="pathsPanel" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
               <Component id="jSeparator4" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-              <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+              <Component id="actionsPanels" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
               <Component id="jSeparator3" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-              <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="20" max="32767" attributes="0"/>
+              <Component id="editorPanel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -72,21 +77,28 @@
   <SubComponents>
     <Component class="javax.swing.JSeparator" name="jSeparator2">
     </Component>
-    <Container class="javax.swing.JPanel" name="jPanel2">
+    <Container class="javax.swing.JPanel" name="actionsPanels">
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
-              </Group>
-              <Group type="102" alignment="0" attributes="0">
                   <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="125" max="32767" attributes="0"/>
+              </Group>
+              <Group type="102" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="jSpinner1" min="-2" pref="71" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -99,7 +111,11 @@
                       <Component id="jCheckBox1" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jCheckBox2" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jSpinner1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
           </Group>
         </DimensionLayout>
@@ -137,9 +153,27 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox2ActionPerformed"/>
           </Events>
         </Component>
+        <Component class="javax.swing.JSpinner" name="jSpinner1">
+          <Properties>
+            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+              <SpinnerModel initial="13" maximum="26" minimum="8" numberType="java.lang.Integer" stepSize="1" type="number"/>
+            </Property>
+            <Property name="value" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="SavedVariables.getFontSize()" type="code"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="jSpinner1StateChanged"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel3">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Taille police IHM"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="jPanel3">
+    <Container class="javax.swing.JPanel" name="gitPanel">
 
       <Layout>
         <DimensionLayout dim="0">
@@ -268,7 +302,7 @@
     </Container>
     <Component class="javax.swing.JSeparator" name="jSeparator3">
     </Component>
-    <Container class="javax.swing.JPanel" name="jPanel4">
+    <Container class="javax.swing.JPanel" name="editorPanel">
 
       <Layout>
         <DimensionLayout dim="0">
@@ -286,11 +320,11 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="coloringCheckBox" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="coloringPanel" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                           <Component id="spellPanel" min="-2" pref="365" max="-2" attributes="0"/>
                       </Group>
+                      <Component id="coloringPanel" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
               </Group>
@@ -304,7 +338,7 @@
                   <Component id="spellCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Component id="spellPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="autoCompletionCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="coloringCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -406,6 +440,9 @@
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Chemin d&apos;acces (absolu) vers le dictionnaire personnel&#xa;&lt;ul&gt;&#xa;    &lt;li&gt; Fichier &#xe0; encodage UTF-8  &lt;/li&gt;&#xa;    &lt;li&gt; Un seul mot par ligne  &lt;/li&gt;&#xa;    &lt;li&gt; L&apos;application pourra ajouter de nouveaux mots de mani&#xe8;re d&#xe9;finitive &#xe0; ce dictionnaire  &lt;/li&gt;&#xa;&lt;/ul&gt;&#xa;Ce dictionnaire pourra acceuillir par exemple des termes scientifiques li&#xe9;s aux exercices et absent du dictionnaire principal.&#xa;&lt;/html&gt;"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="customDictTextFieldActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -442,19 +479,15 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="tokenComboBox" min="-2" pref="200" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="colorSetTextField" min="-2" pref="103" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="112" max="-2" attributes="0"/>
-                              <Component id="titlesCheckBox" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <EmptySpace pref="125" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="tokenComboBox" min="-2" pref="200" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="colorSetTextField" min="-2" pref="103" max="-2" attributes="0"/>
+                      <EmptySpace pref="84" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="titlesCheckBox" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -465,8 +498,9 @@
                           <Component id="tokenComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="colorSetTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                       <Component id="titlesCheckBox" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -512,7 +546,7 @@
         </Container>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="jPanel6">
+    <Container class="javax.swing.JPanel" name="pathsPanel">
 
       <Layout>
         <DimensionLayout dim="0">
@@ -527,7 +561,6 @@
                               <Group type="103" alignment="1" groupAlignment="0" attributes="0">
                                   <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                                  <Component id="openEditorLabel" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -535,7 +568,6 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="outputDirInput" alignment="0" min="-2" pref="240" max="-2" attributes="0"/>
                               <Component id="templatesFolderInput" alignment="0" min="-2" pref="240" max="-2" attributes="0"/>
-                              <Component id="openInput" alignment="0" min="-2" pref="240" max="-2" attributes="0"/>
                               <Component id="gitFolderInput" alignment="0" min="-2" pref="240" max="-2" attributes="0"/>
                               <Component id="pdflatexInput" alignment="0" min="-2" pref="240" max="-2" attributes="0"/>
                           </Group>
@@ -555,12 +587,7 @@
                       <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="pdflatexInput" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="openEditorLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="openInput" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="gitFolderInput" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -603,13 +630,16 @@
               <Dimension value="[240, 24]"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pdflatexInputActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="templatesFolderInput">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="SavedVariables.getTexModelsPaths()" type="code"/>
             </Property>
-            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Chemin d&apos;acces (absolu) vers le dossier contenant les templates latex :&#xa;&lt;ul&gt;&#xa;    &lt;li&gt; DSModel.tex  &lt;/li&gt;&#xa;    &lt;li&gt; DMModel.tex  &lt;/li&gt;&#xa;    &lt;li&gt; ColleModel.tex  &lt;/li&gt;&#xa;    &lt;li&gt; TDModel.tex  &lt;/li&gt;&#xa;&lt;/ul&gt;&#xa;Ces documents servent de template pour l&apos;inclusion des exercices et doivent inclure le fichier fichiers_utiles/raccourcis_communs.sty et contenir une ligne : &lt;br&gt;&#xa;****&#xa;&lt;br&gt; &#xa;qui sera remplac&#xe9;e par l&apos;import des exercices lors de l&apos;&#xe9;dition d&apos;une composition.&#xa;&lt;br&gt;&#xa;&lt;br&gt;&#xa;Des exemples de fichiers fonctionnels se trouvent dans le r&#xe9;pertoire path/To/Git/Dir/fichiers_utiles/defaultLatexTemplates&#xa;&lt;/html&gt;"/>
+            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Chemin d&apos;acces (absolu) vers le dossier contenant les templates latex :&#xa;&lt;ul&gt;&#xa;    &lt;li&gt; DSmodel.tex  &lt;/li&gt;&#xa;    &lt;li&gt; DMmodel.tex  &lt;/li&gt;&#xa;    &lt;li&gt; Collemodel.tex  &lt;/li&gt;&#xa;    &lt;li&gt; TDmodel.tex  &lt;/li&gt;&#xa;&lt;/ul&gt;&#xa;Ces documents servent de template pour l&apos;inclusion des exercices et doivent inclure le fichier fichiers_utiles/raccourcis_communs.sty &lt;br&gt; et contenir une ligne : ****&#xa;&lt;br&gt; &#xa;qui sera remplac&#xe9;e par l&apos;import des exercices lors de l&apos;&#xe9;dition d&apos;une composition.&#xa;&lt;br&gt;&#xa;&lt;br&gt;&#xa;Des exemples de fichiers fonctionnels se trouvent dans le r&#xe9;pertoire path/To/Git/Dir/fichiers_utiles/defaultLatexTemplates &lt;br&gt; (utilsation non conseill&#xe9;e &#xe0; long terme : couleur orange)&#xa;&lt;br&gt;&#xa;&lt;br&gt;&#xa;Il est pr&#xe9;f&#xe9;rable d&apos;utiliser ces propres templates en compiant le contenu du dossier precedant puis en &lt;br&gt; modifiants les fichiers suivant ses besoins (couleur verte)&#xa;&lt;/html&gt;"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[240, 24]"/>
             </Property>
@@ -618,11 +648,6 @@
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
             <Property name="text" type="java.lang.String" value="dossier d&apos;export"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="openEditorLabel">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="open"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="outputDirInput">
@@ -639,17 +664,6 @@
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="text" type="java.lang.String" value="pdflatex"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="openInput">
-          <Properties>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="SavedVariables.getOpenCmd()" type="code"/>
-            </Property>
-            <Property name="toolTipText" type="java.lang.String" value="Chemin d&apos;acces (absolu) vers la commande open (MacOS) ou xdg-open (autres OS type unix)"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[240, 24]"/>
-            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="gitFolderInput">

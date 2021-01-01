@@ -29,12 +29,72 @@ public class SavedVariables {
         try {
             prefs.clear();
             prefs.flush();
-            
+
         } catch (BackingStoreException ex) {
             Logger.getLogger(SavedVariables.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    // font size
+    public static int getFontSize() {
+
+        if (prefs != null) {
+            return Integer.valueOf(prefs.get("IHMfs", "13"));
+        } else {
+            return 13;
+        }
+    }
+
+    public static void setFontSize(int fs) {
+        prefs.put("IHMfs", String.valueOf(fs));
+    }
+
+    ////// git credentials
+    public static String getGitLogin() {
+
+        if (prefs != null) {
+            return prefs.get("glg", "");
+        } else {
+            return "";
+        }
+    }
+
+    public static void setGitLogin(String gitLogin) {
+        prefs.put("glg", gitLogin);
+    }
+
+    public static String getEncryptedGitMDP() {
+
+        if (prefs != null) {
+            return prefs.get("gemdp", "");
+        } else {
+            return "";
+        }
+    }
+
+    public static void setEncryptedGitMDP(String emdp) {
+        prefs.put("gemdp", emdp);
+    }
+
+    public static boolean getPersistentCredential() {
+        if (prefs != null) {
+            return "true".equals(prefs.get("persistentCredential", ""));
+        } else {
+            return false;
+        }
+    }
+
+    public static void setPersistentCredential(boolean pc) {
+        if (pc) {
+            prefs.put("persistentCredential", "true");
+        } else {
+            prefs.put("persistentCredential", "false");
+            setGitLogin("");
+            setEncryptedGitMDP("");
+        }
+    }
+
+    ////// ihm preferences
     public static String getOpenCmd() {
 
         if (prefs != null) {

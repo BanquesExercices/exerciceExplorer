@@ -26,6 +26,9 @@ import javax.swing.text.JTextComponent;
  * @author mbrebion
  */
 public class Utils {
+    
+    
+   
 
     public static void showLongTextMessageInDialog(String longMessage, Frame frame) {
         JTextArea textArea = new JTextArea(18, 50);

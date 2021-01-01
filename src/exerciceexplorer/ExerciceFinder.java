@@ -105,9 +105,7 @@ public final class ExerciceFinder {
 
                 File[] listOfFiles = folder.listFiles();
                 for (File file : listOfFiles) {
-                    if (file.isFile()) {
-                        System.out.println(" File " + file.getName() + " should not be present in " + elem + " directory");
-                    } else if (file.isDirectory()) {
+                    if (file.isDirectory()) {
                         this.exercices.add(new Exercice(file.getName(), file.getAbsolutePath(), elem));
                     }
                 }

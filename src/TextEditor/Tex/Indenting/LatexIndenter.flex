@@ -66,7 +66,7 @@ BLOCKbegin = ("\n"|{Whitespace})*("\\begin{"{AnyChar}+"}") ("["{RAnyCharWB}*"]")
 BLOCKend = ("\\end{"{AnyChar}+"}")("\n")*
 ADDQbegin = ("\n"|{Whitespace})*("\\QR{")("\n"|{Whitespace})*
 ADDQloginBegin = ("\n"|{Whitespace})*("\\QR["{AnyChar}+"]{")("\n"|{Whitespace})*
-MLEbegin = ("\n"|{Whitespace})*("\\eq")("["{AnyChar}+"]")?("\n"|{Whitespace})*("{")("\n"|{Whitespace})*
+MLEbegin = ("\n"|{Whitespace})*("\\eq")("["{AnyChar}+"*"?"]")?("\n"|{Whitespace})*("{")("\n"|{Whitespace})*
 
 TCOLSbegin = ("\n"|{Whitespace})*("\\tcols{"{Number}"}{"{Number}"}{")("\n")*
 ENONCEbegin = ("\n"|{Whitespace})*("\\enonce{")("\n")*

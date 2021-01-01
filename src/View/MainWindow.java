@@ -6,16 +6,14 @@
 package View;
 
 import Helper.SavedVariables;
+import static View.Options.setUIFont;
 import com.formdev.flatlaf.FlatLightLaf;
 import exerciceexplorer.Exercice;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractAction;
@@ -49,7 +47,7 @@ public final class MainWindow extends javax.swing.JFrame {
     protected ChangeListener cl = null;
 
     JMenuBar menuBar;
-    protected AbstractAction replaceKeywordAction, replaceWordAction, checkAllExercicesAction, toZeroAction;
+    protected AbstractAction replaceKeywordAction, replaceWordAction, checkAllExercicesAction, toZeroAction, gitCredentialAction;
     protected JMenu global, file;
 
     private static MainWindow instance = null;
@@ -57,29 +55,31 @@ public final class MainWindow extends javax.swing.JFrame {
     /*
     the unique instance of MainWindow may be obtained by static calls
      -> We should then avoid spaghetti code ! 
-    */
+     */
     public static synchronized MainWindow getInstance() {
-        if (instance==null){
-            instance=new MainWindow();
+        if (instance == null) {
+            instance = new MainWindow();
         }
         return instance;
     }
 
     private MainWindow() {
-        
-        if (instance!=null){
+
+        if (instance != null) {
             System.err.println("Tentative de création d'une nouvelle instance de MainWindow.");
             System.err.println("C'est interdit !");
             return;
         }
-        
+
         SavedVariables.instanciate(this.getClass());
+        // change the default font size (usefull on 4K displays)
+                setUIFont(new javax.swing.plaf.FontUIResource("Serif",Font.PLAIN,SavedVariables.getFontSize()));
 
         initComponents();
 
-        if (options2.isCompletionRequired()) {
-            this.jTabbedPane1.setSelectedComponent(jScrollPane1);
-        }
+        //if (options2.isCompletionRequired()) {
+        //    this.jTabbedPane1.setSelectedComponent(jScrollPane1);
+        //}
 
         // menubar
         menuBar = new JMenuBar();
@@ -175,6 +175,14 @@ public final class MainWindow extends javax.swing.JFrame {
             }
         };
 
+        gitCredentialAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GitCredential gc = new GitCredential();
+                gc.setVisible(true);
+            }
+        };
+
         // menu items
         global = new JMenu("Avancé");
 
@@ -193,6 +201,10 @@ public final class MainWindow extends javax.swing.JFrame {
         JMenuItem toZeroMI = new JMenuItem("Remise à zero des preferences");
         global.add(toZeroMI);
         toZeroMI.addActionListener(toZeroAction);
+
+        JMenuItem gitCredentialMI = new JMenuItem("Paramètres Github");
+        global.add(gitCredentialMI);
+        gitCredentialMI.addActionListener(gitCredentialAction);
 
         this.updateGlobalMenuBarStatus();
 
@@ -233,8 +245,8 @@ public final class MainWindow extends javax.swing.JFrame {
 
     }
 
-    public void updateDatabase() {
-        this.creationSujetView1.updateDataBase();
+    public boolean updateDatabase() {
+        return this.creationSujetView1.updateDataBase();
     }
 
     public void setExerciceDisplay(Exercice ex) {
@@ -342,7 +354,6 @@ public final class MainWindow extends javax.swing.JFrame {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         creationSujetView1 = new View.CreationCompoView();
-        jScrollPane1 = new javax.swing.JScrollPane();
         options2 = new View.Options();
         middlePane = new javax.swing.JPanel();
         rightPane = new javax.swing.JPanel();
@@ -351,11 +362,7 @@ public final class MainWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTabbedPane1.addTab("Composition", creationSujetView1);
-
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setViewportView(options2);
-
-        jTabbedPane1.addTab("Options", jScrollPane1);
+        jTabbedPane1.addTab("Options", options2);
 
         middlePane.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         middlePane.setPreferredSize(new java.awt.Dimension(7, 2));
@@ -379,7 +386,7 @@ public final class MainWindow extends javax.swing.JFrame {
         rightPane.setLayout(rightPaneLayout);
         rightPaneLayout.setHorizontalGroup(
             rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 403, Short.MAX_VALUE)
+            .addGap(0, 487, Short.MAX_VALUE)
             .addGroup(rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightPaneLayout.createSequentialGroup()
                     .addComponent(editorTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
@@ -447,28 +454,20 @@ public final class MainWindow extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                if (System.getProperty("os.name").startsWith("Mac OS X")) {
+                if (System.getProperty("os.name").startsWith("Mac")) {
                     System.setProperty("apple.laf.useScreenMenuBar", "true");
                     System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Exercice Explorer");
                 }
-
+                
+                
                 FlatLightLaf.install(); // nice flat look and feel
 
-                javax.swing.ToolTipManager.sharedInstance().setDismissDelay(10000);
-                javax.swing.ToolTipManager.sharedInstance().setInitialDelay(500);
+                javax.swing.ToolTipManager.sharedInstance().setDismissDelay(12000);
+                javax.swing.ToolTipManager.sharedInstance().setInitialDelay(400);
 
                 MainWindow.getInstance().setVisible(true);
 
-                // error reporting : 
-                File file = new File("err.txt");
-                FileOutputStream fos;
-                try {
-                    fos = new FileOutputStream(file);
-                    PrintStream ps = new PrintStream(fos);
-                    //System.setErr(ps);
-                } catch (FileNotFoundException ex) {
-                    System.err.println("Le fichier d'erreur n'a pu être créé/lu");
-                }
+               
 
             }
         });
@@ -477,7 +476,6 @@ public final class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private View.CreationCompoView creationSujetView1;
     public javax.swing.JTabbedPane editorTabbedPane;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel middlePane;
     private View.Options options2;

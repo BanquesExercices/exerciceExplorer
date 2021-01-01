@@ -5,7 +5,7 @@
  */
 package View;
 
-import Helper.ExecCommand;
+import Helper.OsRelated;
 import Helper.ListTransferHandler;
 import Helper.SavedVariables;
 import Helper.Utils;
@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.JFileChooser;
@@ -134,9 +133,10 @@ public class CreationCompoView extends javax.swing.JPanel {
         this.newExercicePane.setVisible(false);
     }
 
-    public void updateDataBase() {
-        ef.updateList();
+    public boolean updateDataBase() {
+        boolean out =ef.updateList();
         this.updateModel();
+        return out;
     }
 
     public Exercice getSelectedExercice() {
@@ -534,7 +534,7 @@ public class CreationCompoView extends javax.swing.JPanel {
             List<String> outLines = new ArrayList<>();
 
             outLines.add(formatter.format(new Date()) + " : " + kind + "  " + compoNumber);
-            if (lines.size() == 0) {
+            if (lines.isEmpty()) {
                 // in this case, the file is empty or do not exist yet
                 TexWriter.writeToFile(outLines, exo.getlastTimePath());
             } else {
@@ -542,10 +542,10 @@ public class CreationCompoView extends javax.swing.JPanel {
             }
 
             // hard copy
-            ExecCommand.execo(new String[]{"cp", "-r", exo.getPath(), compoDir + "/"}, 100);
+            OsRelated.copy(exo.getPath(), compoDir.getPath());
         }
         // copy of file raccourcis_communs.sty : 
-        ExecCommand.execo(new String[]{"cp", "-r", SavedVariables.getMainGitDir() + "/fichiers_utiles/raccourcis_communs.sty", compoDir + "/"}, 100);
+        OsRelated.copy(SavedVariables.getMainGitDir() + "/fichiers_utiles/raccourcis_communs.sty", compoDir.getPath());
 
     }
 

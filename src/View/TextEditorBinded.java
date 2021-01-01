@@ -5,8 +5,7 @@
  */
 package View;
 
-import Helper.ExecCommand;
-import Helper.SavedVariables;
+import Helper.OsRelated;
 import Helper.Utils;
 import TexRessources.TexWriter;
 import TextEditor.Base.BaseTextEditor;
@@ -438,7 +437,6 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         jButton1.setContentAreaFilled(false);
         jButton1.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_ic_save_48px_352084 _disabled.png"))); // NOI18N
         jButton1.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_ic_save_48px_352084_selected.png"))); // NOI18N
-        jButton1.setRolloverEnabled(true);
         jButton1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_ic_save_48px_352084_rollOver.png"))); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -454,7 +452,6 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         jButton2.setBorderPainted(false);
         jButton2.setContentAreaFilled(false);
         jButton2.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_pen-checkbox_353430_selected.png"))); // NOI18N
-        jButton2.setRolloverEnabled(true);
         jButton2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_pen-checkbox_353430_rollOver.png"))); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -542,7 +539,6 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         findPanel.add(previousButton);
 
         exitButton.setText("x");
-        exitButton.setSize(new java.awt.Dimension(60, 29));
         exitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exitButtonActionPerformed(evt);
@@ -625,7 +621,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(texPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
                 .addComponent(reloadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -635,12 +631,12 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5))
             .addComponent(findPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(replacePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+            .addComponent(replacePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 11, Short.MAX_VALUE)
                 .addGap(2, 2, 2)
                 .addComponent(replacePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -666,7 +662,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         if (f == null) {
             return;
         }
-        ExecCommand.execo(new String[]{SavedVariables.getOpenCmd(), f.getAbsolutePath()}, 0);
+        OsRelated.open(f.getAbsolutePath());
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void reloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reloadButtonActionPerformed
@@ -722,7 +718,8 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         //open directory of exercice
-        ExecCommand.execo(new String[]{SavedVariables.getOpenCmd(), f.getAbsolutePath().substring(0, f.getAbsolutePath().lastIndexOf("/"))}, 0);
+        
+        OsRelated.openDirectoryOf(f.getAbsolutePath());
     }//GEN-LAST:event_jButton3ActionPerformed
 
 

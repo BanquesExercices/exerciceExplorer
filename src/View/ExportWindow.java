@@ -5,7 +5,7 @@
  */
 package View;
 
-import Helper.ExecCommand;
+import Helper.OsRelated;
 import Helper.SavedVariables;
 import Helper.Utils;
 import TexRessources.TexWriter;
@@ -46,13 +46,13 @@ public class ExportWindow extends javax.swing.JFrame {
         this.ccv = ccv;
         kind = ccv.getOutputType();
 
-        if (kind =="DS" || kind=="DM"){
+        if (kind == "DS" || kind == "DM") {
             jSlider1.setValue(2);
-        }else{
+        } else {
             jSlider1.setValue(1);
         }
         jSlider1StateChanged(null);
-        
+
         this.fillExportDirChoices();
         this.nameField.setText("");
         this.nameField.selectAll();
@@ -69,7 +69,7 @@ public class ExportWindow extends javax.swing.JFrame {
         if (jSlider1.getValue() == 2) {
             base = SavedVariables.getOutputDir();
         } else {
-            base = SavedVariables.getMainGitDir() + "/feuilles_exercices";
+            base = SavedVariables.getMainGitDir() + "/untracked/feuilles_exercices";
         }
         File f = new File(base);
         this.jComboBox1.removeAllItems();
@@ -316,7 +316,7 @@ public class ExportWindow extends javax.swing.JFrame {
             List<String> outLines = new ArrayList<>();
 
             outLines.add(formatter.format(new Date()) + " : " + nameField.getText());
-            if (lines.size() == 0) {
+            if (lines.isEmpty()) {
                 // in this case, the file is empty or do not exist yet
                 TexWriter.writeToFile(outLines, exo.getlastTimePath());
             } else {
@@ -324,11 +324,11 @@ public class ExportWindow extends javax.swing.JFrame {
             }
 
             // hard copy
-            ExecCommand.execo(new String[]{"cp", "-r", exo.getPath(), compoDir + "/"}, 100);
+            OsRelated.copy(exo.getPath(), compoDir.getPath() );
         }
         // copy of file raccourcis_communs.sty : 
-        ExecCommand.execo(new String[]{"cp", "-r", SavedVariables.getMainGitDir() + "/fichiers_utiles/raccourcis_communs.sty", compoDir + "/"}, 100);
-        ExecCommand.execo(new String[]{"open", exportLoc});
+        OsRelated.copy(SavedVariables.getMainGitDir() + "/fichiers_utiles/raccourcis_communs.sty", compoDir.getPath() );
+        OsRelated.open(exportLoc);
         this.setVisible(false);
     }
 
@@ -355,9 +355,8 @@ public class ExportWindow extends javax.swing.JFrame {
                 b.newLine();
             }
             b.close();
-            ExecCommand.execo(new String[]{"open", exportLoc});
+           OsRelated.open(exportLoc);
             this.setVisible(false);
-            
 
         } catch (IOException ex) {
             System.out.println(exportLoc + " file cannot be outputed");

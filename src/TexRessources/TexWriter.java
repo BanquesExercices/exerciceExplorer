@@ -5,7 +5,7 @@
  */
 package TexRessources;
 
-import Helper.ExecCommand;
+import Helper.OsRelated;
 import Helper.SavedVariables;
 import exerciceexplorer.Exercice;
 import java.io.BufferedReader;
@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 public class TexWriter {
 
     public static void openPdf() {
-        ExecCommand.execo(new String[]{SavedVariables.getOpenCmd(), "output/output.pdf"}, 0);
+        OsRelated.open("output/output.pdf");
     }
 
     protected static void getExercicestoTex(Enumeration<Exercice> exercices, List<String> output, List<String> imports, boolean localLinks) {
@@ -53,7 +53,7 @@ public class TexWriter {
             if (localLinks) {
                 output.add("\\subimport{./" + element.getName() + "/}{sujet.tex}");
             } else {
-                output.add("\\subimport{" + element.getPath() + "/}{sujet.tex}");
+                output.add("\\subimport{" + element.getPath().replace("\\", "/") + "/}{sujet.tex}"); // unix pathes are required for Latex, even for windows
             }
 
             for (String s : after) {
@@ -69,12 +69,15 @@ public class TexWriter {
     public static String latexLog = "";
 
     public static boolean latexToPdf() {
-        String[] out = ExecCommand.execo(new String[]{SavedVariables.getPdflatexCmd(), "-halt-on-error", "-output-directory=" + System.getProperty("user.dir") + "/output", "output/output.tex"}, 0);
-        if (!out[0].equals("0")) {
+        
+        String out = OsRelated.pdfLatex("./output");
+        if (!out.contains("Output written")) {
             System.err.println("pdflatex could not latexize the texfile");
-            latexLog = out[1];
+            latexLog = out;
+            return false;
         }
-        return out[0].equals("0");
+        return true;
+
     }
 
     public static boolean writeTexFile(List<String> in) {
@@ -85,20 +88,23 @@ public class TexWriter {
             dir.mkdir();
 
         }
-        return writeToFile(in, "output/output.tex");
+        return writeToFile(in, OsRelated.pathAccordingToOS("output/output.tex"));
     }
 
     /**
-     * Templates tex files are parsed and modified to include exercices
-     * the path of raccourcis_communs is also updated if required
+     * Templates tex files are parsed and modified to include exercices the path
+     * of raccourcis_communs is also updated if required
+     *
      * @param exercices the enumeration of exercices to include
      * @param kind the kind of output asked
-     * @param localLinks if true, hard copies of exercices are created and pathes are updated
-     * @param forceDefault if true, default templates are enforced (usefull to test all exercices)
-     * @return 
+     * @param localLinks if true, hard copies of exercices are created and
+     * pathes are updated
+     * @param forceDefault if true, default templates are enforced (usefull to
+     * test all exercices)
+     * @return
      */
     public static List<String> outputTexFile(Enumeration<Exercice> exercices, String kind, boolean localLinks, boolean forceDefault) {
-        
+
         List<String> output = new ArrayList<>(); // main file
         List<String> imports = new ArrayList<>(); // packages required by a specific exercice
 
@@ -120,16 +126,16 @@ public class TexWriter {
         }
         File f; // template file
         if (!forceDefault) {
-            f = new File(SavedVariables.getTexModelsPaths() + fileName);
+            f = new File(OsRelated.pathAccordingToOS(SavedVariables.getTexModelsPaths() + fileName));
         } else {
-            f = new File(SavedVariables.getMainGitDir() + "/fichiers_utiles/defaultLatexTemplates" + fileName);
+            f = new File(OsRelated.pathAccordingToOS(SavedVariables.getMainGitDir() + "/fichiers_utiles/defaultLatexTemplates" + fileName));
         }
 
         BufferedReader b;
         try {
             b = new BufferedReader(new FileReader(f));
         } catch (FileNotFoundException ex) {
-            String errorMsg = SavedVariables.getTexModelsPaths() + fileName + " file not found. Please create this file and edit its path";
+            String errorMsg = OsRelated.pathAccordingToOS(SavedVariables.getTexModelsPaths() + fileName) + " file not found. Please create this file and edit its path";
             System.err.println(errorMsg);
             output.clear();
             output.add(errorMsg);
@@ -142,13 +148,12 @@ public class TexWriter {
         // template is parsed line by line
         try {
             while ((readLine = b.readLine()) != null) {
-                
-                if (readLine.trim().contains("usepackage{raccourcis_communs}")){
-                    // On cherche ou se trouve exactement le fichier .sty contenant les raccoursis ; autre solution ; placer un lien symbolique dans $home/texmf/...
-                    output.add("\\usepackage{"+SavedVariables.getMainGitDir()+"/fichiers_utiles/raccourcis_communs}");
+
+                if (readLine.trim().contains("usepackage{raccourcis_communs}") || readLine.trim().contains("RequirePackage{raccourcis_communs}")) {
+                    output.add("\\usepackage{" + (SavedVariables.getMainGitDir().replace("\\", "/") + "/fichiers_utiles/raccourcis_communs}").replace("//", "/")); // need uniw path like for latex
                     continue;
                 }
-                
+
                 if (readLine.trim().equals("[[")) {
                     // we need to store what's before ****, what's after **** and then send to getExercicetoTex
                     String nextLine;
@@ -219,7 +224,7 @@ public class TexWriter {
         return out;
 
     }
-    
+
     public static String readFileOneString(String path) {
         try {
             return new String(Files.readAllBytes(Paths.get(path)));
@@ -229,8 +234,6 @@ public class TexWriter {
         }
 
     }
-    
-    
 
     public static boolean appendToFile(List<String> in, String path) {
 
@@ -269,7 +272,5 @@ public class TexWriter {
         }
         return true;
     }
-
-   
 
 }

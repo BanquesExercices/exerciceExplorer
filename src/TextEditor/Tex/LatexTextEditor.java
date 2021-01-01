@@ -15,9 +15,6 @@ import TextEditor.Base.BaseTextEditor;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
@@ -32,7 +29,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
-import javax.swing.Timer;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.fife.ui.autocomplete.TemplateCompletion;
@@ -56,7 +52,6 @@ public class LatexTextEditor extends BaseTextEditor {
     static final String MY_LATEX_STYLE = "text/mls";
     protected TexFoldParser tfp;
     protected JMenu viewMenu;
-    protected long time = 0;
     protected static Dictionary<String, Integer> tokenDict = null;
     protected static Dictionary<Integer, String> defaultColorDict = null;
     protected AutoCompletion acb;
@@ -70,7 +65,6 @@ public class LatexTextEditor extends BaseTextEditor {
 
     public LatexTextEditor() {
         super();
-        time = System.nanoTime();
         this.myInit();
 
     }
@@ -98,25 +92,7 @@ public class LatexTextEditor extends BaseTextEditor {
         // adding auto-completion abilities
         this.setupAutoCompletion();
 
-        // altering clipboard content (usefull to paste content from pdfs !)
-        new Timer(500, e -> {
-            Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
-            DataFlavor df = DataFlavor.stringFlavor;
-            if (c.isDataFlavorAvailable(df)) {
-                try {
-                    String data = c.getData(df).toString();
-                    if (!data.equals(_lastData)) {
-                        String temp = data.replace(" ́e","é").replace("ˆo","ô").replace("’","'").replace("`u","ù").replace("`e","è").replace("`a", "à").replace("", "").replace("ˆe", "ê").replace("a`", "à");
-                        StringSelection strSel = new StringSelection(temp);
-                        c.setContents(strSel, null);
-                        _lastData=temp;
-                    }
-                } catch (Exception ex) {
-                    System.err.println(ex);
-                }
-            }
-        }).start();
-
+       
     }
 
     public static List<String> getTokenNames() {
@@ -328,6 +304,20 @@ public class LatexTextEditor extends BaseTextEditor {
         indentItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.SHIFT_MASK + mod));
         editMenu.add(indentItem);
         indentItem.setToolTipText("Indente automatiquement le fichier sujet.tex");
+        
+        AbstractAction accents = new AbstractAction("Conversion des accents") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                String temp = LatexTextEditor.this.getText().replace(" ́e","é").replace("ˆo","ô").replace("’","'").replace("`u","ù").replace("`e","è").replace("`a", "à").replace("", "").replace("ˆe", "ê").replace("a`", "à");
+                LatexTextEditor.this.setText(temp);
+            }
+        };
+
+        JMenuItem accentsItem = new JMenuItem(accents);        
+        editMenu.add(accentsItem);
+        accentsItem.setToolTipText("Convertie les accents et autres caractères spéciaux au bon format");
 
         AbstractAction importAction = new AbstractAction("Conversion automatisée") {
 

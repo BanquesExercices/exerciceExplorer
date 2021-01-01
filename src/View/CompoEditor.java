@@ -5,7 +5,7 @@
  */
 package View;
 
-import Helper.ExecCommand;
+import Helper.OsRelated;
 import Helper.SavedVariables;
 import Helper.Utils;
 import TexRessources.TexWriter;
@@ -216,7 +216,7 @@ public class CompoEditor extends javax.swing.JPanel implements MenuBarItemProvid
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         List<String> lines = this.getLines();
         TexWriter.writeTexFile(lines);
-        ExecCommand.execo(new String[]{SavedVariables.getOpenCmd(), "output/output.tex"}, 0);
+        OsRelated.open("output/output.tex");
     }//GEN-LAST:event_jButton2ActionPerformed
 
 
