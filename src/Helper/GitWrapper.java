@@ -179,7 +179,7 @@ public class GitWrapper {
 
             } catch (org.eclipse.jgit.api.errors.TransportException te) {
                 System.out.println("probleme d'autentification");
-                te.printStackTrace();
+                //te.printStackTrace();
 
                 GitCredential gc = new GitCredential();
                 gc.setVisible(true);
@@ -202,7 +202,7 @@ public class GitWrapper {
                 conflictDetected = false;
             } catch (NullPointerException e) {
 
-                conflictDetected = true;
+                out+="Branche : " + repository.getBranch() +" non présente sur github \n";
 
             }
 
@@ -222,24 +222,28 @@ public class GitWrapper {
             st.getMissing().forEach(name -> {
                 files.add(new File(name));
             });
+            
             st.getUncommittedChanges().forEach(name -> {
                 files.add(new File(name));
             });
 
-            if (st.getUncommittedChanges().size() > 0) {
+            if (st.getUncommittedChanges().size() -st.getMissing().size()  > 0) {
                 nothingToDo = false;
-                out += " -> " + st.getUncommittedChanges().size() + " fichier(s) modifié(s) \n";
+                out += " -> " + st.getUncommittedChanges().size() + " fichier(s) modifié(s) \n";  // -> 1
             }
 
             if (st.getUntracked().size() > 0) {
                 nothingToDo = false;
-                out += " -> " + st.getUntracked().size() + " nouveau(x) fichier(s) \n";
+                out += " -> " + st.getUntracked().size() + " nouveau(x) fichier(s) \n";  // -> 0
 
             }
 
             if (st.getMissing().size() > 0) {
                 nothingToDo = false;
-                out += " -> " + st.getMissing().size() + " fichier(s) supprimé(s) \n";
+                out += " -> " + st.getMissing().size() + " fichier(s) supprimé(s) \n"; // -> 1
+                for (String f : st.getMissing()){
+                    git.rm().addFilepattern(f).call();
+                }
             }
 
             if (st.getConflicting().size() > 0) {

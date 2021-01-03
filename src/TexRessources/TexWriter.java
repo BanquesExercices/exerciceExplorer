@@ -69,7 +69,7 @@ public class TexWriter {
     public static String latexLog = "";
 
     public static boolean latexToPdf() {
-        
+
         String out = OsRelated.pdfLatex("./output");
         if (!out.contains("Output written")) {
             System.err.println("pdflatex could not latexize the texfile");
@@ -262,7 +262,9 @@ public class TexWriter {
             b = new BufferedWriter(new FileWriter(f));
             for (String line : in) {
                 b.write(line);
-                b.newLine();
+                if (!OsRelated.isWindows()) {
+                    b.newLine();
+                }
             }
             b.close();
 

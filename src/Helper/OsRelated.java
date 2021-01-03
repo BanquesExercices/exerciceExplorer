@@ -5,6 +5,7 @@
  */
 package Helper;
 
+
 import com.profesorfalken.jpowershell.PowerShell;
 import com.profesorfalken.jpowershell.PowerShellResponse;
 import java.io.File;
@@ -14,9 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -81,7 +79,7 @@ public class OsRelated {
     }
 
     public static boolean checkPdfLatex() {
-        String[] command = {OsRelated.pathAccordingToOS(SavedVariables.getPdflatexCmd()),"-halt-on-error", "-no-shell-escape"," -version"};
+       String[] command = {OsRelated.pathAccordingToOS(SavedVariables.getPdflatexCmd()),"-halt-on-error", "-no-shell-escape"," -version"};
         String out = OsRelated.execo(command)[1];
         return out.contains("pdfTeX");
     }
@@ -113,18 +111,27 @@ public class OsRelated {
             cmd += s + " ";
         }
 
+        // TODO
+        // cette version ne marche pas ; contrairement à l'ancienne : 
+        // probleme concernant l'ouverture du powerShell ?
+        // peut être un probleme de librairie ????
+        
         if (powerShell == null || location != OsRelated.lastLocation) {
             OsRelated.lastLocation = location;
             if (powerShell != null) {
                 powerShell.close();
             }
+            
             powerShell = PowerShell.openSession(location);
+            
+            
             Map<String, String> myConfig = new HashMap<>();
             myConfig.put("maxWait", "14000");
             powerShell.configuration(myConfig);
         }
 
         PowerShellResponse response = powerShell.executeCommand(cmd);
+        
         if (response.isTimeout()) {
             return new String[]{String.valueOf(1), "too long command :  " + cmd};
         } else {

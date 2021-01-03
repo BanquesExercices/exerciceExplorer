@@ -35,7 +35,7 @@ public class Options extends JPanel {
     public Options() {
 
         initComponents();
-
+        
         // better dealing with jTextField : input is saved whenever the text changes : we do not wait for return key anymore
         Utils.addChangeListener(pdflatexInput, (ChangeEvent e) -> {
             SavedVariables.setPdflatexCmd(pdflatexInput.getText());
@@ -217,13 +217,8 @@ public class Options extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSeparator2 = new javax.swing.JSeparator();
-        actionsPanels = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jSpinner1 = new javax.swing.JSpinner();
-        jLabel3 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jPanel1 = new javax.swing.JPanel();
         gitPanel = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
@@ -232,6 +227,13 @@ public class Options extends JPanel {
         pullButton = new javax.swing.JButton();
         commitButton = new javax.swing.JButton();
         gitOutputText = new javax.swing.JTextArea();
+        jSeparator2 = new javax.swing.JSeparator();
+        actionsPanels = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBox2 = new javax.swing.JCheckBox();
+        jSpinner1 = new javax.swing.JSpinner();
+        jLabel3 = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
         editorPanel = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
@@ -247,7 +249,8 @@ public class Options extends JPanel {
         tokenComboBox = new javax.swing.JComboBox<>();
         colorSetTextField = new javax.swing.JTextField();
         titlesCheckBox = new javax.swing.JCheckBox();
-        pathsPanel = new javax.swing.JPanel();
+        jSeparator4 = new javax.swing.JSeparator();
+        newPathesPanel = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         pdflatexInput = new javax.swing.JTextField();
         templatesFolderInput = new javax.swing.JTextField();
@@ -257,78 +260,20 @@ public class Options extends JPanel {
         gitFolderInput = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jSeparator4 = new javax.swing.JSeparator();
 
-        setMaximumSize(new java.awt.Dimension(430, 32767));
+        setPreferredSize(null);
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
-        jLabel9.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
-        jLabel9.setText("Actions :");
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setPreferredSize(null);
 
-        jCheckBox1.setSelected(SavedVariables.getAutoSave());
-        jCheckBox1.setText("Sauvegarde auto");
-        jCheckBox1.setToolTipText("<html>\nLes fichiers sont <em>automatiquement</em> sauvegardés quand les onglets sont cachés.\n<br>\nCela peut être utile lorsque vous selectionnez un nouvel exercice (l'ancien disparait).\n</html>");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
-            }
-        });
-
-        jCheckBox2.setSelected(SavedVariables.getMultiEdit());
-        jCheckBox2.setText("Mode avancé");
-        jCheckBox2.setToolTipText("<html> Permet d'activer le mode <em>avancé</em> <br> \nqui permet de modifier simultanément plusieurs exercices <br>\n(find and replace) sur les mots clefs ou bien des expressions présentes <br>\ndans les fichiers sujet.tex et aussi de verifier si l'ensemble des exercices compile sans erreur.\n</html>");
-        jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox2ActionPerformed(evt);
-            }
-        });
-
-        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(13, 8, 26, 1));
-        jSpinner1.setValue(SavedVariables.getFontSize());
-        jSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinner1StateChanged(evt);
-            }
-        });
-
-        jLabel3.setText("Taille police IHM");
-
-        javax.swing.GroupLayout actionsPanelsLayout = new javax.swing.GroupLayout(actionsPanels);
-        actionsPanels.setLayout(actionsPanelsLayout);
-        actionsPanelsLayout.setHorizontalGroup(
-            actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(actionsPanelsLayout.createSequentialGroup()
-                .addComponent(jCheckBox1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBox2)
-                .addGap(0, 125, Short.MAX_VALUE))
-            .addGroup(actionsPanelsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9)
-                    .addGroup(actionsPanelsLayout.createSequentialGroup()
-                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        actionsPanelsLayout.setVerticalGroup(
-            actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(actionsPanelsLayout.createSequentialGroup()
-                .addComponent(jLabel9)
-                .addGap(4, 4, 4)
-                .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jCheckBox2))
-                .addGap(2, 2, 2)
-                .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)))
-        );
+        jPanel1.setPreferredSize(null);
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.PAGE_AXIS));
 
         jLabel7.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
         jLabel7.setText("Git :");
 
-        jPanel5.setLayout(new java.awt.GridLayout(1, 0));
+        jPanel5.setLayout(new java.awt.GridLayout(1, 0, 3, 0));
 
         statusButton.setText("Status");
         statusButton.setToolTipText("<html>\nVérifie les actions GIT à effectuer.\n<br>\nCette commande est équivalente à la saisie sur le terminal de :  \n<ol>\n    <li> git fetch \n    <li> git status\n</ol>\n</html>");
@@ -396,7 +341,7 @@ public class Options extends JPanel {
                         .addGroup(gitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
                             .addComponent(gitOutputText, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addContainerGap(454, Short.MAX_VALUE))
         );
         gitPanelLayout.setVerticalGroup(
             gitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -405,10 +350,84 @@ public class Options extends JPanel {
                 .addComponent(jLabel7)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 5, Short.MAX_VALUE)
                 .addComponent(gitOutputText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
         );
+
+        jPanel1.add(gitPanel);
+
+        jSeparator2.setMaximumSize(new java.awt.Dimension(32767, 10));
+        jPanel1.add(jSeparator2);
+
+        jLabel9.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
+        jLabel9.setText("Actions :");
+
+        jCheckBox1.setSelected(SavedVariables.getAutoSave());
+        jCheckBox1.setText("Sauvegarde auto");
+        jCheckBox1.setToolTipText("<html>\nLes fichiers sont <em>automatiquement</em> sauvegardés quand les onglets sont cachés.\n<br>\nCela peut être utile lorsque vous selectionnez un nouvel exercice (l'ancien disparait).\n</html>");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+
+        jCheckBox2.setSelected(SavedVariables.getMultiEdit());
+        jCheckBox2.setText("Mode avancé");
+        jCheckBox2.setToolTipText("<html> Permet d'activer le mode <em>avancé</em> <br> \nqui permet de modifier simultanément plusieurs exercices <br>\n(find and replace) sur les mots clefs ou bien des expressions présentes <br>\ndans les fichiers sujet.tex et aussi de verifier si l'ensemble des exercices compile sans erreur.\n</html>");
+        jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox2ActionPerformed(evt);
+            }
+        });
+
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(13, 8, 26, 1));
+        jSpinner1.setValue(SavedVariables.getFontSize());
+        jSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinner1StateChanged(evt);
+            }
+        });
+
+        jLabel3.setText("Taille police IHM");
+
+        javax.swing.GroupLayout actionsPanelsLayout = new javax.swing.GroupLayout(actionsPanels);
+        actionsPanels.setLayout(actionsPanelsLayout);
+        actionsPanelsLayout.setHorizontalGroup(
+            actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(actionsPanelsLayout.createSequentialGroup()
+                .addComponent(jCheckBox1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBox2)
+                .addGap(0, 533, Short.MAX_VALUE))
+            .addGroup(actionsPanelsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel9)
+                    .addGroup(actionsPanelsLayout.createSequentialGroup()
+                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        actionsPanelsLayout.setVerticalGroup(
+            actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(actionsPanelsLayout.createSequentialGroup()
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBox1)
+                    .addComponent(jCheckBox2))
+                .addGap(2, 2, 2)
+                .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)))
+        );
+
+        jPanel1.add(actionsPanels);
+
+        jSeparator3.setMaximumSize(new java.awt.Dimension(32767, 10));
+        jPanel1.add(jSeparator3);
 
         jLabel10.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
         jLabel10.setText("Editeur :");
@@ -458,7 +477,7 @@ public class Options extends JPanel {
                 .addGroup(spellPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(customDictTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(globalDictTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(142, 142, 142))
+                .addGap(5, 5, 5))
         );
         spellPanelLayout.setVerticalGroup(
             spellPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -531,7 +550,7 @@ public class Options extends JPanel {
                 .addComponent(tokenComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(colorSetTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(84, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(coloringPanelLayout.createSequentialGroup()
                 .addComponent(titlesCheckBox)
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -552,21 +571,24 @@ public class Options extends JPanel {
         editorPanelLayout.setHorizontalGroup(
             editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(editorPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel10)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(editorPanelLayout.createSequentialGroup()
                 .addGroup(editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(spellCheckBox)
                     .addGroup(editorPanelLayout.createSequentialGroup()
-                        .addComponent(autoCompletionCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(coloringCheckBox))
+                        .addContainerGap()
+                        .addComponent(jLabel10)
+                        .addGap(0, 0, 0))
                     .addGroup(editorPanelLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(spellPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(coloringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(spellCheckBox)
+                            .addGroup(editorPanelLayout.createSequentialGroup()
+                                .addComponent(autoCompletionCheckBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(coloringCheckBox))
+                            .addGroup(editorPanelLayout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(spellPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(coloringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, 0)))
+                .addContainerGap(444, Short.MAX_VALUE))
         );
         editorPanelLayout.setVerticalGroup(
             editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -576,14 +598,19 @@ public class Options extends JPanel {
                 .addComponent(spellCheckBox)
                 .addGap(0, 0, 0)
                 .addComponent(spellPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(4, 4, 4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addGroup(editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(autoCompletionCheckBox)
                     .addComponent(coloringCheckBox))
-                .addGap(4, 4, 4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addComponent(coloringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4))
         );
+
+        jPanel1.add(editorPanel);
+
+        jSeparator4.setMaximumSize(new java.awt.Dimension(32767, 10));
+        jPanel1.add(jSeparator4);
 
         jLabel8.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
         jLabel8.setText("Chemins d'accès :");
@@ -625,97 +652,58 @@ public class Options extends JPanel {
 
         jLabel5.setText("dossier modèles");
 
-        javax.swing.GroupLayout pathsPanelLayout = new javax.swing.GroupLayout(pathsPanel);
-        pathsPanel.setLayout(pathsPanelLayout);
-        pathsPanelLayout.setHorizontalGroup(
-            pathsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pathsPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout newPathesPanelLayout = new javax.swing.GroupLayout(newPathesPanel);
+        newPathesPanel.setLayout(newPathesPanelLayout);
+        newPathesPanelLayout.setHorizontalGroup(
+            newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(newPathesPanelLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addGroup(pathsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8)
-                    .addGroup(pathsPanelLayout.createSequentialGroup()
-                        .addGroup(pathsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(newPathesPanelLayout.createSequentialGroup()
+                        .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel6)
-                            .addGroup(pathsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel5)
                                 .addComponent(jLabel4)
                                 .addComponent(jLabel1)))
                         .addGap(8, 8, 8)
-                        .addGroup(pathsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(outputDirInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(templatesFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(gitFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(pdflatexInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                .addContainerGap(442, Short.MAX_VALUE))
         );
-        pathsPanelLayout.setVerticalGroup(
-            pathsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pathsPanelLayout.createSequentialGroup()
-                .addContainerGap()
+        newPathesPanelLayout.setVerticalGroup(
+            newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(newPathesPanelLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
                 .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(pathsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(pdflatexInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(6, 6, 6)
-                .addGroup(pathsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(gitFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(4, 4, 4)
-                .addGroup(pathsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(templatesFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(6, 6, 6)
-                .addGroup(pathsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(outputDirInput, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(4, 4, 4)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator2)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(pathsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(editorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
-            .addComponent(jSeparator3, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addComponent(jSeparator4)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(actionsPanels, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(gitPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(gitPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(152, 152, 152))
-                    .addComponent(pathsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, 0)
-                .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(actionsPanels, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(editorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21))
-        );
+        jPanel1.add(newPathesPanel);
+
+        jScrollPane1.setViewportView(jPanel1);
+
+        add(jScrollPane1);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
@@ -907,13 +895,15 @@ public class Options extends JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JPanel newPathesPanel;
     private javax.swing.JTextField outputDirInput;
-    private javax.swing.JPanel pathsPanel;
     private javax.swing.JTextField pdflatexInput;
     private javax.swing.JButton pullButton;
     private javax.swing.JButton pushButton;

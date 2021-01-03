@@ -77,9 +77,9 @@ public final class MainWindow extends javax.swing.JFrame {
 
         initComponents();
 
-        //if (options2.isCompletionRequired()) {
-        //    this.jTabbedPane1.setSelectedComponent(jScrollPane1);
-        //}
+        if (options2.isCompletionRequired()) {
+            this.jTabbedPane1.setSelectedComponent(options2);
+        }
 
         // menubar
         menuBar = new JMenuBar();
