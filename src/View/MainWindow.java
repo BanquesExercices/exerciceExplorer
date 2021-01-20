@@ -74,7 +74,7 @@ public final class MainWindow extends javax.swing.JFrame {
         System.setProperty("file.encoding", "UTF-8");
         SavedVariables.instanciate(this.getClass());
         // change the default font size (usefull on 4K displays)
-                setUIFont(new javax.swing.plaf.FontUIResource("Sans Serif",Font.PLAIN,SavedVariables.getFontSize()));
+        setUIFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, SavedVariables.getFontSize()));
 
         initComponents();
 
@@ -459,16 +459,13 @@ public final class MainWindow extends javax.swing.JFrame {
                     System.setProperty("apple.laf.useScreenMenuBar", "true");
                     System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Exercice Explorer");
                 }
-                
-                
+
                 FlatLightLaf.install(); // nice flat look and feel
 
                 javax.swing.ToolTipManager.sharedInstance().setDismissDelay(12000);
                 javax.swing.ToolTipManager.sharedInstance().setInitialDelay(400);
 
                 MainWindow.getInstance().setVisible(true);
-
-               
 
             }
         });

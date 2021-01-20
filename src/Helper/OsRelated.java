@@ -225,7 +225,9 @@ public class OsRelated {
         for (String s : command) {
             lastItem += " " + s;
         }
-        lastItem = lastItem.strip();
+        
+        lastItem = lastItem.trim();
+        //lastItem = lastItem.strip();
         if (!powershell) {
             lastItem += "& pause";
         }
@@ -283,7 +285,9 @@ public class OsRelated {
         for (String s : command) {
             lastItem += " " + s;
         }
-        lastItem = lastItem.strip();
+        
+        lastItem = lastItem.trim();
+        //lastItem = lastItem.strip();
 
         Command.add(lastItem);
 
