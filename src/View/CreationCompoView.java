@@ -465,7 +465,7 @@ public class CreationCompoView extends javax.swing.JPanel {
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         List<String> cc;
-        cc = TexWriter.outputTexFile(selectedExericesModel.elements(), (String) outputTypes.getSelectedItem(), false, false);
+        cc = TexWriter.createTexFile(selectedExericesModel.elements(), (String) outputTypes.getSelectedItem(), false, false);
         MainWindow.getInstance().setSubjectDisplay(cc);
     }//GEN-LAST:event_editButtonActionPerformed
 
@@ -498,57 +498,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         ew.setVisible(true);
     }
 
-    private void oldExportButton() {
-        String kind = "" + outputTypes.getSelectedItem();
-        String outDir = SavedVariables.getOutputDir() + "/" + kind;
-
-        // look for new directory to create
-        File directory = new File(outDir);
-        File[] fList = directory.listFiles(
-                new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return !file.isHidden();
-            }
-        }
-        );
-
-        int maxValue = 0;
-        for (File file : fList) {
-            maxValue = Math.max(maxValue, Integer.parseInt(file.getName().replace(kind, "")));
-        }
-        int compoNumber = maxValue + 1; // on crée le prochain sujet
-        File compoDir = new File(outDir + "/" + kind + compoNumber);
-        compoDir.mkdir();
-
-        // output subject.tex
-        List<String> cc = TexWriter.outputTexFile(selectedExericesModel.elements(), kind, true, false);
-        TexWriter.writeToFile(cc, compoDir + "/" + kind + compoNumber + ".tex");
-        Enumeration<Exercice> exercices = selectedExericesModel.elements();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        while (exercices.hasMoreElements()) {
-            Exercice exo = exercices.nextElement();
-
-            // update of lasttime file
-            List<String> lines = TexWriter.readFile(exo.getlastTimePath());
-            List<String> outLines = new ArrayList<>();
-
-            outLines.add(formatter.format(new Date()) + " : " + kind + "  " + compoNumber);
-            if (lines.isEmpty()) {
-                // in this case, the file is empty or do not exist yet
-                TexWriter.writeToFile(outLines, exo.getlastTimePath());
-            } else {
-                TexWriter.appendToFile(outLines, exo.getlastTimePath());
-            }
-
-            // hard copy
-            OsRelated.copy(exo.getPath(), compoDir.getPath());
-        }
-        // copy of file raccourcis_communs.sty : 
-        OsRelated.copy(SavedVariables.getMainGitDir() + "/fichiers_utiles/raccourcis_communs.sty", compoDir.getPath());
-
-    }
-
+    
     private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
         exportSetOFExercices();
     }//GEN-LAST:event_exportButtonActionPerformed

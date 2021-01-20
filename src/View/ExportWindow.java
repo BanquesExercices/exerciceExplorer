@@ -304,23 +304,23 @@ public class ExportWindow extends javax.swing.JFrame {
         compoDir.mkdir();
 
         // output subject.tex
-        List<String> cc = TexWriter.outputTexFile(ccv.selectedExericesModel.elements(), kind, true, false);
-        TexWriter.writeToFile(cc, compoDir + "/" + nameField.getText() + ".tex");
+        List<String> cc = TexWriter.createTexFile(ccv.selectedExericesModel.elements(), kind, true, false);
+        OsRelated.writeToFile(cc, compoDir + "/" + nameField.getText() + ".tex");
         Enumeration<Exercice> exercices = ccv.selectedExericesModel.elements();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         while (exercices.hasMoreElements()) {
             Exercice exo = exercices.nextElement();
 
             // update of lasttime file
-            List<String> lines = TexWriter.readFile(exo.getlastTimePath());
+            List<String> lines = OsRelated.readFile(exo.getlastTimePath());
             List<String> outLines = new ArrayList<>();
 
             outLines.add(formatter.format(new Date()) + " : " + nameField.getText());
             if (lines.isEmpty()) {
                 // in this case, the file is empty or do not exist yet
-                TexWriter.writeToFile(outLines, exo.getlastTimePath());
+                OsRelated.writeToFile(outLines, exo.getlastTimePath());
             } else {
-                TexWriter.appendToFile(outLines, exo.getlastTimePath());
+                OsRelated.appendToFile(outLines, exo.getlastTimePath());
             }
 
             // hard copy

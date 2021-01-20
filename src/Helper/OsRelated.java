@@ -5,16 +5,24 @@
  */
 package Helper;
 
-
-import com.profesorfalken.jpowershell.PowerShell;
-import com.profesorfalken.jpowershell.PowerShellResponse;
+import TexRessources.TexWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,8 +32,16 @@ import java.util.Map;
 public class OsRelated {
 
     private static String OS = null;
-    private static PowerShell powerShell = null;
-    private static String lastLocation = "===";
+
+    public static long lastTimeOfModification(String path) {
+        File output = new File(pathAccordingToOS(path));
+        if (output.exists()) {
+            return output.lastModified();
+        } else {
+            return -1;
+        }
+
+    }
 
     // OS tasks
     public static String pathAccordingToOS(String path) {
@@ -36,6 +52,80 @@ public class OsRelated {
         }
     }
 
+    public static boolean appendToFile(List<String> in, String path) {
+
+        File f = new File(pathAccordingToOS(path));
+        BufferedWriter b;
+        try {
+            b = new BufferedWriter(new FileWriter(f, true));
+            for (String line : in) {
+                b.write(line);
+                b.newLine();
+            }
+            b.close();
+
+        } catch (IOException ex) {
+            System.out.println(path + " file cannot be outputed");
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean writeToFile(List<String> in, String path) {
+
+        File f = new File(pathAccordingToOS(path));
+        BufferedWriter b;
+        try {
+            b = new BufferedWriter(new FileWriter(f));
+            for (String line : in) {
+                b.write(line);
+                //if (!OsRelated.isWindows()) {
+                b.newLine();
+                //}
+            }
+            b.close();
+
+        } catch (IOException ex) {
+            System.out.println(path + " file cannot be outputed");
+            return false;
+        }
+        return true;
+    }
+
+    public static List<String> readFile(String path) {
+        ArrayList<String> out = new ArrayList<>();
+        File f = new File(path);
+        BufferedReader b;
+        try {
+             b = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
+        } catch (FileNotFoundException ex) {
+            return out;
+        } catch (UnsupportedEncodingException ex) {
+            return out;
+        }
+
+        String readLine = "";
+        try {
+            while ((readLine = b.readLine()) != null) {
+                out.add(readLine);
+            }
+        } catch (IOException ex) {
+            return out;
+        }
+        return out;
+
+    }
+
+    public static String readFileOneString(String path) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            Logger.getLogger(TexWriter.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
+        }
+
+    }
+
     public static void copy(String from, String to) {
         OsRelated.execo(new String[]{"cp", "-r", pathAccordingToOS(from), pathAccordingToOS(to)});
     }
@@ -44,7 +134,6 @@ public class OsRelated {
 
         if (OsRelated.isWindows()) {
             String path = PathToFile.substring(0, PathToFile.lastIndexOf("\\"));
-            System.out.println(path);
             open(path);
         } else {
             String path = PathToFile.substring(0, PathToFile.lastIndexOf("/"));
@@ -55,8 +144,9 @@ public class OsRelated {
 
     public static void open(String pathToFile) {
         if (OsRelated.isWindows()) {
-            
-            OsRelated.execo(new String[]{"ii",pathAccordingToOS(pathToFile)});
+
+            //OsRelated.execo(new String[]{"ii",pathAccordingToOS(pathToFile)});
+            OsRelated.execoWindows(new String[]{"ii", pathAccordingToOS(pathToFile)}, 0.5, ".", true);
         } else {
             String cmd = "";
             if (System.getProperty("os.name").startsWith("Mac OS X")) {
@@ -69,17 +159,26 @@ public class OsRelated {
     }
 
     public static String pdfLatex(String outputDir) {
-        String[] command =new String[]{pathAccordingToOS(SavedVariables.getPdflatexCmd()), "-halt-on-error", "-no-shell-escape","-interaction=nonstopmode", "-output-directory='"+ pathAccordingToOS(outputDir)+"'", pathAccordingToOS("./output/output.tex")}; 
-        String[] out = OsRelated.execo(command,5); // une udrée d'attente de 5 secondes max semble un bon compromis.
-        for (String s : command){
-            System.out.print(s+" ");
+        //String[] command = new String[]{"pdflatex",  "-no-shell-escape", "-interaction=nonstopmode", "-output-directory='" + pathAccordingToOS(outputDir) + "'", pathAccordingToOS("./output/output.tex")};
+        String[] out;
+        if (OsRelated.isWindows()) {
+            String[] command = new String[]{"pdflatex", "-no-shell-escape","-halt-on-error", "-interaction=nonstopmode", "-output-directory=" + pathAccordingToOS(outputDir), pathAccordingToOS("./output/output.tex")};
+
+            out = OsRelated.execoWindows(command, 400, ".", false); // force exec from cmd and not powershell : unlimited wait time as user may end the cmd window himself
+            System.out.println("out : " + out[0]);
+        } else {
+            String[] command = new String[]{pathAccordingToOS(SavedVariables.getPdflatexCmd()), "-no-shell-escape", "-halt-on-error","-interaction=nonstopmode", "-output-directory='" + pathAccordingToOS(outputDir) + "'", pathAccordingToOS("./output/output.tex")};
+
+            out = OsRelated.execoUnix(command, 30, "."); // une durée d'attente de 20 secondes max semble un bon compromis.
+
         }
-        System.out.println("");
         return out[1];
     }
 
     public static boolean checkPdfLatex() {
-       String[] command = {OsRelated.pathAccordingToOS(SavedVariables.getPdflatexCmd()),"-halt-on-error", "-no-shell-escape"," -version"};
+        String[] command = {OsRelated.pathAccordingToOS(SavedVariables.getPdflatexCmd()), "-halt-on-error", "-no-shell-escape", " -version"};
+        //String[] command = {"pdflatex", "-halt-on-error", "-no-shell-escape", " -version"};
+
         String out = OsRelated.execo(command)[1];
         return out.contains("pdfTeX");
     }
@@ -105,39 +204,72 @@ public class OsRelated {
         return execo(command, delay, ".");
     }
 
-    protected static String[] execoWindows(String[] command, double delay, String location) {
-        String cmd = "";
-        for (String s : command) {
-            cmd += s + " ";
-        }
+    protected static String[] execoWindows(String[] command, double delay, String location, boolean powershell) {
 
-        // TODO
-        // cette version ne marche pas ; contrairement à l'ancienne : 
-        // probleme concernant l'ouverture du powerShell ?
-        // peut être un probleme de librairie ????
-        
-        if (powerShell == null || location != OsRelated.lastLocation) {
-            OsRelated.lastLocation = location;
-            if (powerShell != null) {
-                powerShell.close();
-            }
-            
-            powerShell = PowerShell.openSession(location);
-            
-            
-            Map<String, String> myConfig = new HashMap<>();
-            myConfig.put("maxWait", "14000");
-            powerShell.configuration(myConfig);
-        }
+        int out = 1;
 
-        PowerShellResponse response = powerShell.executeCommand(cmd);
-        
-        if (response.isTimeout()) {
-            return new String[]{String.valueOf(1), "too long command :  " + cmd};
+        ProcessBuilder pb = new ProcessBuilder();
+        List<String> Command = new ArrayList<>();
+        if (powershell) {
+            Command.add("powershell");
+            Command.add("-Command");
         } else {
-            return new String[]{String.valueOf(0), response.getCommandOutput()};
+            Command.add("cmd.exe");
+            Command.add("/c");
+            Command.add("start");
+            Command.add("/w");
+            Command.add("cmd");
+            Command.add("/c");
+        }
+        String lastItem = "";
+        for (String s : command) {
+            lastItem += " " + s;
+        }
+        lastItem = lastItem.strip();
+        if (!powershell) {
+            lastItem += "& pause";
         }
 
+        Command.add(lastItem);
+
+        pb.command(Command);
+        pb.directory(new File(location));
+        //pb.inheritIO();
+        StringBuilder output = new StringBuilder(120);
+        try {
+
+            pb.redirectError();
+            InputStream is = null;
+
+            Process p = pb.start();
+            long startTime = System.currentTimeMillis();
+            // get process output (input from java point of view)
+            is = p.getInputStream();
+
+            int in;
+            try {
+                while (System.currentTimeMillis() - startTime < delay * 1000 && p.isAlive()) {
+                    Thread.sleep(10);
+                }
+            } catch (InterruptedException ex) {
+                System.out.println(ex.getStackTrace());
+            }
+            try {
+                out = p.exitValue();
+            } catch (IllegalThreadStateException ex) {
+                out = -2; // -2 means unfinished task
+                return new String[]{String.valueOf(out), ""};
+            }
+            System.out.println("durée : " + (System.currentTimeMillis() - startTime));
+
+            while ((in = is.read()) != -1) {
+                output.append((char) in);
+            }
+
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return new String[]{String.valueOf(out), output.toString()};
     }
 
     protected static String[] execoUnix(String[] command, double delay, String location) {
@@ -148,13 +280,13 @@ public class OsRelated {
         Command.add("sh");
         Command.add("-c");
         String lastItem = "";
-        for (String s : command){
-            lastItem+=" "+s;
+        for (String s : command) {
+            lastItem += " " + s;
         }
         lastItem = lastItem.strip();
-                
+
         Command.add(lastItem);
-        
+
         pb.command(Command);
         pb.directory(new File(location));
         //pb.inheritIO();
@@ -166,12 +298,12 @@ public class OsRelated {
         try {
             Process p = pb.start();
 
-           long startTime = System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
             // get process output (input from java point of view)
             is = p.getInputStream();
 
             int in;
-            while (System.currentTimeMillis() - startTime < delay*1000 && (in = is.read()) != -1) {
+            while (System.currentTimeMillis() - startTime < delay * 1000 && (in = is.read()) != -1) {
                 output.append((char) in);
             }
 
@@ -193,7 +325,7 @@ public class OsRelated {
          */
 
         if (OsRelated.isWindows()) {
-            return execoWindows(command, delay, location);
+            return execoWindows(command, delay, location, true);
         } else {
             return execoUnix(command, delay, location);
         }

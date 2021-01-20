@@ -30,7 +30,7 @@ public  class ExercicesChecker {
         // get englobing tex file -> tests are based on the DS profile provided by the user, so maybe not the default one.
 
         // maybe we should link to the default files which can be found easily (from the main git directory, in fichiers_utiles)
-        List<String> lines = TexWriter.outputTexFile(enumer, type, false,true);
+        List<String> lines = TexWriter.createTexFile(enumer, type, false,true);
 
         // write englobing tex file
         TexWriter.writeTexFile(lines);

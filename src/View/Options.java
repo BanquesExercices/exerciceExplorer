@@ -132,23 +132,28 @@ public class Options extends JPanel {
 
     public void guessEntries() {
 
-        if ("zzz".equals(this.pdflatexInput.getText())) {
-            this.pdflatexInput.setText(OsRelated.guessPdfLAtexPath());
+        if ("".equals(this.pdflatexInput.getText())) {
+            this.pdflatexInput.setText(OsRelated.guessPdfLAtexPath().trim());
         }
 
-        if ("zzz".equals(this.gitFolderInput.getText())) {
+        if ("".equals(this.gitFolderInput.getText())) {
             String localpath = Options.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 
             try {
                 String decodedPath = OsRelated.pathAccordingToOS(URLDecoder.decode(localpath, "UTF-8").trim().split("bpep")[0] + "bpep");
+                if (OsRelated.isWindows()){
+                    decodedPath=decodedPath.replaceFirst("\\\\", "");
+                    // this prevent windows to include a "\" before C:
+                }
                 this.gitFolderInput.setText(decodedPath);
+                
             } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(Options.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
 
-        if ("zzz".equals(this.templatesFolderInput.getText())) {
+        if ("".equals(this.templatesFolderInput.getText())) {
 
             String localpath = Options.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 
@@ -162,7 +167,7 @@ public class Options extends JPanel {
         }
 
         //
-        if ("zzz".equals(this.globalDictTextField.getText())) {
+        if ("".equals(this.globalDictTextField.getText())) {
 
             String localpath = Options.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 

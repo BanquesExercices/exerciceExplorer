@@ -5,11 +5,13 @@
  */
 package exerciceexplorer;
 
-import TexRessources.TexWriter;
+import Helper.OsRelated;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +78,7 @@ public class Exercice implements Comparable<Exercice> {
             }
         }
         if (doReplace){
-            TexWriter.writeToFile(content, this.getSubjectPath());
+            OsRelated.writeToFile(content, this.getSubjectPath());
         }
         return out;
     }
@@ -228,7 +230,7 @@ public class Exercice implements Comparable<Exercice> {
                 }
             }
 
-            TexWriter.writeToFile(content, this.getSubjectPath());
+            OsRelated.writeToFile(content, this.getSubjectPath());
         }
         return out;
     }
@@ -242,7 +244,7 @@ public class Exercice implements Comparable<Exercice> {
             }
         }
         if (doReplace){
-            TexWriter.writeToFile(keywords, this.getKeywordsPath());
+            OsRelated.writeToFile(keywords, this.getKeywordsPath());
         }
         return out;
     }
@@ -271,12 +273,14 @@ public class Exercice implements Comparable<Exercice> {
 
     }
 
+    // next methods should use the unified readfile method from OsRelated.
     protected void updateKeywords() {
 
         try {
             this.keywords.clear();
             File f = new File(this.getKeywordsPath());
-            BufferedReader b = new BufferedReader(new FileReader(f));
+            //BufferedReader b = new BufferedReader(new FileReader(f));
+            BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
             String readLine = "";
             while ((readLine = b.readLine()) != null) {
                 this.keywords.add(readLine.trim());
@@ -291,7 +295,8 @@ public class Exercice implements Comparable<Exercice> {
         try {
             this.readme.clear();
             File f = new File(this.getReadmePath());
-            BufferedReader b = new BufferedReader(new FileReader(f));
+            //BufferedReader b = new BufferedReader(new FileReader(f));
+            BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
             String readLine = "";
             while ((readLine = b.readLine()) != null) {
                 this.readme.add(readLine.trim());
@@ -306,7 +311,8 @@ public class Exercice implements Comparable<Exercice> {
         try {
             this.content.clear();
             File f = new File(this.path + "/sujet.tex");
-            BufferedReader b = new BufferedReader(new FileReader(f));
+            //BufferedReader b = new BufferedReader(new FileReader(f));
+            BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
             String readLine = "";
             while ((readLine = b.readLine()) != null) {
                 this.content.add(readLine.trim());
@@ -373,11 +379,11 @@ public class Exercice implements Comparable<Exercice> {
     }
 
     public int getCountGiven() {
-        return TexWriter.readFile(this.getlastTimePath()).size();
+        return OsRelated.readFile(this.getlastTimePath()).size();
     }
 
     public String getLastEntry() {
-        List<String> out = TexWriter.readFile(this.getlastTimePath());
+        List<String> out = OsRelated.readFile(this.getlastTimePath());
         if (out.size() > 0) {
             return out.get(out.size() - 1);
         } else {

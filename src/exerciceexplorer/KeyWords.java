@@ -5,15 +5,17 @@
  */
 package exerciceexplorer;
 
+import Helper.OsRelated;
 import Helper.SavedVariables;
-import TexRessources.TexWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ public class KeyWords {
                 out=true;
             }
         }
-        TexWriter.writeToFile(instance.keywords,SavedVariables.getMainGitDir() + "/fichiers_utiles/mots_clefs.txt" );
+        OsRelated.writeToFile(instance.keywords,SavedVariables.getMainGitDir() + "/fichiers_utiles/mots_clefs.txt" );
         for (JComboBox jcb : jcbs) {
                 jcb.setModel(getDefaultComboBoxModelModel(jcb));
             }
@@ -153,7 +155,9 @@ public class KeyWords {
     public void updateKeyWords() throws FileNotFoundException, IOException {
         this.keywords.clear();
         File f = new File(SavedVariables.getMainGitDir() + "/fichiers_utiles/mots_clefs.txt");
-        BufferedReader b = new BufferedReader(new FileReader(f));
+        //BufferedReader b = new BufferedReader(new FileReader(f));
+        BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
+        
         String readLine = "";
         while ((readLine = b.readLine()) != null) {
             if (this.keywords.contains(readLine.trim())) {
@@ -161,6 +165,7 @@ public class KeyWords {
             }
             this.keywords.add(readLine.trim());
         }
+        b.close();
     }
 
 }

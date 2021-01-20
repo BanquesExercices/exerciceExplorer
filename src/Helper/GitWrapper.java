@@ -283,9 +283,11 @@ public class GitWrapper {
         try {
             String commitMessage = JOptionPane.showInputDialog("commentaire du commit");
             for (File f : files) {
-                git.add().addFilepattern(f.getPath()).call();
+                
+                git.add().addFilepattern(f.getPath().replace("\\", "/")).call(); // même sous windows ; il faut des "/" pour les chemins d'acces.
                 System.out.println(f.getAbsolutePath());
             }
+            //git.add().addFilepattern(".").call();
             RevCommit cst = git.commit().setMessage(commitMessage).call();
             return cst.getShortMessage();
         } catch (GitAPIException ex) {

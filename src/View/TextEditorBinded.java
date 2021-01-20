@@ -7,7 +7,6 @@ package View;
 
 import Helper.OsRelated;
 import Helper.Utils;
-import TexRessources.TexWriter;
 import TextEditor.Base.BaseTextEditor;
 import TextEditor.Tex.LatexTextEditor;
 import TextEditor.Tex.Coloring.LatexTokenMaker;
@@ -198,7 +197,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
 
     public void updateView() {
 
-        String Content = TexWriter.readFileOneString(f.getAbsolutePath());
+        String Content = OsRelated.readFileOneString(f.getAbsolutePath());
         this.lastUpdate = System.currentTimeMillis();
         this.textArea.setText(Content);
         this.textArea.discardAllEdits();
@@ -369,7 +368,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
                 Collections.sort(out, frCollator);
             }
             resetHasChanged();
-            TexWriter.writeToFile(out, f.getAbsolutePath());
+            OsRelated.writeToFile(out, f.getAbsolutePath());
             notifyAllObserver("save");
             
             return true;
@@ -621,7 +620,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(texPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
                 .addComponent(reloadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -636,7 +635,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 11, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
                 .addGap(2, 2, 2)
                 .addComponent(replacePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)

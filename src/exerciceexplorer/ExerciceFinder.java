@@ -5,6 +5,7 @@
  */
 package exerciceexplorer;
 
+import Helper.OsRelated;
 import Helper.SavedVariables;
 import Helper.Utils;
 import TexRessources.TexWriter;
@@ -63,7 +64,7 @@ public final class ExerciceFinder {
         // .txt files
         List<String> lines = new ArrayList<>();
         //lines.add("");
-        TexWriter.writeToFile(lines, folder.getAbsolutePath() + "/mots_clefs.txt");
+        OsRelated.writeToFile(lines, folder.getAbsolutePath() + "/mots_clefs.txt");
 
         lines.clear();
         lines.add("auteur(s) : ");
@@ -72,7 +73,7 @@ public final class ExerciceFinder {
         lines.add("");
         lines.add("thème de l'exercice : ");
         lines.add("");
-        TexWriter.writeToFile(lines, folder.getAbsolutePath() + "/README.txt");
+        OsRelated.writeToFile(lines, folder.getAbsolutePath() + "/README.txt");
 
         lines.clear();
         lines.add("%");
@@ -89,7 +90,7 @@ public final class ExerciceFinder {
         lines.add("%finImport");
         lines.add("%##############################");
         lines.add("");
-        TexWriter.writeToFile(lines, folder.getAbsolutePath() + "/sujet.tex");
+        OsRelated.writeToFile(lines, folder.getAbsolutePath() + "/sujet.tex");
 
         return true;
     }

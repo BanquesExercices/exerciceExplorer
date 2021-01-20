@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
@@ -78,7 +79,8 @@ public class BaseTextEditor extends RSyntaxTextArea {
         String customFile = SavedVariables.getCustomDict();
 
         try {
-            Reader reader = new FileReader(file);
+            Reader reader = new FileReader(file, StandardCharsets.UTF_8);
+            
             SpellDictionaryHashMap dict = new SpellDictionaryHashMap(reader);
             parser = new SpellingParser(dict);
             //parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());

@@ -6,7 +6,6 @@
 package View;
 
 import Helper.OsRelated;
-import Helper.SavedVariables;
 import Helper.Utils;
 import TexRessources.TexWriter;
 import java.awt.Toolkit;
@@ -30,7 +29,7 @@ import javax.swing.text.StyledDocument;
  *
  * @author mbrebion
  */
-public class CompoEditor extends javax.swing.JPanel implements MenuBarItemProvider{
+public class CompoEditor extends javax.swing.JPanel implements MenuBarItemProvider {
 
     protected StyledDocument doc;
     protected JMenuBar menuBar;
@@ -108,7 +107,7 @@ public class CompoEditor extends javax.swing.JPanel implements MenuBarItemProvid
     }
 
     protected List<String> getLines() {
-        String[] split = jTextPane1.getText().split("\n");
+        String[] split = jTextPane1.getText().split("\r?\n");
         List<String> lines = new ArrayList<>();
         for (String s : split) {
             lines.add(s);
@@ -197,16 +196,30 @@ public class CompoEditor extends javax.swing.JPanel implements MenuBarItemProvid
     }// </editor-fold>//GEN-END:initComponents
 
     private void compileAction(boolean open) {
-        List<String> lines = this.getLines();
-        TexWriter.writeTexFile(lines);
-        if (TexWriter.latexToPdf()) {
-            if (open) {
-                TexWriter.openPdf();
+        this.compileButton.setEnabled(false);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> lines = CompoEditor.this.getLines();
+                TexWriter.writeTexFile(lines);
+                if (TexWriter.latexToPdf()) {
+                    if (open) {
+                        TexWriter.openPdf();
+                    }
+                } else {
+                    if (!OsRelated.isWindows()) {
+                        JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(CompoEditor.this);
+                        Utils.showLongTextMessageInDialog(TexWriter.latexLog, topFrame);
+                    }
+                }
+                SwingUtilities.invokeLater(() -> {
+                    CompoEditor.this.compileButton.setEnabled(true);
+                });
+
             }
-        } else {
-            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-            Utils.showLongTextMessageInDialog(TexWriter.latexLog, topFrame);
-        }
+        }).start();
+
     }
 
     private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileButtonActionPerformed

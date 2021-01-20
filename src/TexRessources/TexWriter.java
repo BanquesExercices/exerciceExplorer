@@ -9,19 +9,13 @@ import Helper.OsRelated;
 import Helper.SavedVariables;
 import exerciceexplorer.Exercice;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -70,13 +64,19 @@ public class TexWriter {
 
     public static boolean latexToPdf() {
 
+        long lastTime = OsRelated.lastTimeOfModification("output/output.pdf");
+        System.out.println("lasttime : " + lastTime);
         String out = OsRelated.pdfLatex("./output");
-        if (!out.contains("Output written")) {
+        long newTime = OsRelated.lastTimeOfModification("output/output.pdf");
+        System.out.println("newtime : " + newTime);
+        if ((lastTime <0 && newTime>0) || (newTime>lastTime)) {
             System.err.println("pdflatex could not latexize the texfile");
-            latexLog = out;
-            return false;
+            return true;
         }
-        return true;
+        latexLog = out;
+        System.err.println("pdflatex could not latexize the texfile");            
+        
+        return false;
 
     }
 
@@ -88,7 +88,7 @@ public class TexWriter {
             dir.mkdir();
 
         }
-        return writeToFile(in, OsRelated.pathAccordingToOS("output/output.tex"));
+        return OsRelated.writeToFile(in, OsRelated.pathAccordingToOS("output/output.tex"));
     }
 
     /**
@@ -103,7 +103,7 @@ public class TexWriter {
      * test all exercices)
      * @return
      */
-    public static List<String> outputTexFile(Enumeration<Exercice> exercices, String kind, boolean localLinks, boolean forceDefault) {
+    public static List<String> createTexFile(Enumeration<Exercice> exercices, String kind, boolean localLinks, boolean forceDefault) {
 
         List<String> output = new ArrayList<>(); // main file
         List<String> imports = new ArrayList<>(); // packages required by a specific exercice
@@ -148,14 +148,16 @@ public class TexWriter {
         // template is parsed line by line
         try {
             while ((readLine = b.readLine()) != null) {
-
+                
+                // gestion automatique des packages spécifiques à un exercice à inclure
                 if (readLine.trim().contains("usepackage{raccourcis_communs}") || readLine.trim().contains("RequirePackage{raccourcis_communs}")) {
                     output.add("\\usepackage{" + (SavedVariables.getMainGitDir().replace("\\", "/") + "/fichiers_utiles/raccourcis_communs}").replace("//", "/")); // need uniw path like for latex
                     continue;
                 }
 
+                // gestion du bloc à recopier pour chaque exo (utile pour une fiche de colle par exemple
                 if (readLine.trim().equals("[[")) {
-                    // we need to store what's before ****, what's after **** and then send to getExercicetoTex
+                    
                     String nextLine;
 
                     List<String> before = new ArrayList<>();
@@ -203,76 +205,11 @@ public class TexWriter {
         return output;
     }
 
-    public static List<String> readFile(String path) {
-        ArrayList<String> out = new ArrayList<>();
-        File f = new File(path);
-        BufferedReader b;
-        try {
-            b = new BufferedReader(new FileReader(f));
-        } catch (FileNotFoundException ex) {
-            return out;
-        }
 
-        String readLine = "";
-        try {
-            while ((readLine = b.readLine()) != null) {
-                out.add(readLine);
-            }
-        } catch (IOException ex) {
-            return out;
-        }
-        return out;
+   
 
-    }
+   
 
-    public static String readFileOneString(String path) {
-        try {
-            return new String(Files.readAllBytes(Paths.get(path)));
-        } catch (IOException ex) {
-            Logger.getLogger(TexWriter.class.getName()).log(Level.SEVERE, null, ex);
-            return "";
-        }
-
-    }
-
-    public static boolean appendToFile(List<String> in, String path) {
-
-        File f = new File(path);
-        BufferedWriter b;
-        try {
-            b = new BufferedWriter(new FileWriter(f, true));
-            for (String line : in) {
-                b.write(line);
-                b.newLine();
-            }
-            b.close();
-
-        } catch (IOException ex) {
-            System.out.println(path + " file cannot be outputed");
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean writeToFile(List<String> in, String path) {
-
-        File f = new File(path);
-        BufferedWriter b;
-        try {
-            b = new BufferedWriter(new FileWriter(f));
-            for (String line : in) {
-                b.write(line);
-                if (!OsRelated.isWindows()) {
-                    b.newLine();
-                }
-            }
-            b.close();
-
-        } catch (IOException ex) {
-            System.out.println(path + " file cannot be outputed");
-            return false;
-        }
-        return true;
-    }
+    
 
 }

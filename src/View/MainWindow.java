@@ -71,9 +71,10 @@ public final class MainWindow extends javax.swing.JFrame {
             return;
         }
 
+        System.setProperty("file.encoding", "UTF-8");
         SavedVariables.instanciate(this.getClass());
         // change the default font size (usefull on 4K displays)
-                setUIFont(new javax.swing.plaf.FontUIResource("Serif",Font.PLAIN,SavedVariables.getFontSize()));
+                setUIFont(new javax.swing.plaf.FontUIResource("Sans Serif",Font.PLAIN,SavedVariables.getFontSize()));
 
         initComponents();
 

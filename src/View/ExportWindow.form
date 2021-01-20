@@ -136,7 +136,6 @@
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
             <TitledBorder title="Informations">
-              <Border PropertyName="innerBorder" info="null"/>
               <Font PropertyName="font" name="Times New Roman" size="13" style="2"/>
             </TitledBorder>
           </Border>
