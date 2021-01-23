@@ -82,9 +82,16 @@ public class LatexExerciceConverter {
             }
             count++;
         }
+        text=text.replace("\\alnl{", "\\eq[align*]{");
+        text=text.replace("\\eqnl{", "\\eq{");
         text=text.replace("\\fignl{", "\\fig{");
+        text=text.replace("\\figin{", "\\fig{");
         text=text.replace("\\left)", "\\pa{");
         text=text.replace("\\right)", "}");
+        text=text.replace("(\\levOne)", "\\niveauUn");
+        text=text.replace("(\\levTwo)", "\\niveauDeux");
+        text=text.replace("(\\levThree)", "\\niveauTrois");
+        text=text.replace("\\hint", "\\astuce");
         
 
     }

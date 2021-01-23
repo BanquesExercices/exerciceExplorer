@@ -132,7 +132,31 @@ public final class MainWindow extends javax.swing.JFrame {
             }
         });
         file.add(loadSetItem);
-
+        
+        file.addSeparator();
+        
+        // add all displayed exercices to composition
+        JMenuItem addAllItem = new JMenuItem("ajouter tous les exercices");
+        addAllItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainWindow.this.creationSujetView1.addAllExercices();
+            }
+        });
+        file.add(addAllItem);
+        
+        // remove all exercices from composition
+        JMenuItem removeAllItem = new JMenuItem("retirer tous les exercices");
+        removeAllItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainWindow.this.creationSujetView1.removeAllExercices();
+            }
+        });
+        file.add(removeAllItem);
+        
+        
+        file.addSeparator();
         // exit
         JMenuItem exitItem = new JMenuItem("Quitter");
 

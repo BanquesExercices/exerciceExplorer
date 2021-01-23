@@ -6,12 +6,6 @@
 package exerciceexplorer;
 
 import Helper.OsRelated;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +60,7 @@ public class Exercice implements Comparable<Exercice> {
         return imports;
     }
 
-    public boolean replaceWordAndUpdate(String before, String after,boolean doReplace) {
+    public boolean replaceWordAndUpdate(String before, String after, boolean doReplace) {
         // replace a word (or several words) in file sujet.tex and update
 
         boolean out = false;
@@ -77,7 +71,7 @@ public class Exercice implements Comparable<Exercice> {
                 out = true;
             }
         }
-        if (doReplace){
+        if (doReplace) {
             OsRelated.writeToFile(content, this.getSubjectPath());
         }
         return out;
@@ -104,7 +98,7 @@ public class Exercice implements Comparable<Exercice> {
 
         searchExpr:
         while (goOn) {
-            goOn=false;
+            goOn = false;
             searchLine:
             for (int i = 0; i < content.size(); i++) {
 
@@ -128,11 +122,11 @@ public class Exercice implements Comparable<Exercice> {
                         // we then get the next {
                         while (!(next.charAt(index) == '{' && ((index > 0 && next.charAt(index - 1) != '\\') || index == 0))) {
                             index++;
-                            if (index==next.length()){
+                            if (index == next.length()) {
                                 // we reached end of line and did not get the awaited char 
-                                    goOn=false;
-                                    succes=false;
-                                    break searchblock;
+                                goOn = false;
+                                succes = false;
+                                break searchblock;
                             }
                             endIndex++;
 
@@ -172,30 +166,29 @@ public class Exercice implements Comparable<Exercice> {
                     }
 
                     if (succes) {
-                        goOn=true;
-                        if (doChange==false){
+                        goOn = true;
+                        if (doChange == false) {
                             return true;
                         }
-                        
+
                         // get rid of previous expr
                         // prepare new expr
                         String replacement = after.replace(before, "BEFORE_BEFORE"); // ensure the new string dont contains the begin expr (else we get an infinite loop)
                         boolean et = false;
                         for (int k = 0; k < blocks; k++) {
-                            if (blockContents.get(k).contains("&")){
-                                et=true;
+                            if (blockContents.get(k).contains("&")) {
+                                et = true;
                             }
                             // check equations and add align if required
                             replacement = replacement.replace("#" + (k + 1), "" + blockContents.get(k) + "");
                         }
-                        
+
                         // special parsing for equations
-                        if (et && replacement.contains("eq{")){
+                        if (et && replacement.contains("eq{")) {
                             //replacement = replacement.replace("eq{", "eq[align]{");
                         }
-                        
+
                         replacement = replacement.replace("\\n", "\n"); // forcing new lines
-                        
 
                         if (i == lastLine) {
                             // replacement into a single line
@@ -210,13 +203,11 @@ public class Exercice implements Comparable<Exercice> {
                         }
 
                         // paste it
-                        
                         out = true;
                         break searchLine;
                     }
                 }
             }
-            
 
         }
 
@@ -235,7 +226,7 @@ public class Exercice implements Comparable<Exercice> {
         return out;
     }
 
-    public boolean replaceKeywordAndUpdate(String before, String after,boolean doReplace) {
+    public boolean replaceKeywordAndUpdate(String before, String after, boolean doReplace) {
         boolean out = false;
         for (int i = 0; i < keywords.size(); i++) {
             if (before.equals(keywords.get(i))) {
@@ -243,7 +234,7 @@ public class Exercice implements Comparable<Exercice> {
                 out = true;
             }
         }
-        if (doReplace){
+        if (doReplace) {
             OsRelated.writeToFile(keywords, this.getKeywordsPath());
         }
         return out;
@@ -275,52 +266,25 @@ public class Exercice implements Comparable<Exercice> {
 
     // next methods should use the unified readfile method from OsRelated.
     protected void updateKeywords() {
-
-        try {
-            this.keywords.clear();
-            File f = new File(this.getKeywordsPath());
-            //BufferedReader b = new BufferedReader(new FileReader(f));
-            BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
-            String readLine = "";
-            while ((readLine = b.readLine()) != null) {
-                this.keywords.add(readLine.trim());
-
-            }
-        } catch (IOException ex) {
-            System.err.println("keyword file not found for " + this.path);
+        this.keywords.clear();
+        for (String s : OsRelated.readFile(this.getKeywordsPath())) {
+            this.keywords.add(s.trim());
         }
+
     }
 
     protected void updateReadme() {
-        try {
-            this.readme.clear();
-            File f = new File(this.getReadmePath());
-            //BufferedReader b = new BufferedReader(new FileReader(f));
-            BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
-            String readLine = "";
-            while ((readLine = b.readLine()) != null) {
-                this.readme.add(readLine.trim());
-            }
-        } catch (IOException ex) {
-            System.err.println("readme file not found for " + this.path);
+        this.readme.clear();
+        for (String s : OsRelated.readFile(this.getReadmePath())) {
+            this.readme.add(s.trim());
         }
-
     }
 
     protected void updateContent() {
-        try {
-            this.content.clear();
-            File f = new File(this.path + "/sujet.tex");
-            //BufferedReader b = new BufferedReader(new FileReader(f));
-            BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
-            String readLine = "";
-            while ((readLine = b.readLine()) != null) {
-                this.content.add(readLine.trim());
-            }
-        } catch (IOException ex) {
-            System.err.println("sujet.tex file not found for " + this.path);
+        this.content.clear();
+        for (String s : OsRelated.readFile(this.path + "/sujet.tex")) {
+            this.readme.add(s.trim());
         }
-
     }
 
     @Override

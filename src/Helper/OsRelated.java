@@ -11,10 +11,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -32,7 +34,11 @@ import java.util.logging.Logger;
 public class OsRelated {
 
     private static String OS = null;
+    private static Process p = null;
 
+    ///////////////////////////////////
+    ////// Dealing with files /////////
+    ///////////////////////////////////
     public static long lastTimeOfModification(String path) {
         File output = new File(pathAccordingToOS(path));
         if (output.exists()) {
@@ -76,7 +82,9 @@ public class OsRelated {
         File f = new File(pathAccordingToOS(path));
         BufferedWriter b;
         try {
-            b = new BufferedWriter(new FileWriter(f));
+
+            b = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
+
             for (String line : in) {
                 b.write(line);
                 //if (!OsRelated.isWindows()) {
@@ -97,8 +105,9 @@ public class OsRelated {
         File f = new File(path);
         BufferedReader b;
         try {
-             b = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
+            b = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
         } catch (FileNotFoundException ex) {
+            System.out.println("File not found while reading file : " + path);
             return out;
         } catch (UnsupportedEncodingException ex) {
             return out;
@@ -110,6 +119,7 @@ public class OsRelated {
                 out.add(readLine);
             }
         } catch (IOException ex) {
+            System.out.println("Problem while reading file : " + path);
             return out;
         }
         return out;
@@ -120,6 +130,7 @@ public class OsRelated {
         try {
             return new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
         } catch (IOException ex) {
+            System.out.println("File not found while reading : " + path);
             Logger.getLogger(TexWriter.class.getName()).log(Level.SEVERE, null, ex);
             return "";
         }
@@ -162,12 +173,12 @@ public class OsRelated {
         //String[] command = new String[]{"pdflatex",  "-no-shell-escape", "-interaction=nonstopmode", "-output-directory='" + pathAccordingToOS(outputDir) + "'", pathAccordingToOS("./output/output.tex")};
         String[] out;
         if (OsRelated.isWindows()) {
-            String[] command = new String[]{"pdflatex", "-no-shell-escape","-halt-on-error", "-interaction=nonstopmode", "-output-directory=" + pathAccordingToOS(outputDir), pathAccordingToOS("./output/output.tex")};
+            String[] command = new String[]{"pdflatex", "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", "-output-directory=" + pathAccordingToOS(outputDir), pathAccordingToOS("./output/output.tex")};
 
             out = OsRelated.execoWindows(command, 400, ".", false); // force exec from cmd and not powershell : unlimited wait time as user may end the cmd window himself
             System.out.println("out : " + out[0]);
         } else {
-            String[] command = new String[]{pathAccordingToOS(SavedVariables.getPdflatexCmd()), "-no-shell-escape", "-halt-on-error","-interaction=nonstopmode", "-output-directory='" + pathAccordingToOS(outputDir) + "'", pathAccordingToOS("./output/output.tex")};
+            String[] command = new String[]{pathAccordingToOS(SavedVariables.getPdflatexCmd()), "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", "-output-directory='" + pathAccordingToOS(outputDir) + "'", pathAccordingToOS("./output/output.tex")};
 
             out = OsRelated.execoUnix(command, 30, "."); // une durée d'attente de 20 secondes max semble un bon compromis.
 
@@ -225,7 +236,7 @@ public class OsRelated {
         for (String s : command) {
             lastItem += " " + s;
         }
-        
+
         lastItem = lastItem.trim();
         //lastItem = lastItem.strip();
         if (!powershell) {
@@ -241,9 +252,11 @@ public class OsRelated {
         try {
 
             pb.redirectError();
+
             InputStream is = null;
 
-            Process p = pb.start();
+            p = pb.start();
+
             long startTime = System.currentTimeMillis();
             // get process output (input from java point of view)
             is = p.getInputStream();
@@ -285,7 +298,7 @@ public class OsRelated {
         for (String s : command) {
             lastItem += " " + s;
         }
-        
+
         lastItem = lastItem.trim();
         //lastItem = lastItem.strip();
 
@@ -300,7 +313,7 @@ public class OsRelated {
         InputStream is = null;
 
         try {
-            Process p = pb.start();
+            p = pb.start();
 
             long startTime = System.currentTimeMillis();
             // get process output (input from java point of view)
@@ -320,7 +333,13 @@ public class OsRelated {
         return new String[]{String.valueOf(out), output.toString()};
     }
 
-    ;
+    public static void killCurrentProcess(){
+        p.destroyForcibly();
+        try {
+            p.waitFor();
+        } catch (InterruptedException ex) {
+        }
+    }
     
     protected static String[] execo(String[] command, double delay, String location) {
         /**

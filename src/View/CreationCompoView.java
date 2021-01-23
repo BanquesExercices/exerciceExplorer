@@ -5,8 +5,8 @@
  */
 package View;
 
-import Helper.OsRelated;
 import Helper.ListTransferHandler;
+import Helper.OsRelated;
 import Helper.SavedVariables;
 import Helper.Utils;
 import TexRessources.TexWriter;
@@ -14,16 +14,8 @@ import exerciceexplorer.Exercice;
 import exerciceexplorer.ExerciceFinder;
 import exerciceexplorer.KeyWords;
 import java.awt.Color;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
@@ -101,6 +93,17 @@ public class CreationCompoView extends javax.swing.JPanel {
         });
     }
 
+    public void addAllExercices() {
+        selectedExericesModel.clear();
+        for (int i = 0; i < choixExercice.getModel().getSize(); i++) {
+            selectedExericesModel.addElement((Exercice) choixExercice.getModel().getElementAt(i));
+        }
+    }
+
+    public void removeAllExercices() {
+        selectedExericesModel.clear();
+    }
+
     public void validateTitle() {
         String title = this.newTitleTextField.getText();
         boolean valid = this.ef.isNameAvailable(title);
@@ -134,7 +137,7 @@ public class CreationCompoView extends javax.swing.JPanel {
     }
 
     public boolean updateDataBase() {
-        boolean out =ef.updateList();
+        boolean out = ef.updateList();
         this.updateModel();
         return out;
     }
@@ -498,7 +501,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         ew.setVisible(true);
     }
 
-    
+
     private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
         exportSetOFExercices();
     }//GEN-LAST:event_exportButtonActionPerformed
@@ -546,7 +549,7 @@ public class CreationCompoView extends javax.swing.JPanel {
 
     public void loadSet() {
         JFileChooser choix = new JFileChooser();
-        choix.setCurrentDirectory(new File(SavedVariables.getMainGitDir() + "/feuilles_exercices"));
+        choix.setCurrentDirectory(new File(SavedVariables.getMainGitDir() + "/untracked/feuilles_exercices"));
         choix.addChoosableFileFilter(new javax.swing.filechooser.FileFilter() {
             @Override
             public boolean accept(File f) {
@@ -565,11 +568,8 @@ public class CreationCompoView extends javax.swing.JPanel {
         int retour = choix.showOpenDialog(this);
         if (retour == JFileChooser.APPROVE_OPTION) {
 
-            BufferedReader b;
-            try {
-                b = new BufferedReader(new FileReader(new File(choix.getSelectedFile().getAbsolutePath())));
-            } catch (FileNotFoundException ex) {
-                System.err.println("Problème lors de l'ouverture du fichier " + choix.getSelectedFile().getAbsolutePath());
+            List<String> lines = OsRelated.readFile(choix.getSelectedFile().getAbsolutePath());
+            if (lines.isEmpty()) {
                 return;
             }
 
@@ -579,18 +579,19 @@ public class CreationCompoView extends javax.swing.JPanel {
             String name;
             selectedExericesModel.clear();
             try {
-                kind = b.readLine().split(":")[1].trim();
-                number = b.readLine().split(":")[1].trim();
-                name = b.readLine().split(":")[1].trim();
+                kind = lines.remove(0).split(":")[1].trim();
+                number = lines.remove(0).split(":")[1].trim();
+                name = lines.remove(0).split(":")[1].trim();
 
-                while ((readLine = b.readLine()) != null) {
+                while (!lines.isEmpty()) {
+                    readLine = lines.remove(0);
                     System.out.println(readLine);
                     Exercice ex = ExerciceFinder.getExerciceByPath(readLine.trim());
                     if (ex != null) {
                         this.selectedExericesModel.addElement(ex);
                     }
                 }
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 System.err.println("Problème lors de la lecture du fichier " + choix.getSelectedFile().getAbsolutePath());
                 return;
             }

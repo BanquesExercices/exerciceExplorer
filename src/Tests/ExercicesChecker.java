@@ -5,6 +5,7 @@
  */
 package Tests;
 
+import Helper.OsRelated;
 import TexRessources.TexWriter;
 import exerciceexplorer.Exercice;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public  class ExercicesChecker {
         // get englobing tex file -> tests are based on the DS profile provided by the user, so maybe not the default one.
 
         // maybe we should link to the default files which can be found easily (from the main git directory, in fichiers_utiles)
-        List<String> lines = TexWriter.createTexFile(enumer, type, false,true);
+        List<String> lines = TexWriter.createTexFile(enumer, type, false,false); // last false : test exercice with selected templates files : use default templates if set to true
 
         // write englobing tex file
         TexWriter.writeTexFile(lines);
@@ -42,7 +43,9 @@ public  class ExercicesChecker {
     public static void checkExercices(List<Exercice> exercices, String type , NewsReceiver nr) {
         
         List<Boolean> out = new ArrayList<>();
-        
+        List<String> nonCompilingList = new ArrayList<>();
+        String outputPath="./output/nonCompilingFiles.txt";
+        OsRelated.writeToFile(nonCompilingList, outputPath);
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -52,6 +55,10 @@ public  class ExercicesChecker {
                     boolean result = checkOneExercice(e,type);
                     if (!result){
                         nr.getNewsTwo(e.getPath());
+                        nonCompilingList.clear();
+                        nonCompilingList.add(e.getPath());
+                        OsRelated.appendToFile(nonCompilingList, outputPath);
+                                
                     }
                     nr.getNewsOne(""+count);
                     out.add(result);

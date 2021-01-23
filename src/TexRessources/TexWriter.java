@@ -8,11 +8,7 @@ package TexRessources;
 import Helper.OsRelated;
 import Helper.SavedVariables;
 import exerciceexplorer.Exercice;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -65,17 +61,17 @@ public class TexWriter {
     public static boolean latexToPdf() {
 
         long lastTime = OsRelated.lastTimeOfModification("output/output.pdf");
-        System.out.println("lasttime : " + lastTime);
         String out = OsRelated.pdfLatex("./output");
         long newTime = OsRelated.lastTimeOfModification("output/output.pdf");
-        System.out.println("newtime : " + newTime);
-        if ((lastTime <0 && newTime>0) || (newTime>lastTime)) {
-            System.err.println("pdflatex could not latexize the texfile");
+        if ((lastTime < 0 && newTime > 0) || (newTime > lastTime)) {
+            if (OsRelated.isWindows()){
+                OsRelated.killCurrentProcess(); // usefull as pdflatex is started in a terminal window which is paused to let the user see the output.
+            }
             return true;
         }
         latexLog = out;
-        System.err.println("pdflatex could not latexize the texfile");            
-        
+        System.err.println("pdflatex could not latexize the texfile");
+
         return false;
 
     }
@@ -131,85 +127,59 @@ public class TexWriter {
             f = new File(OsRelated.pathAccordingToOS(SavedVariables.getMainGitDir() + "/fichiers_utiles/defaultLatexTemplates" + fileName));
         }
 
-        BufferedReader b;
-        try {
-            b = new BufferedReader(new FileReader(f));
-        } catch (FileNotFoundException ex) {
-            String errorMsg = OsRelated.pathAccordingToOS(SavedVariables.getTexModelsPaths() + fileName) + " file not found. Please create this file and edit its path";
-            System.err.println(errorMsg);
-            output.clear();
-            output.add(errorMsg);
-            return output;
-        }
+        List<String> lines = OsRelated.readFile(f.getAbsolutePath());
 
-        String readLine = "";
         boolean blockTokenFound = false;
-
+        String readLine = "";
         // template is parsed line by line
-        try {
-            while ((readLine = b.readLine()) != null) {
-                
-                // gestion automatique des packages spécifiques à un exercice à inclure
-                if (readLine.trim().contains("usepackage{raccourcis_communs}") || readLine.trim().contains("RequirePackage{raccourcis_communs}")) {
-                    output.add("\\usepackage{" + (SavedVariables.getMainGitDir().replace("\\", "/") + "/fichiers_utiles/raccourcis_communs}").replace("//", "/")); // need uniw path like for latex
-                    continue;
-                }
-
-                // gestion du bloc à recopier pour chaque exo (utile pour une fiche de colle par exemple
-                if (readLine.trim().equals("[[")) {
-                    
-                    String nextLine;
-
-                    List<String> before = new ArrayList<>();
-                    List<String> after = new ArrayList<>();
-                    nextLine = b.readLine();
-                    while (!nextLine.trim().equals("****")) {
-                        before.add(nextLine);
-                        nextLine = b.readLine();
-                    }
-                    nextLine = b.readLine();
-                    while (!nextLine.trim().equals("]]")) {
-                        after.add(nextLine);
-                        nextLine = b.readLine();
-                    }
-                    getExercicestoTex(exercices, output, imports, localLinks, before, after);
-                    continue;
-                }
-
-                if (readLine.trim().equals("****") && !blockTokenFound) {
-                    getExercicestoTex(exercices, output, imports, localLinks);
-                    continue;
-                }
-
-                output.add(readLine);
-
+        while (!lines.isEmpty()) {
+            readLine = lines.remove(0);
+            // gestion automatique des packages spécifiques à un exercice à inclure
+            if (readLine.trim().contains("usepackage{raccourcis_communs}") || readLine.trim().contains("RequirePackage{raccourcis_communs}")) {
+                output.add("\\usepackage{" + (SavedVariables.getMainGitDir().replace("\\", "/") + "/fichiers_utiles/raccourcis_communs}").replace("//", "/")); // need uniw path like for latex
+                continue;
             }
-            // imports must be added before \begin{document}
-            boolean found = false;
-            int count = 0;
-            while (!found) {
-                found = output.get(count).contains("\\begin{document}");
-                count += 1;
 
+            // gestion du bloc à recopier pour chaque exo (utile pour une fiche de colle par exemple
+            if (readLine.trim().equals("[[")) {
+
+                String nextLine;
+
+                List<String> before = new ArrayList<>();
+                List<String> after = new ArrayList<>();
+                nextLine = lines.remove(0);
+                while (!nextLine.trim().equals("****")) {
+                    before.add(nextLine);
+                    nextLine = lines.remove(0);
+                }
+                nextLine = lines.remove(0);
+                while (!nextLine.trim().equals("]]")) {
+                    after.add(nextLine);
+                    nextLine = lines.remove(0);
+                }
+                getExercicestoTex(exercices, output, imports, localLinks, before, after);
+                continue;
             }
-            output.addAll(count - 1, imports);
 
-        } catch (IOException ex) {
-            String errorMsg = "Problem occured while parsing **model.tex";
-            System.err.println(errorMsg);
-            output.clear();
-            output.add(errorMsg);
-            System.err.println();
+            if (readLine.trim().equals("****") && !blockTokenFound) {
+                getExercicestoTex(exercices, output, imports, localLinks);
+                continue;
+            }
+
+            output.add(readLine);
+
         }
+        // imports must be added before \begin{document}
+        boolean found = false;
+        int count = 0;
+        while (!found) {
+            found = output.get(count).contains("\\begin{document}");
+            count += 1;
+
+        }
+        output.addAll(count - 1, imports);
 
         return output;
     }
-
-
-   
-
-   
-
-    
 
 }

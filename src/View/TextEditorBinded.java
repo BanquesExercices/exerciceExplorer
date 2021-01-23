@@ -281,6 +281,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
 
     public void startFindPanel() {
         this.findPanel.setVisible(true);
+        this.replacePanel.setVisible(false);
         this.findTextField.setText("...");
         this.findTextField.selectAll();
         this.findTextField.requestFocusInWindow();
@@ -306,6 +307,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
     }
     
      public void startReplacePanel() {
+         this.findPanel.setVisible(false);
         this.replacePanel.setVisible(true);
         this.replaceWhatTextField.setText("...");
         this.replaceWhatTextField.selectAll();

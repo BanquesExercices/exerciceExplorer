@@ -1,5 +1,6 @@
 /output/
 /build/
+/store/
 /nbproject/private/
 /dist/output/*
 /dist/
