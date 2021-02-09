@@ -312,10 +312,8 @@ public class CreationCompoView extends javax.swing.JPanel {
         keyWordsHolder.setMinimumSize(new java.awt.Dimension(0, 70));
         keywordsScrollPane.setViewportView(keyWordsHolder);
 
-        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel5.setText("Filtres & Selection");
 
-        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel6.setText("Composition :");
 
         exportButton.setText("Exporter");
@@ -336,7 +334,6 @@ public class CreationCompoView extends javax.swing.JPanel {
         jLabel8.setText(" sur");
 
         newExercicePane.setPreferredSize(new java.awt.Dimension(496, 50));
-        newExercicePane.setSize(new java.awt.Dimension(100, 50));
         newExercicePane.setLayout(new javax.swing.BoxLayout(newExercicePane, javax.swing.BoxLayout.PAGE_AXIS));
 
         jPanel1.setPreferredSize(new java.awt.Dimension(82, 50));
@@ -366,7 +363,6 @@ public class CreationCompoView extends javax.swing.JPanel {
         createNewExoButton.setBorderPainted(false);
         createNewExoButton.setContentAreaFilled(false);
         createNewExoButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_new10_216291_selected.png"))); // NOI18N
-        createNewExoButton.setRolloverEnabled(true);
         createNewExoButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_new10_216291_rollOver.png"))); // NOI18N
         createNewExoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

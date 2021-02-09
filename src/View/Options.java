@@ -11,6 +11,7 @@ import Helper.SavedVariables;
 import Helper.Utils;
 import TextEditor.Tex.LatexTextEditor;
 import java.awt.Color;
+import java.awt.Font;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -239,6 +240,8 @@ public class Options extends JPanel {
         jCheckBox2 = new javax.swing.JCheckBox();
         jSpinner1 = new javax.swing.JSpinner();
         jLabel3 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel12 = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
         editorPanel = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
@@ -266,13 +269,12 @@ public class Options extends JPanel {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
 
-        setPreferredSize(null);
+        setPreferredSize(new java.awt.Dimension(300, 526));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setPreferredSize(null);
 
-        jPanel1.setPreferredSize(null);
+        jPanel1.setPreferredSize(new java.awt.Dimension(400, 522));
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.PAGE_AXIS));
 
         jLabel7.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
@@ -282,7 +284,7 @@ public class Options extends JPanel {
 
         statusButton.setText("Status");
         statusButton.setToolTipText("<html>\nVérifie les actions GIT à effectuer.\n<br>\nCette commande est équivalente à la saisie sur le terminal de :  \n<ol>\n    <li> git fetch \n    <li> git status\n</ol>\n</html>");
-        statusButton.setMaximumSize(new java.awt.Dimension(60, 22));
+        statusButton.setMaximumSize(null);
         statusButton.setMinimumSize(new java.awt.Dimension(60, 22));
         statusButton.setPreferredSize(new java.awt.Dimension(60, 22));
         statusButton.addActionListener(new java.awt.event.ActionListener() {
@@ -295,6 +297,7 @@ public class Options extends JPanel {
         pushButton.setText("Push");
         pushButton.setToolTipText("<html>\nEnvoie le dernier commit effetué (sauvegarde) sur le serveur. \n<br>\nLes conflits (plusieurs personnes modifiant le même fichier en même temps) n'étant pas gérés à partir de l'interface graphique. Il faudra dans ce cas utiliser un logiciel dédié ou bien le terminal.\n</html>");
         pushButton.setEnabled(false);
+        pushButton.setMaximumSize(null);
         pushButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pushButtonActionPerformed(evt);
@@ -305,6 +308,7 @@ public class Options extends JPanel {
         pullButton.setText("Pull");
         pullButton.setToolTipText("Réccupère les nouvelles données (dernier commit) depuis le serveur.");
         pullButton.setEnabled(false);
+        pullButton.setMaximumSize(null);
         pullButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pullButtonActionPerformed(evt);
@@ -315,7 +319,7 @@ public class Options extends JPanel {
         commitButton.setText("Commit");
         commitButton.setToolTipText("Réalise une sauvegarde (commit) de la base de donnée. Ce commit pourra ensuite être envoyé sur le serveur (push)");
         commitButton.setEnabled(false);
-        commitButton.setMaximumSize(new java.awt.Dimension(70, 29));
+        commitButton.setMaximumSize(null);
         commitButton.setMinimumSize(new java.awt.Dimension(70, 29));
         commitButton.setPreferredSize(new java.awt.Dimension(70, 29));
         commitButton.addActionListener(new java.awt.event.ActionListener() {
@@ -331,7 +335,7 @@ public class Options extends JPanel {
         gitOutputText.setLineWrap(true);
         gitOutputText.setRows(1);
         gitOutputText.setTabSize(4);
-        gitOutputText.setText("     click on status to update");
+        gitOutputText.setText("    Cliquez sur status pour une MaJ.");
         gitOutputText.setMinimumSize(new java.awt.Dimension(1, 120));
 
         javax.swing.GroupLayout gitPanelLayout = new javax.swing.GroupLayout(gitPanel);
@@ -339,14 +343,11 @@ public class Options extends JPanel {
         gitPanelLayout.setHorizontalGroup(
             gitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(gitPanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(gitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(gitPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(gitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(gitOutputText, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(454, Short.MAX_VALUE))
+                    .addComponent(jLabel7)
+                    .addComponent(gitOutputText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         gitPanelLayout.setVerticalGroup(
             gitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -355,7 +356,7 @@ public class Options extends JPanel {
                 .addComponent(jLabel7)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 5, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(gitOutputText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
         );
@@ -396,37 +397,57 @@ public class Options extends JPanel {
 
         jLabel3.setText("Taille police IHM");
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Light", "IntelliJ", "Dark", "Darcula" }));
+        jComboBox1.setSelectedIndex(SavedVariables.getTheme());
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jLabel12.setText("Thème");
+
         javax.swing.GroupLayout actionsPanelsLayout = new javax.swing.GroupLayout(actionsPanels);
         actionsPanels.setLayout(actionsPanelsLayout);
         actionsPanelsLayout.setHorizontalGroup(
             actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(actionsPanelsLayout.createSequentialGroup()
-                .addComponent(jCheckBox1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBox2)
-                .addGap(0, 533, Short.MAX_VALUE))
-            .addGroup(actionsPanelsLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9)
                     .addGroup(actionsPanelsLayout.createSequentialGroup()
-                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jCheckBox1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jCheckBox2))
+                    .addGroup(actionsPanelsLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(actionsPanelsLayout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(actionsPanelsLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                                .addComponent(jLabel12)
+                                .addGap(4, 4, 4)
+                                .addComponent(jComboBox1, 0, 96, Short.MAX_VALUE)
+                                .addGap(15, 15, 15)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jSpinner1, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)))))
+                .addContainerGap())
         );
         actionsPanelsLayout.setVerticalGroup(
             actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(actionsPanelsLayout.createSequentialGroup()
                 .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(2, 2, 2)
                 .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBox1)
                     .addComponent(jCheckBox2))
                 .addGap(2, 2, 2)
                 .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)))
+                    .addComponent(jLabel3)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12)))
         );
 
         jPanel1.add(actionsPanels);
@@ -479,10 +500,10 @@ public class Options extends JPanel {
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(spellPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(customDictTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(globalDictTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5))
+                .addGroup(spellPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(globalDictTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
+                    .addComponent(customDictTextField))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         spellPanelLayout.setVerticalGroup(
             spellPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -554,7 +575,7 @@ public class Options extends JPanel {
                 .addContainerGap()
                 .addComponent(tokenComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(colorSetTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(colorSetTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(coloringPanelLayout.createSequentialGroup()
                 .addComponent(titlesCheckBox)
@@ -578,22 +599,19 @@ public class Options extends JPanel {
             .addGroup(editorPanelLayout.createSequentialGroup()
                 .addGroup(editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(editorPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel10)
-                        .addGap(0, 0, 0))
+                        .addGap(10, 10, 10)
+                        .addComponent(spellPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(editorPanelLayout.createSequentialGroup()
-                        .addGroup(editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(spellCheckBox)
-                            .addGroup(editorPanelLayout.createSequentialGroup()
-                                .addComponent(autoCompletionCheckBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(coloringCheckBox))
-                            .addGroup(editorPanelLayout.createSequentialGroup()
-                                .addGap(21, 21, 21)
-                                .addComponent(spellPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(coloringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, 0)))
-                .addContainerGap(444, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(jLabel10))
+                    .addComponent(spellCheckBox)
+                    .addComponent(coloringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(editorPanelLayout.createSequentialGroup()
+                .addComponent(autoCompletionCheckBox)
+                .addGap(50, 50, 50)
+                .addComponent(coloringCheckBox)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         editorPanelLayout.setVerticalGroup(
             editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -603,11 +621,11 @@ public class Options extends JPanel {
                 .addComponent(spellCheckBox)
                 .addGap(0, 0, 0)
                 .addComponent(spellPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(autoCompletionCheckBox)
                     .addComponent(coloringCheckBox))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(coloringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4))
         );
@@ -672,20 +690,20 @@ public class Options extends JPanel {
                                 .addComponent(jLabel5)
                                 .addComponent(jLabel4)
                                 .addComponent(jLabel1)))
-                        .addGap(8, 8, 8)
+                        .addGap(10, 10, 10)
                         .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(outputDirInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(templatesFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(gitFolderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(pdflatexInput, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(442, Short.MAX_VALUE))
+                            .addComponent(outputDirInput, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+                            .addComponent(templatesFolderInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(gitFolderInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pdflatexInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(10, 10, 10))
         );
         newPathesPanelLayout.setVerticalGroup(
             newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(newPathesPanelLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(pdflatexInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -864,7 +882,15 @@ public class Options extends JPanel {
 
     private void jSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner1StateChanged
         SavedVariables.setFontSize((int) jSpinner1.getValue());
+        setUIFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, SavedVariables.getFontSize()));
+        SwingUtilities.updateComponentTreeUI(getTopLevelAncestor());
     }//GEN-LAST:event_jSpinner1StateChanged
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        int choice = jComboBox1.getSelectedIndex();
+        SavedVariables.setTheme(choice);
+        MainWindow.getInstance().installTheme();
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     public void tokenComboBoxAction() {
         int token = LatexTextEditor.getToken((String) tokenComboBox.getSelectedItem());
@@ -889,9 +915,11 @@ public class Options extends JPanel {
     private javax.swing.JTextField globalDictTextField;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -17,6 +17,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -33,7 +34,9 @@ import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.fife.ui.autocomplete.TemplateCompletion;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.Style;
 import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
+import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.folding.Fold;
@@ -76,6 +79,18 @@ public class LatexTextEditor extends BaseTextEditor {
 
     protected final void myInit() {
 
+        // theme
+        if (SavedVariables.getTheme() >= 2) {
+            try {
+                Theme theme = Theme.load(getClass().getResourceAsStream(
+                        "/org/fife/ui/rsyntaxtextarea/themes/dark.xml"));
+                theme.apply(this);
+            } catch (IOException ioe) { // Never happens
+                ioe.printStackTrace();
+            }
+        }
+
+        // auto indent
         this.setAutoIndentEnabled(true);
 
         // adding spell checker        
@@ -92,7 +107,6 @@ public class LatexTextEditor extends BaseTextEditor {
         // adding auto-completion abilities
         this.setupAutoCompletion();
 
-       
     }
 
     public static List<String> getTokenNames() {
@@ -202,20 +216,29 @@ public class LatexTextEditor extends BaseTextEditor {
             return;
         }
 
+        Font f = new Font("SansSerif", Font.PLAIN, (int) (SavedVariables.getFontSize()));
+        this.setFont(f);
+
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping(MY_LATEX_STYLE, LatexTokenMaker.class.getName());
         this.setSyntaxEditingStyle(MY_LATEX_STYLE);
         SyntaxScheme scheme = this.getSyntaxScheme();
 
+        // applying default theme
+        for (Style s : scheme.getStyles()) {
+            s.font = f;
+        }
+
         if (SavedVariables.getBigTitles()) {
-            scheme.getStyle(LatexTokenMaker.TOKEN_TITLE).font = new Font("Times New Roman", Font.PLAIN, 20);
-            scheme.getStyle(LatexTokenMaker.TOKEN_PART).font = new Font("Times New Roman", Font.PLAIN, 16);
-            scheme.getStyle(LatexTokenMaker.TOKEN_SUB_PART).font = new Font("Times New Roman", Font.PLAIN, 14);
+            scheme.getStyle(LatexTokenMaker.TOKEN_TITLE).font = new Font("SansSerif", Font.PLAIN, (int) (SavedVariables.getFontSize() * 1.6));
+            scheme.getStyle(LatexTokenMaker.TOKEN_PART).font = new Font("SansSerif", Font.PLAIN, (int) (SavedVariables.getFontSize() * 1.5));
+            scheme.getStyle(LatexTokenMaker.TOKEN_SUB_PART).font = new Font("SansSerif", Font.PLAIN, (int) (SavedVariables.getFontSize() * 1.3));
         }
 
         for (int token : Collections.list(defaultColorDict.keys())) {
             scheme.getStyle(token).foreground = SavedVariables.getColor(token);
         }
+
         // duplicated tokens
         scheme.getStyle(LatexTokenMaker.TOKEN_ADDA_H).foreground = SavedVariables.getColor(LatexTokenMaker.TOKEN_ADDQ_H);
         scheme.getStyle(LatexTokenMaker.TOKEN_MLE_IN_A).foreground = SavedVariables.getColor(LatexTokenMaker.TOKEN_MLE);
@@ -252,8 +275,7 @@ public class LatexTextEditor extends BaseTextEditor {
         // general latex env
         provider.addCompletion(new TemplateCompletion(provider, "begin{itemize}", "begin{itemize} ... \\end{itemize}", "begin{itemize}\n\t\\item ${cursor}\n\t\\item \n\\end{itemize} ", "Liste", "Liste"));
         provider.addCompletion(new TemplateCompletion(provider, "begin{enumerate}", "begin{enumerate} ... \\end{enumerate}", "begin{enumerate}\n\t\\item ${cursor}\n\t\\item \n\\end{enumerate} ", "Liste numérotée", "Liste numérotée"));
-        
-        
+
         // specific BPEP latex templates
         provider.addCompletion(new TemplateCompletion(provider, "begin{blocQR}", "begin{blocQR} ... \\end{blocQR}", "begin{blocQR}\n\t ${cursor}\n\\end{blocQR} ", "Liste", "Liste"));
         provider.addCompletion(new TemplateCompletion(provider, "partie{", "partie{...}", "partie{${cursor}}\n", "Partie", "Partie"));
@@ -272,11 +294,11 @@ public class LatexTextEditor extends BaseTextEditor {
         provider.addCompletion(new TemplateCompletion(provider, "tcols{", "tcols{0.49}{0.49}{...}{...}", "tcols{0.49}{0.49}{\n\t${cursor}\n}{\n\t\n}", "Double colonne", "Double Colonne"));
         provider.addCompletion(new TemplateCompletion(provider, "vectoriel", "vectoriel", "vectoriel", "produit vectoriel", "produit vectoriel"));
         provider.addCompletion(new TemplateCompletion(provider, "scalaire", "scalaire", "scalaire", "produit scalaire", "produit scalaire"));
-        
+
         // maths & Latex accelerators templates
         provider.addCompletion(new TemplateCompletion(provider, "frac{", "frac{...}{...}", "frac{${cursor}}{}", "Fraction", "Fraction"));
         provider.addCompletion(new TemplateCompletion(provider, "Rightarrow", "Rightarrow", "Rightarrow ${cursor}", "Implication", "Implication"));
-        provider.addCompletion(new TemplateCompletion(provider, "RightLeftarrow", "RightLeftarrow", "RightLeftarrow ${cursor}", "equivalence", "equivalence"));       
+        provider.addCompletion(new TemplateCompletion(provider, "RightLeftarrow", "RightLeftarrow", "RightLeftarrow ${cursor}", "equivalence", "equivalence"));
         provider.addCompletion(new TemplateCompletion(provider, "ub{", "ub{...}{...}", "ub{${cursor}}{   }", "indication sous l'expression", "indication sous l'expression"));
         provider.addCompletion(new TemplateCompletion(provider, "sqrt{", "sqrt{", "sqrt{${cursor}}", "racine", "racine"));
         provider.addCompletion(new TemplateCompletion(provider, "boxed{", "boxed{", "boxed{${cursor}}", "résultat encadré", "résultat encadré"));
@@ -304,18 +326,18 @@ public class LatexTextEditor extends BaseTextEditor {
         indentItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.SHIFT_MASK + mod));
         editMenu.add(indentItem);
         indentItem.setToolTipText("Indente automatiquement le fichier sujet.tex");
-        
+
         AbstractAction accents = new AbstractAction("Conversion des accents") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                
-                String temp = LatexTextEditor.this.getText().replace(" ́e","é").replace("ˆo","ô").replace("’","'").replace("`u","ù").replace("`e","è").replace("`a", "à").replace("", "").replace("ˆe", "ê").replace("a`", "à");
+
+                String temp = LatexTextEditor.this.getText().replace(" ́e", "é").replace("ˆo", "ô").replace("’", "'").replace("`u", "ù").replace("`e", "è").replace("`a", "à").replace("", "").replace("ˆe", "ê").replace("a`", "à");
                 LatexTextEditor.this.setText(temp);
             }
         };
 
-        JMenuItem accentsItem = new JMenuItem(accents);        
+        JMenuItem accentsItem = new JMenuItem(accents);
         editMenu.add(accentsItem);
         accentsItem.setToolTipText("Convertie les accents et autres caractères spéciaux au bon format");
 
@@ -333,9 +355,11 @@ public class LatexTextEditor extends BaseTextEditor {
         importItem.setToolTipText("Convertie automatiquement le texte au bon format :\n"
                 + "Le texte à convertir doit être de la forme \n"
                 + "\n"
-                + "     \\exo{ titre }  \n"
-                + "     { enoncé et question}  \n"
-                + "     { réponses}  \n"
+                + "     \\exo{ titre }{  \n"
+                + "       enoncé et question  \n"
+                + "     }{  \n"
+                + "       réponses  \n"
+                + "     } \n"
                 + "\n"
                 + " - côté énoncé, les items des environnements \\begin{enumerate} ... \\end{enumerate} seront convertis en questions \n"
                 + " - côté réponses, les items des environnements \\begin{enumerate} ... \\end{enumerate} seront ajoutés aux questions en tant que réponses \n"

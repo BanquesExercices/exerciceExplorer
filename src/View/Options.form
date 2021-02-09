@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.8" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <Properties>
+    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[300, 526]"/>
+    </Property>
+  </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -11,7 +16,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,14,0,0,3,29"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,14,0,0,1,124"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
@@ -24,6 +29,11 @@
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="jPanel1">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[400, 522]"/>
+            </Property>
+          </Properties>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
             <Property name="axis" type="int" value="3"/>
@@ -35,18 +45,13 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jPanel5" alignment="0" min="-2" pref="339" max="-2" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                                      <Component id="gitOutputText" alignment="0" min="-2" pref="327" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
+                              <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
+                              <Component id="gitOutputText" alignment="0" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="454" max="32767" attributes="0"/>
                       </Group>
+                      <Component id="jPanel5" alignment="0" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
@@ -56,7 +61,7 @@
                           <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="5" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Component id="gitOutputText" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       </Group>
@@ -85,7 +90,7 @@
                         <Property name="text" type="java.lang.String" value="Status"/>
                         <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;V&#xe9;rifie les actions GIT &#xe0; effectuer.&#xa;&lt;br&gt;&#xa;Cette commande est &#xe9;quivalente &#xe0; la saisie sur le terminal de :  &#xa;&lt;ol&gt;&#xa;    &lt;li&gt; git fetch &#xa;    &lt;li&gt; git status&#xa;&lt;/ol&gt;&#xa;&lt;/html&gt;"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[60, 22]"/>
+                          <Dimension value="null"/>
                         </Property>
                         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[60, 22]"/>
@@ -103,6 +108,9 @@
                         <Property name="text" type="java.lang.String" value="Push"/>
                         <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Envoie le dernier commit effetu&#xe9; (sauvegarde) sur le serveur. &#xa;&lt;br&gt;&#xa;Les conflits (plusieurs personnes modifiant le m&#xea;me fichier en m&#xea;me temps) n&apos;&#xe9;tant pas g&#xe9;r&#xe9;s &#xe0; partir de l&apos;interface graphique. Il faudra dans ce cas utiliser un logiciel d&#xe9;di&#xe9; ou bien le terminal.&#xa;&lt;/html&gt;"/>
                         <Property name="enabled" type="boolean" value="false"/>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="null"/>
+                        </Property>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pushButtonActionPerformed"/>
@@ -113,6 +121,9 @@
                         <Property name="text" type="java.lang.String" value="Pull"/>
                         <Property name="toolTipText" type="java.lang.String" value="R&#xe9;ccup&#xe8;re les nouvelles donn&#xe9;es (dernier commit) depuis le serveur."/>
                         <Property name="enabled" type="boolean" value="false"/>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="null"/>
+                        </Property>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pullButtonActionPerformed"/>
@@ -124,7 +135,7 @@
                         <Property name="toolTipText" type="java.lang.String" value="R&#xe9;alise une sauvegarde (commit) de la base de donn&#xe9;e. Ce commit pourra ensuite &#xea;tre envoy&#xe9; sur le serveur (push)"/>
                         <Property name="enabled" type="boolean" value="false"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[70, 29]"/>
+                          <Dimension value="null"/>
                         </Property>
                         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[70, 29]"/>
@@ -149,7 +160,7 @@
                     <Property name="lineWrap" type="boolean" value="true"/>
                     <Property name="rows" type="int" value="1"/>
                     <Property name="tabSize" type="int" value="4"/>
-                    <Property name="text" type="java.lang.String" value="     click on status to update"/>
+                    <Property name="text" type="java.lang.String" value="    Cliquez sur status pour une MaJ."/>
                     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[1, 120]"/>
                     </Property>
@@ -169,23 +180,34 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="533" max="32767" attributes="0"/>
-                      </Group>
                       <Group type="102" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jSpinner1" min="-2" pref="71" max="-2" attributes="0"/>
+                                  <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace pref="19" max="32767" attributes="0"/>
+                                          <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                                          <Component id="jComboBox1" pref="96" max="32767" attributes="0"/>
+                                          <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                                          <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <Component id="jSpinner1" pref="95" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
                               </Group>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -193,7 +215,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jCheckBox1" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBox2" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -202,6 +224,8 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jSpinner1" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jComboBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -258,6 +282,32 @@
                     <Property name="text" type="java.lang.String" value="Taille police IHM"/>
                   </Properties>
                 </Component>
+                <Component class="javax.swing.JComboBox" name="jComboBox1">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="4">
+                        <StringItem index="0" value="Light"/>
+                        <StringItem index="1" value="IntelliJ"/>
+                        <StringItem index="2" value="Dark"/>
+                        <StringItem index="3" value="Darcula"/>
+                      </StringArray>
+                    </Property>
+                    <Property name="selectedIndex" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="SavedVariables.getTheme()" type="code"/>
+                    </Property>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox1ActionPerformed"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel12">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Th&#xe8;me"/>
+                  </Properties>
+                </Component>
               </SubComponents>
             </Container>
             <Component class="javax.swing.JSeparator" name="jSeparator3">
@@ -275,22 +325,23 @@
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                  <Component id="spellPanel" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="spellCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="autoCompletionCheckBox" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="coloringCheckBox" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                                  <Component id="spellPanel" min="-2" max="-2" attributes="0"/>
-                              </Group>
                               <Component id="coloringPanel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="444" max="32767" attributes="0"/>
+                          <EmptySpace min="5" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="autoCompletionCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
+                          <Component id="coloringCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -302,12 +353,12 @@
                           <Component id="spellCheckBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Component id="spellPanel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="8" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="autoCompletionCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="coloringCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="8" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="coloringPanel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                       </Group>
@@ -349,11 +400,11 @@
                                   <Component id="jLabel11" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="customDictTextField" min="-2" pref="170" max="-2" attributes="0"/>
-                                  <Component id="globalDictTextField" min="-2" pref="170" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="globalDictTextField" pref="281" max="32767" attributes="0"/>
+                                  <Component id="customDictTextField" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -446,7 +497,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="tokenComboBox" min="-2" pref="200" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="colorSetTextField" min="-2" pref="103" max="-2" attributes="0"/>
+                              <Component id="colorSetTextField" min="-2" pref="230" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -535,16 +586,16 @@
                                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
-                                  <EmptySpace min="8" pref="8" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="outputDirInput" alignment="0" min="-2" pref="240" max="-2" attributes="0"/>
-                                      <Component id="templatesFolderInput" alignment="0" min="-2" pref="240" max="-2" attributes="0"/>
-                                      <Component id="gitFolderInput" alignment="0" min="-2" pref="240" max="-2" attributes="0"/>
-                                      <Component id="pdflatexInput" alignment="0" min="-2" pref="240" max="-2" attributes="0"/>
+                                      <Component id="outputDirInput" alignment="0" pref="277" max="32767" attributes="0"/>
+                                      <Component id="templatesFolderInput" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="gitFolderInput" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="pdflatexInput" alignment="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace pref="442" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -553,7 +604,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="8" max="32767" attributes="0"/>
+                          <EmptySpace pref="15" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="pdflatexInput" alignment="3" min="-2" max="-2" attributes="0"/>

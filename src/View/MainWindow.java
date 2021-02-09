@@ -7,6 +7,9 @@ package View;
 
 import Helper.SavedVariables;
 import static View.Options.setUIFont;
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import exerciceexplorer.Exercice;
 import java.awt.Font;
@@ -23,6 +26,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -72,11 +76,23 @@ public final class MainWindow extends javax.swing.JFrame {
         }
 
         System.setProperty("file.encoding", "UTF-8");
+        
         SavedVariables.instanciate(this.getClass());
-        // change the default font size (usefull on 4K displays)
+        this.installTheme();
         setUIFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, SavedVariables.getFontSize()));
+        // change the default font size (usefull on 4K displays)
+        
+        UIManager.put("SplitPane.dividerSize", 15);
+        UIManager.put("SplitPaneDivider.gripDotCount", 3);
+        UIManager.put("SplitPaneDivider.gripDotSize", 7);
+        UIManager.put("SplitPaneDivider.gripGap", 14);
 
         initComponents();
+
+        jSplitPane1.setOneTouchExpandable(true);
+
+        Options options2 = new Options();
+        jTabbedPane1.addTab("Options", options2);
 
         if (options2.isCompletionRequired()) {
             this.jTabbedPane1.setSelectedComponent(options2);
@@ -95,6 +111,10 @@ public final class MainWindow extends javax.swing.JFrame {
         updateMenuBar();
 
     }
+    
+    
+    
+    
 
     protected void setMainMenuBarItems() {
 
@@ -125,46 +145,33 @@ public final class MainWindow extends javax.swing.JFrame {
 
         // load a set of exercices
         JMenuItem loadSetItem = new JMenuItem("Charger une composition");
-        loadSetItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainWindow.this.creationSujetView1.loadSet();
-            }
+        loadSetItem.addActionListener((ActionEvent e) -> {
+            MainWindow.this.creationSujetView1.loadSet();
         });
         file.add(loadSetItem);
-        
+
         file.addSeparator();
-        
+
         // add all displayed exercices to composition
         JMenuItem addAllItem = new JMenuItem("ajouter tous les exercices");
-        addAllItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainWindow.this.creationSujetView1.addAllExercices();
-            }
+        addAllItem.addActionListener((ActionEvent e) -> {
+            MainWindow.this.creationSujetView1.addAllExercices();
         });
         file.add(addAllItem);
-        
+
         // remove all exercices from composition
         JMenuItem removeAllItem = new JMenuItem("retirer tous les exercices");
-        removeAllItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainWindow.this.creationSujetView1.removeAllExercices();
-            }
+        removeAllItem.addActionListener((ActionEvent e) -> {
+            MainWindow.this.creationSujetView1.removeAllExercices();
         });
         file.add(removeAllItem);
-        
-        
+
         file.addSeparator();
         // exit
         JMenuItem exitItem = new JMenuItem("Quitter");
 
-        exitItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
+        exitItem.addActionListener((ActionEvent e) -> {
+            System.exit(0);
         });
         file.add(exitItem);
 
@@ -275,11 +282,7 @@ public final class MainWindow extends javax.swing.JFrame {
     }
 
     public void setExerciceDisplay(Exercice ex) {
-        if (!this.firstDocumentOpened) {
-            firstDocumentOpened = true;
-            rightPane.setVisible(true);
-            this.pack();
-        }
+        
         this.editorTabbedPane.removeChangeListener(cl);
         boolean warning = false;
         boolean toDelete = false;
@@ -325,28 +328,35 @@ public final class MainWindow extends javax.swing.JFrame {
         if (toDelete) {
             this.editorTabbedPane.removeAll();
             if (ce != null) {
-                this.editorTabbedPane.insertTab("Composition", null, ce, "", 0);
+               
+                this.editorTabbedPane.addTab("Composition", ce);                
+                //this.editorTabbedPane.setFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, SavedVariables.getFontSize()));
+                //this.editorTabbedPane.setTabComponentAt(0, re);
+               
             }
         }
 
         re = new ReadmeEditor(ex);
-        this.editorTabbedPane.insertTab("Readme", null, re, "", 0);
+        this.editorTabbedPane.addTab("Readme",re);
         this.editorTabbedPane.setSelectedComponent(re);
 
         ke = new KeywordsEditor(ex);
-        editorTabbedPane.insertTab("Mots clés", null, ke, "", 1);
+        editorTabbedPane.addTab("Mots clés",ke);
 
-        SwingUtilities.invokeLater(new Runnable() {
-            // on slow machines, this enables the readme file to be display a bit faster than keywords and subjects
-            @Override
-            public void run() {
-                se = new SubjectEditor(ex);
-                editorTabbedPane.insertTab("sujet.tex", null, se, "", 2);
-            }
-        });
+        SwingUtilities.invokeLater(() -> {
+            se = new SubjectEditor(ex);
+            editorTabbedPane.addTab("sujet.tex", se);
+        } // on slow machines, this enables the readme file to be display a bit faster than keywords and subjects
+        );
 
         this.editorTabbedPane.addChangeListener(cl);
         this.updateMenuBar();
+        
+        if (!this.firstDocumentOpened) {
+            firstDocumentOpened = true;
+            
+            this.pack();
+        }
 
     }
 
@@ -366,8 +376,35 @@ public final class MainWindow extends javax.swing.JFrame {
         ce.updateMenuBarView(true);
         this.editorTabbedPane.insertTab("Composition", null, ce, "", 0);
         this.editorTabbedPane.setSelectedIndex(0);
+        
+        if (!this.firstDocumentOpened) {
+            firstDocumentOpened = true;
+            
+            this.pack();
+        }
     }
 
+    public void installTheme(){
+        int theme = SavedVariables.getTheme();
+        switch (theme) {
+            case 0:
+                FlatLightLaf.install(); // nice flat look and feel
+                break;
+            case 1:
+                FlatIntelliJLaf.install();
+                break;
+            case 2:
+                FlatDarkLaf.install();             
+                break;
+            case 3:
+                FlatDarculaLaf.install();
+                break;
+            default:
+                break;
+        }
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -377,53 +414,21 @@ public final class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jSplitPane1 = new javax.swing.JSplitPane();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         creationSujetView1 = new View.CreationCompoView();
-        options2 = new View.Options();
-        middlePane = new javax.swing.JPanel();
-        rightPane = new javax.swing.JPanel();
         editorTabbedPane = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jSplitPane1.setBorder(null);
+        jSplitPane1.setDividerSize(20);
+        jSplitPane1.setForeground(new java.awt.Color(204, 204, 204));
+
         jTabbedPane1.addTab("Composition", creationSujetView1);
-        jTabbedPane1.addTab("Options", options2);
 
-        middlePane.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        middlePane.setPreferredSize(new java.awt.Dimension(7, 2));
-
-        javax.swing.GroupLayout middlePaneLayout = new javax.swing.GroupLayout(middlePane);
-        middlePane.setLayout(middlePaneLayout);
-        middlePaneLayout.setHorizontalGroup(
-            middlePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 3, Short.MAX_VALUE)
-        );
-        middlePaneLayout.setVerticalGroup(
-            middlePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        rightPane.setVisible(false);
-
-        editorTabbedPane.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-
-        javax.swing.GroupLayout rightPaneLayout = new javax.swing.GroupLayout(rightPane);
-        rightPane.setLayout(rightPaneLayout);
-        rightPaneLayout.setHorizontalGroup(
-            rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 487, Short.MAX_VALUE)
-            .addGroup(rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightPaneLayout.createSequentialGroup()
-                    .addComponent(editorTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-        rightPaneLayout.setVerticalGroup(
-            rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 533, Short.MAX_VALUE)
-            .addGroup(rightPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(editorTabbedPane, javax.swing.GroupLayout.Alignment.TRAILING))
-        );
-
+        jSplitPane1.setLeftComponent(jTabbedPane1);
+        jSplitPane1.setRightComponent(editorTabbedPane);
         editorTabbedPane.getAccessibleContext().setAccessibleName("");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -432,17 +437,11 @@ public final class MainWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(middlePane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(rightPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jSplitPane1))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(middlePane, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
-            .addComponent(rightPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
         );
 
         pack();
@@ -484,12 +483,14 @@ public final class MainWindow extends javax.swing.JFrame {
                     System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Exercice Explorer");
                 }
 
-                FlatLightLaf.install(); // nice flat look and feel
+                
+                //FlatLightLaf.install(); // nice flat look and feel
 
                 javax.swing.ToolTipManager.sharedInstance().setDismissDelay(12000);
                 javax.swing.ToolTipManager.sharedInstance().setInitialDelay(400);
 
                 MainWindow.getInstance().setVisible(true);
+                
 
             }
         });
@@ -498,9 +499,7 @@ public final class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private View.CreationCompoView creationSujetView1;
     public javax.swing.JTabbedPane editorTabbedPane;
+    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JPanel middlePane;
-    private View.Options options2;
-    private javax.swing.JPanel rightPane;
     // End of variables declaration//GEN-END:variables
 }

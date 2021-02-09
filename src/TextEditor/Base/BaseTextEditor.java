@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import org.fife.com.swabunga.spell.engine.SpellDictionaryHashMap;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -45,9 +46,8 @@ public class BaseTextEditor extends RSyntaxTextArea {
         super(text);
         this.setLineWrap(true);
         this.setTabSize(3);
-        this.initiateEditMenu();        
+        this.initiateEditMenu();
     }
-
 
     public BaseTextEditor() {
         super();
@@ -79,10 +79,9 @@ public class BaseTextEditor extends RSyntaxTextArea {
         String customFile = SavedVariables.getCustomDict();
 
         try {
-            
-            
+
             Reader reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
-            
+
             SpellDictionaryHashMap dict = new SpellDictionaryHashMap(reader);
             parser = new SpellingParser(dict);
             //parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());

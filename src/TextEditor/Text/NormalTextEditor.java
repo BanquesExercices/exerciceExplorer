@@ -5,8 +5,11 @@
  */
 package TextEditor.Text;
 
+import Helper.SavedVariables;
 import TextEditor.Base.BaseTextEditor;
 import java.awt.Color;
+import java.awt.Font;
+import java.io.IOException;
 import javax.swing.Action;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -14,6 +17,7 @@ import javax.swing.JScrollPane;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
+import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 /**
@@ -23,46 +27,48 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 @SuppressWarnings("serial")
 public class NormalTextEditor extends BaseTextEditor {
 
-    
-
     public NormalTextEditor(String text) {
         super(text);
         this.myInit();
     }
 
     public NormalTextEditor() {
-        super();
+        super();        
         this.myInit();
-        
+
     }
 
-    
     public static JScrollPane getMyTextAreaInScrollPane(NormalTextEditor instance) {
         RTextScrollPane sp = new RTextScrollPane(instance);
         return sp;
     }
 
     protected final void myInit() {
-
-     
-        // adding spell checker
+        // theme
+        if (SavedVariables.getTheme() >= 2) {
+            try {
+                Theme theme = Theme.load(getClass().getResourceAsStream(
+                        "/org/fife/ui/rsyntaxtextarea/themes/dark.xml"));
+                theme.apply(this);
+            } catch (IOException ioe) { // Never happens
+                ioe.printStackTrace();
+            }
+        }
+        // font : 
+        this.setFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, SavedVariables.getFontSize()));
         
-
-
         // adding auto-completion abilities
         this.setupAutoCompletion();
 
     }
 
-    
-
     @Override
     public void setupSpellChecker() {
-            this.setDictParser();
-            //parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());
-            parser.setSquiggleUnderlineColor(Color.BLACK);
-            this.clearParsers();
-            this.addParser(parser);
+        this.setDictParser();
+        //parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());
+        parser.setSquiggleUnderlineColor(Color.BLACK);
+        this.clearParsers();
+        this.addParser(parser);
     }
 
     @Override
@@ -71,10 +77,9 @@ public class NormalTextEditor extends BaseTextEditor {
         DefaultCompletionProvider provider = new DefaultCompletionProvider();
         provider.setAutoActivationRules(true, "");
         // name
-        provider.addCompletion(new BasicCompletion(provider,"Maxence Miguel-Brebion","Maxence Miguel-Brebion","Maxence Miguel-Brebion" ));
-        provider.addCompletion(new BasicCompletion(provider,"Elise Antoine","Elise Antoine","Elise Antoine" ));
+        provider.addCompletion(new BasicCompletion(provider, "Maxence Miguel-Brebion", "Maxence Miguel-Brebion", "Maxence Miguel-Brebion"));
+        provider.addCompletion(new BasicCompletion(provider, "Elise Antoine", "Elise Antoine", "Elise Antoine"));
         // ...
-       
 
         AutoCompletion acb = new AutoCompletion(provider);
         acb.install(this);
@@ -85,24 +90,24 @@ public class NormalTextEditor extends BaseTextEditor {
         acb.setChoicesWindowSize(260, 90);
     }
 
-    private void setupJMenus(){
-    
+    private void setupJMenus() {
+
     }
-    
+
     @Override
     public void addToMenuBar(JMenuBar menuBar) {
-        if (!JMenuesEdited){
+        if (!JMenuesEdited) {
             this.setupJMenus();
-            JMenuesEdited=true;
+            JMenuesEdited = true;
         }
         menuBar.add(editMenu);
     }
-    
+
     @Override
     public void removeToMenuBar(JMenuBar menuBar) {
-        if (!JMenuesEdited){
+        if (!JMenuesEdited) {
             this.setupJMenus();
-            JMenuesEdited=true;
+            JMenuesEdited = true;
         }
         menuBar.remove(editMenu);
     }

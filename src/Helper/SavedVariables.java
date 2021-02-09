@@ -35,6 +35,20 @@ public class SavedVariables {
         }
     }
 
+    //theme
+        public static int getTheme() {
+
+        if (prefs != null) {
+            return Integer.valueOf(prefs.get("theme", "0"));
+        } else {
+            return 0;
+        }
+    }
+
+    public static void setTheme(int theme) {
+        prefs.put("theme", String.valueOf(theme));
+    }
+
     // font size
     public static int getFontSize() {
 
