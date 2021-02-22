@@ -12,10 +12,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -110,7 +112,6 @@ public class KeyWords {
     public void addKeywords(List<String> keys) {
         //  add the new keywords, sort, write down and update jcomboboxes
         BufferedWriter b = null;
-        BufferedReader r = null;
         try {
             File f = new File(SavedVariables.getMainGitDir() + "/fichiers_utiles/mots_clefs.txt");
 
@@ -126,7 +127,7 @@ public class KeyWords {
             frCollator.setStrength(Collator.PRIMARY);
             Collections.sort(keywords, frCollator);
 
-            b = new BufferedWriter(new FileWriter(f)); // write back to textfile
+            b = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f),"UTF-8")); // write back to textfile
             PrintWriter out = new PrintWriter(b);
             for (String st : keywords) {
                 out.println(st);

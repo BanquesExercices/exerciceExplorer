@@ -54,6 +54,11 @@ public  class ExercicesChecker {
                     count++;
                     boolean result = checkOneExercice(e,type);
                     if (!result){
+                        // en cas d'echec, on retest (parfois, il faut deux compilations pour un fichier ...)
+                        result = checkOneExercice(e,type);
+                    }
+                    
+                    if (!result){
                         nr.getNewsTwo(e.getPath());
                         nonCompilingList.clear();
                         nonCompilingList.add(e.getPath());

@@ -24,7 +24,6 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import org.fife.com.swabunga.spell.engine.SpellDictionaryHashMap;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;

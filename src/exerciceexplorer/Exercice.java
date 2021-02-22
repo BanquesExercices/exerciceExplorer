@@ -53,7 +53,10 @@ public class Exercice implements Comparable<Exercice> {
                 continue;
             }
             if (status) {
-                imports.add(line.replace("%", ""));
+                String importLine = line.replace("%", "");
+                if (!importLine.isEmpty()){
+                    imports.add(importLine);
+                }
             }
         }
 
@@ -283,7 +286,7 @@ public class Exercice implements Comparable<Exercice> {
     protected void updateContent() {
         this.content.clear();
         for (String s : OsRelated.readFile(this.path + "/sujet.tex")) {
-            this.readme.add(s.trim());
+            this.content.add(s.trim());
         }
     }
 

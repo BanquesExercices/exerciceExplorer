@@ -53,6 +53,7 @@ public class TexWriter {
             output.add("");
             output.add("");
             imports.addAll(element.getImports());
+
         }
     }
 
@@ -64,7 +65,7 @@ public class TexWriter {
         String out = OsRelated.pdfLatex("./output");
         long newTime = OsRelated.lastTimeOfModification("output/output.pdf");
         if ((lastTime < 0 && newTime > 0) || (newTime > lastTime)) {
-            if (OsRelated.isWindows()){
+            if (OsRelated.isWindows()) {
                 OsRelated.killCurrentProcess(); // usefull as pdflatex is started in a terminal window which is paused to let the user see the output.
             }
             return true;
@@ -169,15 +170,21 @@ public class TexWriter {
             output.add(readLine);
 
         }
-        // imports must be added before \begin{document}
-        boolean found = false;
-        int count = 0;
-        while (!found) {
-            found = output.get(count).contains("\\begin{document}");
-            count += 1;
 
+        if (imports.size() > 0) {
+            // imports must be added before \begin{document}
+            boolean found = false;
+            int count = 0;
+            while (!found) {
+                found = output.get(count).contains("\\begin{document}");
+                count += 1;
+            }
+            imports.add("");
+            imports.add(0, " % IMPORTS automatiques");
+            imports.add(" % fin des IMPORTS automatiques");
+            imports.add("");
+            output.addAll(count - 1, imports);
         }
-        output.addAll(count - 1, imports);
 
         return output;
     }

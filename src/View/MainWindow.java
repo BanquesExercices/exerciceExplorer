@@ -40,8 +40,6 @@ public final class MainWindow extends javax.swing.JFrame {
     /**
      * Creates new form MainWindow
      */
-    public static final int modeReadme = 1, modeComposition = 2, modeNone = 0;
-    protected int mode;
 
     protected boolean firstDocumentOpened = false;
     protected ReadmeEditor re = null;
@@ -49,6 +47,7 @@ public final class MainWindow extends javax.swing.JFrame {
     protected CompoEditor ce = null;
     protected SubjectEditor se = null;
     protected ChangeListener cl = null;
+    protected CheckExercicesPanel cep = null;
 
     JMenuBar menuBar;
     protected AbstractAction replaceKeywordAction, replaceWordAction, checkAllExercicesAction, toZeroAction, gitCredentialAction;
@@ -195,7 +194,13 @@ public final class MainWindow extends javax.swing.JFrame {
         checkAllExercicesAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainWindow.this.editorTabbedPane.insertTab("Test de compilation", null, new CheckExercicesPanel(), "", 0);
+
+                if (MainWindow.this.cep ==null){
+                    MainWindow.this.cep = new CheckExercicesPanel();
+                }else{
+                    return;
+                }
+                MainWindow.this.editorTabbedPane.insertTab("Test de compilation", null, MainWindow.this.cep, "", 0);
                 MainWindow.this.editorTabbedPane.setSelectedIndex(0);
             }
         };
@@ -248,6 +253,13 @@ public final class MainWindow extends javax.swing.JFrame {
             menuBar.add(global);
         }
 
+    }
+    
+    public void removeCheckExercicesPanel(){
+        if (this.cep!=null){
+                this.editorTabbedPane.remove(this.cep);
+                this.cep=null;           
+        }        
     }
 
     protected void updateMenuBar() {
@@ -327,13 +339,13 @@ public final class MainWindow extends javax.swing.JFrame {
 
         if (toDelete) {
             this.editorTabbedPane.removeAll();
-            if (ce != null) {
-               
-                this.editorTabbedPane.addTab("Composition", ce);                
-                //this.editorTabbedPane.setFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, SavedVariables.getFontSize()));
-                //this.editorTabbedPane.setTabComponentAt(0, re);
-               
+            if (cep!=null){
+            this.editorTabbedPane.addTab("Test de compilation", cep);                
             }
+            if (ce != null) {
+                this.editorTabbedPane.addTab("Composition", ce);                
+            }
+            
         }
 
         re = new ReadmeEditor(ex);
