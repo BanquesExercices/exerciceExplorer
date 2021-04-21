@@ -52,6 +52,7 @@ public class Options extends JPanel {
             SavedVariables.setMainGitDir(gitFolderInput.getText());
             if (MainWindow.getInstance().updateDatabase()) {
                 gitFolderInput.setBackground(Color.green);
+                GitWrapper.setup();
             } else {
                 gitFolderInput.setBackground(Color.red);
             }
@@ -86,11 +87,13 @@ public class Options extends JPanel {
                 if (files.contains("DM") && files.contains("DS")) {
 
                     outputDirInput.setBackground(Color.green);
-
+                    MainWindow.getInstance().creationSujetView1.enableExport(true);
                 } else {
                     outputDirInput.setBackground(Color.red);
+                    MainWindow.getInstance().creationSujetView1.enableExport(false);
                 }
             } else {
+                MainWindow.getInstance().creationSujetView1.enableExport(false);
                 outputDirInput.setBackground(Color.red);
             }
 
@@ -127,7 +130,7 @@ public class Options extends JPanel {
         });
 
         this.guessEntries();
-        GitWrapper.setup();
+       
 
     }
 
@@ -415,8 +418,9 @@ public class Options extends JPanel {
                 .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(actionsPanelsLayout.createSequentialGroup()
                         .addComponent(jCheckBox1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jCheckBox2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jCheckBox2)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(actionsPanelsLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -424,10 +428,10 @@ public class Options extends JPanel {
                                 .addComponent(jLabel9)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(actionsPanelsLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                                 .addComponent(jLabel12)
                                 .addGap(4, 4, 4)
-                                .addComponent(jComboBox1, 0, 96, Short.MAX_VALUE)
+                                .addComponent(jComboBox1, 0, 94, Short.MAX_VALUE)
                                 .addGap(15, 15, 15)
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -474,7 +478,7 @@ public class Options extends JPanel {
 
         globalDictTextField.setText(SavedVariables.getGlobalDict()
         );
-        globalDictTextField.setToolTipText("<html>\nChemin d'acces (absolu) vers le dictionnaire principal\n<ul>\n    <li> Fichier à encodage UTF-8  </li>\n    <li> Un seul mot par ligne  </li>\n    <li> Ce fichier ne sera pas modifié par l'application   </li>\n</ul>\nLe dictionnaire sera utilisé pour la verification orthographique (aucune vérification sur la grammaire n'est effectuée !). <br>\nUn exmple de dictionnaire se trouve dans le repertoire \"fichiers_utiles\" de la BPEP.\n</html>");
+        globalDictTextField.setToolTipText("<html>\nChemin d'acces (absolu) vers le dictionnaire principal\n<ul>\n    <li> Fichier à encodage UTF-8  </li>\n    <li> Un seul mot par ligne  </li>\n    <li> Ce fichier ne sera pas modifié par l'application   </li>\n</ul>\nLe dictionnaire sera utilisé pour la verification orthographique (aucune vérification sur la grammaire n'est effectuée !). <br>\n<em> Un exmple de dictionnaire se trouve dans le repertoire \"fichiers_utiles\" de la BPEP. </em>\n</html>");
         globalDictTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nPerformed(evt);
@@ -483,7 +487,7 @@ public class Options extends JPanel {
 
         customDictTextField.setText(SavedVariables.getCustomDict()
         );
-        customDictTextField.setToolTipText("<html>\nChemin d'acces (absolu) vers le dictionnaire personnel\n<ul>\n    <li> Fichier à encodage UTF-8  </li>\n    <li> Un seul mot par ligne  </li>\n    <li> L'application pourra ajouter de nouveaux mots de manière définitive à ce dictionnaire  </li>\n</ul>\nCe dictionnaire pourra acceuillir par exemple des termes scientifiques liés aux exercices et absent du dictionnaire principal.\n</html>");
+        customDictTextField.setToolTipText("<html>\nChemin d'acces (absolu) vers le dictionnaire personnel. \n<ul>\n    <li> Fichier à encodage UTF-8  </li>\n    <li> Un seul mot par ligne  </li>\n    <li> L'application pourra ajouter de nouveaux mots de manière définitive à ce dictionnaire  </li>\n</ul>\nCe fichier (facultatif) pourra acceuillir par exemple des termes scientifiques liés aux exercices et absents du dictionnaire principal.\n</html>");
         customDictTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 customDictTextFieldActionPerformed(evt);
@@ -605,12 +609,11 @@ public class Options extends JPanel {
                         .addContainerGap()
                         .addComponent(jLabel10))
                     .addComponent(spellCheckBox)
-                    .addComponent(coloringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(editorPanelLayout.createSequentialGroup()
-                .addComponent(autoCompletionCheckBox)
-                .addGap(50, 50, 50)
-                .addComponent(coloringCheckBox)
+                    .addComponent(coloringPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(editorPanelLayout.createSequentialGroup()
+                        .addComponent(autoCompletionCheckBox)
+                        .addGap(50, 50, 50)
+                        .addComponent(coloringCheckBox)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         editorPanelLayout.setVerticalGroup(
@@ -651,7 +654,7 @@ public class Options extends JPanel {
         });
 
         templatesFolderInput.setText(SavedVariables.getTexModelsPaths());
-        templatesFolderInput.setToolTipText("<html>\nChemin d'acces (absolu) vers le dossier contenant les templates latex :\n<ul>\n    <li> DSmodel.tex  </li>\n    <li> DMmodel.tex  </li>\n    <li> Collemodel.tex  </li>\n    <li> TDmodel.tex  </li>\n</ul>\nCes documents servent de template pour l'inclusion des exercices et doivent inclure le fichier fichiers_utiles/raccourcis_communs.sty <br> et contenir une ligne : ****\n<br> \nqui sera remplacée par l'import des exercices lors de l'édition d'une composition.\n<br>\n<br>\nDes exemples de fichiers fonctionnels se trouvent dans le répertoire path/To/Git/Dir/fichiers_utiles/defaultLatexTemplates <br> (utilsation non conseillée à long terme : couleur orange)\n<br>\n<br>\nIl est préférable d'utiliser ces propres templates en compiant le contenu du dossier precedant puis en <br> modifiants les fichiers suivant ses besoins (couleur verte)\n</html>");
+        templatesFolderInput.setToolTipText("<html>\nChemin d'acces (absolu) vers le dossier contenant les templates latex :\n<ul>\n    <li> DSmodel.tex  </li>\n    <li> DMmodel.tex  </li>\n    <li> Collemodel.tex  </li>\n    <li> TDmodel.tex  </li>\n</ul>\nCes documents servent de template pour l'inclusion des exercices et doivent inclure le fichier fichiers_utiles/raccourcis_communs.sty <br> et contenir une ligne : ****\n<br> \nqui sera remplacée par l'import des exercices lors de l'édition d'une composition.\n<br>\n<br>\n<em> Des exemples de fichiers fonctionnels se trouvent dans le répertoire path/To/Git/Dir/fichiers_utiles/defaultLatexTemplates <br> (utilsation non conseillée à long terme : couleur orange) </em>\n<br>\n<br>\n<em> Il est préférable d'utiliser ces propres templates en compiant le contenu du dossier precedant puis en <br> modifiants les fichiers suivant ses besoins (couleur verte) </em>\n</html>");
         templatesFolderInput.setPreferredSize(new java.awt.Dimension(240, 24));
 
         jLabel6.setText("dossier d'export");
@@ -703,7 +706,7 @@ public class Options extends JPanel {
             .addGroup(newPathesPanelLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addGap(10, 10, 10)
                 .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(pdflatexInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -719,7 +722,7 @@ public class Options extends JPanel {
                 .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(outputDirInput, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         jPanel1.add(newPathesPanel);

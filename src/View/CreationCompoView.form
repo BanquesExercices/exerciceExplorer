@@ -156,6 +156,7 @@
     <Component class="javax.swing.JButton" name="editButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Editer"/>
+        <Property name="toolTipText" type="java.lang.String" value="Permet de cr&#xe9;er la composition regroupant les exercices selectionn&#xe9;s."/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editButtonActionPerformed"/>
@@ -261,6 +262,7 @@
     <Component class="javax.swing.JButton" name="exportButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Exporter"/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Permet d&apos;exporter une composition de mani&#xe8;re p&#xe9;renne&#xa;&lt;br&gt;&#xa;Deux choix sont propos&#xe9;s :&#xa;&lt;ol&gt;&#xa;    &lt;li&gt; export des liens ; vous continuez &#xe0; profiter des MaJ des exercices &#xa;    &lt;li&gt; export en dur ; les fichiers necessaire &#xe0; la compilation de la composition sont tous recopi&#xe9;s&#xa;&lt;/ol&gt;&#xa;&#xa;&lt;em&gt; L&apos;export n&apos;est possible que si un chemin est sp&#xe9;cifi&#xe9; dans les options &lt;/em&gt;&#xa;&#xa;&lt;/html&gt;"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportButtonActionPerformed"/>

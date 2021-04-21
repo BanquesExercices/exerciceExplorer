@@ -179,6 +179,11 @@ public final class MainWindow extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MainWindow.this.editorTabbedPane.insertTab("remplacement de mot clef", null, new ReplaceKeywordPanel(), "", 0);
+                if (!MainWindow.this.firstDocumentOpened) {
+                    firstDocumentOpened = true;
+
+                    MainWindow.this.pack();
+                }
                 MainWindow.this.editorTabbedPane.setSelectedIndex(0);
             }
         };
@@ -187,6 +192,11 @@ public final class MainWindow extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MainWindow.this.editorTabbedPane.insertTab("remplacement de mot", null, new ReplaceWordPanel(), "", 0);
+                if (!MainWindow.this.firstDocumentOpened) {
+                    firstDocumentOpened = true;
+
+                    MainWindow.this.pack();
+                }
                 MainWindow.this.editorTabbedPane.setSelectedIndex(0);
             }
         };
@@ -201,6 +211,11 @@ public final class MainWindow extends javax.swing.JFrame {
                     return;
                 }
                 MainWindow.this.editorTabbedPane.insertTab("Test de compilation", null, MainWindow.this.cep, "", 0);
+                if (!MainWindow.this.firstDocumentOpened) {
+                    firstDocumentOpened = true;
+
+                    MainWindow.this.pack();
+                }
                 MainWindow.this.editorTabbedPane.setSelectedIndex(0);
             }
         };
@@ -340,7 +355,9 @@ public final class MainWindow extends javax.swing.JFrame {
         if (toDelete) {
             this.editorTabbedPane.removeAll();
             if (cep!=null){
-            this.editorTabbedPane.addTab("Test de compilation", cep);                
+            this.editorTabbedPane.addTab("Test de compilation", cep);    
+            
+            
             }
             if (ce != null) {
                 this.editorTabbedPane.addTab("Composition", ce);                
@@ -509,7 +526,7 @@ public final class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private View.CreationCompoView creationSujetView1;
+    public View.CreationCompoView creationSujetView1;
     public javax.swing.JTabbedPane editorTabbedPane;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTabbedPane jTabbedPane1;

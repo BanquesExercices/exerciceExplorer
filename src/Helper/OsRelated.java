@@ -180,7 +180,7 @@ public class OsRelated {
         } else {
             String[] command = new String[]{pathAccordingToOS(SavedVariables.getPdflatexCmd()), "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", "-output-directory='" + pathAccordingToOS(outputDir) + "'", pathAccordingToOS("./output/output.tex")};
 
-            out = OsRelated.execoUnix(command, 30, "."); // une durée d'attente de 20 secondes max semble un bon compromis.
+            out = OsRelated.execoUnix(command, 30, "."); // une durée d'attente de 30 secondes max semble un bon compromis.
 
         }
         return out[1];
@@ -198,9 +198,12 @@ public class OsRelated {
         if (OsRelated.isWindows()) {
             return OsRelated.execo(new String[]{"Get-Command pdflatex | Select-Object -ExpandProperty Definition"})[1];
         } else {
-            return OsRelated.execo(new String[]{"command", "-v", "pdflatex"})[1];
+            return "/Library/TeX/texbin/pdflatex";
+            //return OsRelated.execo(new String[]{"which", "pdflatex"})[1];
         }
     }
+    
+   
 
     // exec command
     protected static String[] execo(String[] command) {
@@ -301,9 +304,9 @@ public class OsRelated {
 
         lastItem = lastItem.trim();
         //lastItem = lastItem.strip();
-
         Command.add(lastItem);
 
+      
         pb.command(Command);
         pb.directory(new File(location));
         //pb.inheritIO();
@@ -318,12 +321,14 @@ public class OsRelated {
             long startTime = System.currentTimeMillis();
             // get process output (input from java point of view)
             is = p.getInputStream();
-
+            
+            
             int in;
             while (System.currentTimeMillis() - startTime < delay * 1000 && (in = is.read()) != -1) {
                 output.append((char) in);
             }
-
+           
+            
         } catch (IOException exp) {
             System.out.flush();
             System.out.println(exp.getMessage());

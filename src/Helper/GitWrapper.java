@@ -30,7 +30,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-
+import org.eclipse.jgit.transport.SshSessionFactory;
 /**
  *
  * @author mbrebion
@@ -70,7 +70,6 @@ public class GitWrapper {
                 repoKind = GitCredential.HTTPS;
             } else {
                 repoKind = GitCredential.SSH;
-
             }
 
             git = new Git(repository);
@@ -91,6 +90,8 @@ public class GitWrapper {
         return false;
     }
 
+    
+    
     // https://www.adeveloperdiary.com/java/how-to-easily-encrypt-and-decrypt-text-in-java/
     protected static String encrypt(String strClearText, String strKey) throws Exception {
         String strData = "";

@@ -93,7 +93,7 @@ public class LatexTextEditor extends BaseTextEditor {
         // auto indent
         this.setAutoIndentEnabled(true);
 
-        // adding spell checker        
+        // adding spell checker     
         this.setupSpellChecker();
 
         // adding folding abilities
@@ -196,11 +196,12 @@ public class LatexTextEditor extends BaseTextEditor {
             // no need for spell check
             return;
         }
-
-        this.setDictParser();
-        if (!dictLoaded) {
+        if (dictLoaded) {
             return;
         }
+        
+        this.setDictParser();
+        
         parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());
         parser.setSquiggleUnderlineColor(Color.BLACK);
         this.clearParsers();
@@ -211,13 +212,15 @@ public class LatexTextEditor extends BaseTextEditor {
     @Override
     public void setupSyntaxColoring() {
 
+        Font f = new Font("SansSerif", Font.PLAIN, (int) (SavedVariables.getFontSize()));
+        this.setFont(f);
+        
         if (!SavedVariables.getColoring()) {
             // no need for coloring
             return;
         }
 
-        Font f = new Font("SansSerif", Font.PLAIN, (int) (SavedVariables.getFontSize()));
-        this.setFont(f);
+        
 
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping(MY_LATEX_STYLE, LatexTokenMaker.class.getName());
@@ -277,19 +280,21 @@ public class LatexTextEditor extends BaseTextEditor {
         provider.addCompletion(new TemplateCompletion(provider, "begin{enumerate}", "begin{enumerate} ... \\end{enumerate}", "begin{enumerate}\n\t\\item ${cursor}\n\t\\item \n\\end{enumerate} ", "Liste numérotée", "Liste numérotée"));
 
         // specific BPEP latex templates
+        
         provider.addCompletion(new TemplateCompletion(provider, "begin{blocQR}", "begin{blocQR} ... \\end{blocQR}", "begin{blocQR}\n\t ${cursor}\n\\end{blocQR} ", "Liste", "Liste"));
         provider.addCompletion(new TemplateCompletion(provider, "partie{", "partie{...}", "partie{${cursor}}\n", "Partie", "Partie"));
         provider.addCompletion(new TemplateCompletion(provider, "sousPartie{", "sousPartie{...}", "sousPartie{${cursor}}\n", "Sous-partie", "Sous-partie"));
         provider.addCompletion(new TemplateCompletion(provider, "fig{", "fig{0.8}{...}", "fig{0.8}{${cursor}}\n", "Figure", "Figure"));
         provider.addCompletion(new TemplateCompletion(provider, "figWrapped{", "figWrapped{0.8}{...}", "figWrapped{0.8}{${cursor}}\n", "Figure à droite du texte", "Figure à droite du texte"));
-        provider.addCompletion(new TemplateCompletion(provider, "figCap{", "figCap{0.8}{...}{...}", "fig{0.8}{${cursor}}{\\labl{...}}\n", "Figure avec légende", "Figure avec légende"));
-        provider.addCompletion(new TemplateCompletion(provider, "figCapWrapped{", "figCapWrapped{0.8}{...}{...}", "figWrapped{0.8}{${cursor}}{\\labl{...}}\n", "Figure avec légende à droite du texte", "Figure avec légende à droite du texte"));
+        provider.addCompletion(new TemplateCompletion(provider, "figCap{", "figCap{0.8}{...}{...}", "figCap{0.8}{${cursor}}{\\label{...}}\n", "Figure avec légende", "Figure avec légende"));
+        provider.addCompletion(new TemplateCompletion(provider, "figCapWrapped{", "figCapWrapped{0.8}{...}{...}", "figCapWrapped{0.8}{${cursor}}{\\label{...}}\n", "Figure avec légende à droite du texte", "Figure avec légende à droite du texte"));
         provider.addCompletion(new TemplateCompletion(provider, "eq{", "eq{...}", "eq{\n\t${cursor}\n}", "Equation", "Equation"));
+        provider.addCompletion(new TemplateCompletion(provider, "eq[align*]{", "eq[align*]{...}", "eq[align*]{\n\t${cursor}\n}", "Equation avec retours à la ligne", "Equation avec retours à la ligne"));
         provider.addCompletion(new TemplateCompletion(provider, "corrigeBonus{", "corrigeBonus{...}", "corrigeBonus{\n\t${cursor}\n}", "corrigé additionel", "corrige additionel"));
         provider.addCompletion(new TemplateCompletion(provider, "sujetUniquement{", "sujetUniquement{...}", "sujetUniquement{\n\t${cursor}\n}", "element présent uniquement hors corrigé", "element présent uniquement hors corrigé"));
         provider.addCompletion(new TemplateCompletion(provider, "siCorrige{", "siCorrige{...}", "siCorrige{\n\t${cursor}\n}", "element présent uniquement avec corrigé", "element présent uniquement avec corrigé"));
+        provider.addCompletion(new TemplateCompletion(provider, "QR{", "QR{...}{...}", "QR{\n\t${cursor}\n}{\n\t\n}", "Question", "Question"));        
         provider.addCompletion(new TemplateCompletion(provider, "QR[", "QR[...]{...}{...}", "QR[${cursor}]{\n\t\n}{\n\t\n}", "Question selon version", "Question selon version"));
-        provider.addCompletion(new TemplateCompletion(provider, "QR{", "QR{...}{...}", "QR{\n\t${cursor}\n}{\n\t\n}", "Question", "Question"));
         provider.addCompletion(new TemplateCompletion(provider, "enonce{", "enonce{...}", "enonce{\n\t${cursor}\n}", "Enonce", "Enonce"));
         provider.addCompletion(new TemplateCompletion(provider, "tcols{", "tcols{0.49}{0.49}{...}{...}", "tcols{0.49}{0.49}{\n\t${cursor}\n}{\n\t\n}", "Double colonne", "Double Colonne"));
         provider.addCompletion(new TemplateCompletion(provider, "vectoriel", "vectoriel", "vectoriel", "produit vectoriel", "produit vectoriel"));
@@ -300,8 +305,11 @@ public class LatexTextEditor extends BaseTextEditor {
         provider.addCompletion(new TemplateCompletion(provider, "Rightarrow", "Rightarrow", "Rightarrow ${cursor}", "Implication", "Implication"));
         provider.addCompletion(new TemplateCompletion(provider, "RightLeftarrow", "RightLeftarrow", "RightLeftarrow ${cursor}", "equivalence", "equivalence"));
         provider.addCompletion(new TemplateCompletion(provider, "ub{", "ub{...}{...}", "ub{${cursor}}{   }", "indication sous l'expression", "indication sous l'expression"));
-        provider.addCompletion(new TemplateCompletion(provider, "sqrt{", "sqrt{", "sqrt{${cursor}}", "racine", "racine"));
-        provider.addCompletion(new TemplateCompletion(provider, "boxed{", "boxed{", "boxed{${cursor}}", "résultat encadré", "résultat encadré"));
+        provider.addCompletion(new TemplateCompletion(provider, "sqrt{", "sqrt{...}", "sqrt{${cursor}}", "racine", "racine"));
+        provider.addCompletion(new TemplateCompletion(provider, "diff{", "diff{...}{...}", "diff{${cursor}}{ }", "dérivée", "dérivée"));
+        provider.addCompletion(new TemplateCompletion(provider, "diff[2]{", "diff[2]{...}{...}", "diff[2]{${cursor}}{ }", "dérivée seconde", "dérivée seconde"));
+        provider.addCompletion(new TemplateCompletion(provider, "mathcal{", "mathcal{...}", "mathcal{${cursor}}", "Belle lettre", "Belle lettre"));
+        provider.addCompletion(new TemplateCompletion(provider, "boxed{", "boxed{...}", "boxed{${cursor}}", "résultat encadré", "résultat encadré"));
 
         acb.install(this);
     }

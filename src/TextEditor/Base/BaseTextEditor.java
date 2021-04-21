@@ -6,6 +6,7 @@
 package TextEditor.Base;
 
 import Helper.SavedVariables;
+import TextEditor.Tex.LatexSpellCheckableTokenIdentifier;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -46,6 +47,7 @@ public class BaseTextEditor extends RSyntaxTextArea {
         this.setLineWrap(true);
         this.setTabSize(3);
         this.initiateEditMenu();
+        
     }
 
     public BaseTextEditor() {
@@ -83,7 +85,6 @@ public class BaseTextEditor extends RSyntaxTextArea {
 
             SpellDictionaryHashMap dict = new SpellDictionaryHashMap(reader);
             parser = new SpellingParser(dict);
-            //parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());
             try {
                 parser.setUserDictionary(new File(customFile));
             } catch (IOException ex) {

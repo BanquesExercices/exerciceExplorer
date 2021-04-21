@@ -274,6 +274,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         jScrollPane1.setViewportView(listeExercices);
 
         editButton.setText("Editer");
+        editButton.setToolTipText("Permet de créer la composition regroupant les exercices selectionnés.");
         editButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editButtonActionPerformed(evt);
@@ -317,6 +318,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         jLabel6.setText("Composition :");
 
         exportButton.setText("Exporter");
+        exportButton.setToolTipText("<html>\nPermet d'exporter une composition de manière pérenne\n<br>\nDeux choix sont proposés :\n<ol>\n    <li> export des liens ; vous continuez à profiter des MaJ des exercices \n    <li> export en dur ; les fichiers necessaire à la compilation de la composition sont tous recopiés\n</ol>\n\n<em> L'export n'est possible que si un chemin est spécifié dans les options </em>\n\n</html>");
         exportButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exportButtonActionPerformed(evt);
@@ -512,6 +514,11 @@ public class CreationCompoView extends javax.swing.JPanel {
 
     public String getOutputType() {
         return (String) outputTypes.getSelectedItem();
+    }
+    
+    
+    public void enableExport(boolean value){
+        exportButton.setEnabled(value);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
