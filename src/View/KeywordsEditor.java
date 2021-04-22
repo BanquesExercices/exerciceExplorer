@@ -52,8 +52,9 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer,MenuB
     }
 
     private void appendKeyword(String name) {
+        System.out.println("add keyword");
         if (!contains(name)) {
-            textEditorBinded1.append(name);
+            textEditorBinded1.appendToNextLine(name);
         }
     }
 
@@ -70,9 +71,12 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer,MenuB
         keywordPicker = new javax.swing.JComboBox();
         AutoCompleteDecorator.decorate(keywordPicker);
         ComboBoxCellEditor editor = new ComboBoxCellEditor(keywordPicker);
+        keywordPicker.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+
         CellEditorListener listener = new CellEditorListener() {
             @Override
             public void editingStopped(ChangeEvent e) {
+                System.out.println("fire " + e.toString());
                 String name=(String)keywordPicker.getSelectedItem();
                 KeywordsEditor.this.appendKeyword(name);
             }
@@ -105,19 +109,18 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer,MenuB
                 .addContainerGap()
                 .addComponent(jLabel2)
                 .addGap(12, 12, 12)
-                .addComponent(keywordPicker, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(keywordPicker, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(textEditorBinded1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(textEditorBinded1, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(keywordPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addGap(0, 0, 0)
-                .addComponent(textEditorBinded1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textEditorBinded1, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -142,7 +145,7 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer,MenuB
         // check for new keywords
         List<String> newKeywords = new ArrayList<>();
         for (String st : typedKeywords) {
-            if (!KeyWords.exists(st)) {
+            if (!KeyWords.exists(st) && !st.trim().isEmpty() ) {
                 newKeywords.add(st);
             }
         }
@@ -151,7 +154,7 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer,MenuB
             int output = JOptionPane.showConfirmDialog(null, "il y a " + newKeywords.size() + " nouveaux mots clefs.", "Ajout des nouveaux mots clefs ?", JOptionPane.YES_NO_OPTION);
             if (output == JOptionPane.YES_OPTION) {
                 KeyWords.addNewKeywords(newKeywords);
-                KeyWords.updateKeywordsList();
+                //KeyWords.updateKeywordsList();
             }
         }
 

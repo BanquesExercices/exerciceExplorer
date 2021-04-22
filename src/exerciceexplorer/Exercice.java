@@ -271,7 +271,9 @@ public class Exercice implements Comparable<Exercice> {
     protected void updateKeywords() {
         this.keywords.clear();
         for (String s : OsRelated.readFile(this.getKeywordsPath())) {
-            this.keywords.add(s.trim());
+            if (s.trim()!=""){
+                this.keywords.add(s.trim());
+            }
         }
 
     }

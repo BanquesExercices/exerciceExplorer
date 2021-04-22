@@ -34,6 +34,8 @@ import javax.swing.event.DocumentListener;
 import TextEditor.Base.FileProcessor;
 import java.awt.Color;
 import java.awt.Font;
+import java.util.HashSet;
+import java.util.Set;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
@@ -79,38 +81,37 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         // specific to find and replace
         findTextField.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
-                TextEditorBinded.this.findAction(true,TextEditorBinded.this.findTextField.getText() );
+                TextEditorBinded.this.findAction(true, TextEditorBinded.this.findTextField.getText());
             }
 
             public void removeUpdate(DocumentEvent e) {
-                TextEditorBinded.this.findAction(true,TextEditorBinded.this.findTextField.getText());
+                TextEditorBinded.this.findAction(true, TextEditorBinded.this.findTextField.getText());
             }
 
             public void insertUpdate(DocumentEvent e) {
-                TextEditorBinded.this.findAction(true,TextEditorBinded.this.findTextField.getText());
+                TextEditorBinded.this.findAction(true, TextEditorBinded.this.findTextField.getText());
             }
         });
-        
+
         replaceWhatTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                TextEditorBinded.this.findAction(true,TextEditorBinded.this.replaceWhatTextField.getText());
+                TextEditorBinded.this.findAction(true, TextEditorBinded.this.replaceWhatTextField.getText());
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                TextEditorBinded.this.findAction(true,TextEditorBinded.this.replaceWhatTextField.getText());
+                TextEditorBinded.this.findAction(true, TextEditorBinded.this.replaceWhatTextField.getText());
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                TextEditorBinded.this.findAction(true,TextEditorBinded.this.replaceWhatTextField.getText());
+                TextEditorBinded.this.findAction(true, TextEditorBinded.this.replaceWhatTextField.getText());
             }
         });
 
-        
         //jButton2.setBorderPainted(false); 
-        jButton2.setContentAreaFilled(false); 
+        jButton2.setContentAreaFilled(false);
         //jButton2.setFocusPainted(false); 
         //jButton2.setOpaque(false);
     }
@@ -170,7 +171,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
             // default is textFile
             this.syntaxStyle = textFile;
             textArea = new NormalTextEditor();
-            
+
         }
 
         textArea.dealWithFileProcessorJMenu(this); // enabling saving from JMenuBar
@@ -228,16 +229,10 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         return status;
     }
 
-    
-    
-   
-
     ///////////////////////////////////////////////
     ////////// find and replace  //////////////////
     ///////////////////////////////////////////////
-    
     /////////////////// find //////////////////////
-    
     @Override
     public void toggleFindPanel() {
         if (!this.findPanel.isVisible()) {
@@ -246,7 +241,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
             this.endFindPanel();
         }
     }
-    
+
     public void setupFindAction(String expr) {
         context = new SearchContext();
         context.setSearchFor(expr);
@@ -254,16 +249,15 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         context.setRegularExpression(false);
     }
 
-    
-     public int findAction(boolean forward, String text) {
+    public int findAction(boolean forward, String text) {
         this.setupFindAction(text);
         int caretLoc = textArea.getCaretPosition();
         context.setSearchForward(forward);
-        
+
         SearchResult sr = SearchEngine.find(textArea, context);
-        this.nbLabel.setText("  ("+ sr.getMarkedCount() + ")  ");
-        this.replaceNbLabel.setText("  ("+ sr.getMarkedCount() + ")  ");
-        
+        this.nbLabel.setText("  (" + sr.getMarkedCount() + ")  ");
+        this.replaceNbLabel.setText("  (" + sr.getMarkedCount() + ")  ");
+
         boolean found = sr.getMarkedCount() > 0;
         if (!found) {
             this.findTextField.setForeground(Color.red);
@@ -276,10 +270,10 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         textArea.setCaretPosition(caretLoc);
         return newCaret;
     }
-    
+
     public void findActionMove(boolean forward) {
-        int newCaret = this.findAction(forward,TextEditorBinded.this.findTextField.getText());
-        textArea.setCaretPosition(newCaret-1);
+        int newCaret = this.findAction(forward, TextEditorBinded.this.findTextField.getText());
+        textArea.setCaretPosition(newCaret - 1);
     }
 
     public void startFindPanel() {
@@ -297,20 +291,21 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         SearchResult sr = SearchEngine.find(textArea, context);
     }
 
-    
     /////////////////// replace //////////////////////
-    
-     @Override
+    @Override
     public void toggleReplacePanel() {
-         if (!this.replacePanel.isVisible()) {
+        if (!this.replacePanel.isVisible()) {
             this.startReplacePanel();
         } else {
             this.endReplacePanel();
         }
     }
-    
-     public void startReplacePanel() {
-         this.findPanel.setVisible(false);
+
+    public void startReplacePanel() {
+
+        if (this.findPanel.isVisible()) {
+            replaceWhatTextField.setText(findTextField.getText());
+        }
         this.replacePanel.setVisible(true);
         this.replaceWhatTextField.setText("...");
         this.replaceWhatTextField.selectAll();
@@ -324,34 +319,30 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         this.context.setSearchFor("abcdzpretztpo");
         SearchResult sr = SearchEngine.find(textArea, context);
     }
-    
-    
-    public void replaceNext(){
+
+    public void replaceNext() {
         context.setSearchFor(this.replaceWhatTextField.getText());
         context.setReplaceWith(this.replaceWithTextField.getText());
         context.setSearchForward(true);
-        
-        SearchResult sr =  SearchEngine.find(textArea, context);
+
+        SearchResult sr = SearchEngine.find(textArea, context);
         int begin = sr.getMatchRange().getStartOffset();
         SearchEngine.replace(textArea, context);
-        
+
         textArea.setCaretPosition(begin);
-        this.findAction(true,this.replaceWhatTextField.getText() );
+        this.findAction(true, this.replaceWhatTextField.getText());
     }
-    
-    public void replaceAll(){
+
+    public void replaceAll() {
         context.setSearchFor(this.replaceWhatTextField.getText());
         context.setReplaceWith(this.replaceWithTextField.getText());
         context.setSearchForward(true);
         SearchResult sr = SearchEngine.replaceAll(textArea, context);
         textArea.setCaretPosition(sr.getMatchRange().getEndOffset());
-        this.findAction(true,this.replaceWhatTextField.getText() );
+        this.findAction(true, this.replaceWhatTextField.getText());
     }
-    
-    
+
     ///////// end of find & replace section ///////////////
-    
-    
     @Override
     public boolean saveFile() {
         if (hasChanged) { // prevent intempestive saving
@@ -367,21 +358,39 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
             this.lastUpdate = System.currentTimeMillis();
             resetHasChanged();
             List<String> out = this.getText();
+
             if (this.syntaxStyle == keywordsFile) {
+                // convert to set to erase duplicates and blanks
+                Set<String> set = new HashSet<>();
+                set.addAll(out);
+                set.remove("\n");
+                set.remove("");
+                out.clear();
+                out.addAll(set);
+ 
+                // sort
                 Collator frCollator = Collator.getInstance(Locale.FRENCH);
                 frCollator.setStrength(Collator.PRIMARY);
                 Collections.sort(out, frCollator);
             }
+            while (out.get(0).trim().isEmpty()) {
+                out.remove(0);
+            }
+
             resetHasChanged();
             OsRelated.writeToFile(out, f.getAbsolutePath());
             notifyAllObserver("save");
-            
+
             return true;
         }
         return false;
     }
 
-    public void append(String s) {
+    public void appendToNextLine(String s) {
+        if (!textArea.getText().endsWith("\n")) {
+            textArea.append("\n");
+        }
+
         textArea.append(s + "\n");
     }
 
@@ -625,7 +634,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(texPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 222, Short.MAX_VALUE)
                 .addComponent(reloadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -640,7 +649,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
                 .addGap(2, 2, 2)
                 .addComponent(replacePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -703,7 +712,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
     }//GEN-LAST:event_replaceNextButtonActionPerformed
 
     private void replaceAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceAllButtonActionPerformed
-       this.replaceAll();
+        this.replaceAll();
     }//GEN-LAST:event_replaceAllButtonActionPerformed
 
     private void texPanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_texPanelComponentShown
@@ -722,7 +731,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         //open directory of exercice
-        
+
         OsRelated.openDirectoryOf(f.getAbsolutePath());
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -820,7 +829,5 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         this.updateVersionTags();
         this.updateQuestionLabel();
     }
-
-    
 
 }

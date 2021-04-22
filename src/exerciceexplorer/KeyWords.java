@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -42,28 +43,12 @@ public class KeyWords {
     protected static Collection<JComboBox> jcbs = new HashSet<>();
 
     public static void updateKeywordsList() {
-        try {
-            getInstance().updateKeyWords();
-        } catch (IOException ex) {
-            System.err.println("global keyword file not found");
-        }
+        getInstance().updateKeyWords();
+        
 
     }
     
-    public static boolean replaceKeywordAndUpdate(String before, String after) {
-        boolean out=false;
-        for (int i = 0; i < instance.keywords.size(); i++) {
-            if (before.equals(instance.keywords.get(i))) {
-                instance.keywords.set(i, after);
-                out=true;
-            }
-        }
-        OsRelated.writeToFile(instance.keywords,SavedVariables.getMainGitDir() + "/fichiers_utiles/mots_clefs.txt" );
-        for (JComboBox jcb : jcbs) {
-                jcb.setModel(getDefaultComboBoxModelModel(jcb));
-            }
-        return out;
-    }
+    
 
     public static DefaultComboBoxModel<String> getDefaultComboBoxModelModel(JComboBox jcb) {
         // add the jComboBox to the list of comboboxes which uses this model
@@ -102,19 +87,13 @@ public class KeyWords {
 
     protected KeyWords() {
         this.keywords = new ArrayList<>();
-        try {
-            this.updateKeyWords();
-        } catch (IOException ex) {
-            System.err.println("global keyword file not found");
-        }
+        this.updateKeyWords();
+       
     }
 
     public void addKeywords(List<String> keys) {
-        //  add the new keywords, sort, write down and update jcomboboxes
-        BufferedWriter b = null;
-        try {
-            File f = new File(SavedVariables.getMainGitDir() + "/fichiers_utiles/mots_clefs.txt");
-
+            //  add the new keywords, sort, write down and update jcomboboxes
+        
             // mix all keywords (check for duplicate)
             for (String key : keys) {
                 if (!keywords.contains(key)) {
@@ -122,51 +101,49 @@ public class KeyWords {
                 }
             }
 
-            //keywords.sort(null); // sort
-            Collator frCollator = Collator.getInstance(Locale.FRENCH);
-            frCollator.setStrength(Collator.PRIMARY);
-            Collections.sort(keywords, frCollator);
+            // sort all key words
+            this.sortKeyWords();
 
-            b = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f),"UTF-8")); // write back to textfile
-            PrintWriter out = new PrintWriter(b);
-            for (String st : keywords) {
-                out.println(st);
-            }
-            out.flush();
-
+           
+            // update comboboxes
             for (JComboBox jcb : jcbs) {
                 jcb.setModel(getDefaultComboBoxModelModel(jcb));
             }
 
-        } catch (IOException ex) {
-            Logger.getLogger(KeyWords.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                b.close();
-            } catch (IOException ex) {
-                Logger.getLogger(KeyWords.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        
 
     }
     
     
+    protected void sortKeyWords(){
+            Collator frCollator = Collator.getInstance(Locale.FRENCH);
+            frCollator.setStrength(Collator.PRIMARY);
+            Collections.sort(keywords, frCollator);        
+    }
     
 
-    public void updateKeyWords() throws FileNotFoundException, IOException {
-        this.keywords.clear();
-        File f = new File(SavedVariables.getMainGitDir() + "/fichiers_utiles/mots_clefs.txt");
-        //BufferedReader b = new BufferedReader(new FileReader(f));
-        BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
+    public void updateKeyWords() {
         
-        String readLine = "";
-        while ((readLine = b.readLine()) != null) {
-            if (this.keywords.contains(readLine.trim())) {
-                System.out.println("Duplicate keyword in global file : " + readLine.trim());
+        this.keywords.clear();
+        
+        // a set is used to deal with duplicates
+        Set<String> set=new HashSet<>();
+        // we read all exercices and add every keywords once
+        for (Exercice e : ExerciceFinder.getExercices()){
+            for (String kw : e.getKeywords()){
+                set.add(kw);
+               
             }
-            this.keywords.add(readLine.trim());
         }
-        b.close();
+        
+        this.keywords.addAll(set);
+        this.sortKeyWords();
+        
+        // remove blank keywords (if any, they should be first elements in the sorted list)
+        while(keywords.get(0).trim().isEmpty()){
+            keywords.remove(0);
+        }
+
     }
 
 }

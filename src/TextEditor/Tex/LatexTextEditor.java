@@ -199,13 +199,16 @@ public class LatexTextEditor extends BaseTextEditor {
         if (dictLoaded) {
             return;
         }
-        
+
         this.setDictParser();
-        
-        parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());
-        parser.setSquiggleUnderlineColor(Color.BLACK);
-        this.clearParsers();
-        this.addParser(parser);
+        try {
+            parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());
+            parser.setSquiggleUnderlineColor(Color.BLACK);
+            this.clearParsers();
+            this.addParser(parser);
+        } catch (NullPointerException e) {
+            System.err.println("problème lors du chargement du dictionnaire");
+        }
 
     }
 
@@ -214,13 +217,11 @@ public class LatexTextEditor extends BaseTextEditor {
 
         Font f = new Font("SansSerif", Font.PLAIN, (int) (SavedVariables.getFontSize()));
         this.setFont(f);
-        
+
         if (!SavedVariables.getColoring()) {
             // no need for coloring
             return;
         }
-
-        
 
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping(MY_LATEX_STYLE, LatexTokenMaker.class.getName());
@@ -280,7 +281,6 @@ public class LatexTextEditor extends BaseTextEditor {
         provider.addCompletion(new TemplateCompletion(provider, "begin{enumerate}", "begin{enumerate} ... \\end{enumerate}", "begin{enumerate}\n\t\\item ${cursor}\n\t\\item \n\\end{enumerate} ", "Liste numérotée", "Liste numérotée"));
 
         // specific BPEP latex templates
-        
         provider.addCompletion(new TemplateCompletion(provider, "begin{blocQR}", "begin{blocQR} ... \\end{blocQR}", "begin{blocQR}\n\t ${cursor}\n\\end{blocQR} ", "Liste", "Liste"));
         provider.addCompletion(new TemplateCompletion(provider, "partie{", "partie{...}", "partie{${cursor}}\n", "Partie", "Partie"));
         provider.addCompletion(new TemplateCompletion(provider, "sousPartie{", "sousPartie{...}", "sousPartie{${cursor}}\n", "Sous-partie", "Sous-partie"));
@@ -293,7 +293,7 @@ public class LatexTextEditor extends BaseTextEditor {
         provider.addCompletion(new TemplateCompletion(provider, "corrigeBonus{", "corrigeBonus{...}", "corrigeBonus{\n\t${cursor}\n}", "corrigé additionel", "corrige additionel"));
         provider.addCompletion(new TemplateCompletion(provider, "sujetUniquement{", "sujetUniquement{...}", "sujetUniquement{\n\t${cursor}\n}", "element présent uniquement hors corrigé", "element présent uniquement hors corrigé"));
         provider.addCompletion(new TemplateCompletion(provider, "siCorrige{", "siCorrige{...}", "siCorrige{\n\t${cursor}\n}", "element présent uniquement avec corrigé", "element présent uniquement avec corrigé"));
-        provider.addCompletion(new TemplateCompletion(provider, "QR{", "QR{...}{...}", "QR{\n\t${cursor}\n}{\n\t\n}", "Question", "Question"));        
+        provider.addCompletion(new TemplateCompletion(provider, "QR{", "QR{...}{...}", "QR{\n\t${cursor}\n}{\n\t\n}", "Question", "Question"));
         provider.addCompletion(new TemplateCompletion(provider, "QR[", "QR[...]{...}{...}", "QR[${cursor}]{\n\t\n}{\n\t\n}", "Question selon version", "Question selon version"));
         provider.addCompletion(new TemplateCompletion(provider, "enonce{", "enonce{...}", "enonce{\n\t${cursor}\n}", "Enonce", "Enonce"));
         provider.addCompletion(new TemplateCompletion(provider, "tcols{", "tcols{0.49}{0.49}{...}{...}", "tcols{0.49}{0.49}{\n\t${cursor}\n}{\n\t\n}", "Double colonne", "Double Colonne"));
