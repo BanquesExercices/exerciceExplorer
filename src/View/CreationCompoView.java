@@ -139,6 +139,7 @@ public class CreationCompoView extends javax.swing.JPanel {
     public boolean updateDataBase() {
         boolean out = ef.updateList();
         this.updateModel();
+        KeyWords.updateKeywordsList();
         return out;
     }
 
@@ -151,7 +152,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         keyWordsHolder.remove(kwv);
         keyWordsHolder.revalidate();
         keyWordsHolder.repaint();
-        if (selectedKeyWords.size() == 0) {
+        if (selectedKeyWords.isEmpty()) {
             this.keywordsScrollPane.setVisible(false);
         }
         this.updateModel();

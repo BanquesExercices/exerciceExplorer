@@ -233,7 +233,9 @@ public class Exercice implements Comparable<Exercice> {
         boolean out = false;
         for (int i = 0; i < keywords.size(); i++) {
             if (before.equals(keywords.get(i))) {
-                keywords.set(i, after);
+                if (doReplace){
+                    keywords.set(i, after);
+                }
                 out = true;
             }
         }

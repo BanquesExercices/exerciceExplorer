@@ -7,6 +7,7 @@ package View;
 
 import Helper.FindAndReplace;
 import exerciceexplorer.KeyWords;
+import java.util.List;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ComboBoxCellEditor;
 
@@ -15,16 +16,13 @@ import org.jdesktop.swingx.autocomplete.ComboBoxCellEditor;
  * @author mbrebion
  */
 public class ReplaceKeywordPanel extends javax.swing.JPanel {
+
     /**
      * Creates new form replaceKeywordPanel
      */
     public ReplaceKeywordPanel() {
         initComponents();
     }
-    
- 
-
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -41,21 +39,24 @@ public class ReplaceKeywordPanel extends javax.swing.JPanel {
         ComboBoxCellEditor editor = new ComboBoxCellEditor(keywordPicker);
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        newKeyWordTextField = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         returnLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
 
         keywordPicker.setModel(KeyWords.getDefaultComboBoxModelModel(keywordPicker));
+        keywordPicker.setMaximumSize(new java.awt.Dimension(300, 60));
         keywordPicker.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
             public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                countKeywords(evt);
             }
             public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-                countKeywords(evt);
             }
         });
         keywordPicker.addActionListener(new java.awt.event.ActionListener() {
@@ -64,15 +65,11 @@ public class ReplaceKeywordPanel extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setText("Mot clef à changer");
+        jLabel1.setText("Mot clé à changer");
 
-        jLabel2.setText("Nouveau mot clef");
+        jLabel2.setText("Nouveau mot clé");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
+        newKeyWordTextField.setColumns(30);
 
         jLabel4.setText("Le changement sera effectif sur ");
 
@@ -92,6 +89,12 @@ public class ReplaceKeywordPanel extends javax.swing.JPanel {
             }
         });
 
+        jTextArea1.setEditable(false);
+        jTextArea1.setBackground(new java.awt.Color(238, 238, 238));
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -107,26 +110,30 @@ public class ReplaceKeywordPanel extends javax.swing.JPanel {
                         .addGap(0, 0, 0)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(15, 15, 15)
                         .addComponent(jLabel2)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextField1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addComponent(newKeyWordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
                         .addContainerGap())))
             .addGroup(layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(5, 5, 5))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(187, 187, 187)
-                .addComponent(returnLabel)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(returnLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,45 +145,64 @@ public class ReplaceKeywordPanel extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(keywordPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(returnLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                    .addComponent(newKeyWordTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                        .addGap(6, 6, 6))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(returnLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel4)
-                        .addGap(0, 0, 0)
+                        .addGap(2, 2, 2)
                         .addComponent(jLabel5))
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addGap(2, 2, 2))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+                        .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void keywordPickerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keywordPickerActionPerformed
-        
+
     }//GEN-LAST:event_keywordPickerActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int count = FindAndReplace.findStringAndReplace(FindAndReplace.keywordsFile, keywordPicker.getSelectedItem().toString(), jTextField1.getText(), true).size();
-        jTextField1.setText("");
-        keywordPicker.setSelectedItem("");
-        returnLabel.setText(""+count +" changements effectués");
-        
+        int count = FindAndReplace.findStringAndReplace(FindAndReplace.keywordsFile, keywordPicker.getSelectedItem().toString(), newKeyWordTextField.getText(), true).size();
+        newKeyWordTextField.setText("");
+        keywordPicker.setSelectedIndex(0);
+        returnLabel.setText("" + count + " changements effectués");
+        KeyWords.updateKeywordsList();
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         MainWindow.getInstance().editorTabbedPane.remove(this);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        String out="Exercices concernés : ";
-        out=out+FindAndReplace.findStringAndReplace(FindAndReplace.keywordsFile, keywordPicker.getSelectedItem().toString(),"xyxy",false).size();
-        returnLabel.setText(out);
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
     private void countKeywords(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_countKeywords
-       
+        String out = "Exercices concernés : ";
+        List<String> paths;
+        try {
+            paths = FindAndReplace.findStringAndReplace(FindAndReplace.keywordsFile, keywordPicker.getSelectedItem().toString(), newKeyWordTextField.getText(), false);
+
+            out += paths.size();
+
+            jTextArea1.setText("");
+            for (String p : paths) {
+                jTextArea1.append(p + "\n");
+            }
+        } catch (NullPointerException e) {
+            out += " 0";
+        }
+        returnLabel.setText(out);
     }//GEN-LAST:event_countKeywords
 
 
@@ -187,8 +213,10 @@ public class ReplaceKeywordPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JComboBox keywordPicker;
+    private javax.swing.JTextField newKeyWordTextField;
     private javax.swing.JLabel returnLabel;
     // End of variables declaration//GEN-END:variables
 }
