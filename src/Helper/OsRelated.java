@@ -64,9 +64,13 @@ public class OsRelated {
         BufferedWriter b;
         try {
             b = new BufferedWriter(new FileWriter(f, true));
+            int count=0;
             for (String line : in) {
                 b.write(line);
-                b.newLine();
+                count++;
+                if (count<in.size()){
+                    b.write("\n"); // enforcing Unix style EOL
+                }
             }
             b.close();
 
@@ -84,17 +88,21 @@ public class OsRelated {
         try {
 
             b = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
-
+            
+            int count=0;
             for (String line : in) {
                 b.write(line);
-                //if (!OsRelated.isWindows()) {
-                b.newLine();
-                //}
+                count++;
+                if (count<in.size()){
+                    b.write("\n"); // enforcing Unix style EOL
+                }
             }
+            
+            
             b.close();
 
         } catch (IOException ex) {
-            System.out.println(path + " file cannot be outputed");
+            System.err.println(path + " file cannot be outputed");
             return false;
         }
         return true;
@@ -115,6 +123,7 @@ public class OsRelated {
 
         String readLine = "";
         try {
+            
             while ((readLine = b.readLine()) != null) {
                 out.add(readLine);
             }

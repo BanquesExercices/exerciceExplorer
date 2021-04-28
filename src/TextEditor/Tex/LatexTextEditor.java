@@ -58,7 +58,6 @@ public class LatexTextEditor extends BaseTextEditor {
     protected static Dictionary<String, Integer> tokenDict = null;
     protected static Dictionary<Integer, String> defaultColorDict = null;
     protected AutoCompletion acb;
-    private static String _lastData = "";
 
     public LatexTextEditor(String text) {
         super(text);

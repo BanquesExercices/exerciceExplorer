@@ -6,7 +6,6 @@
 package View;
 
 import Helper.OsRelated;
-import Helper.SavedVariables;
 import Helper.Utils;
 import TextEditor.Base.BaseTextEditor;
 import TextEditor.Tex.LatexTextEditor;
@@ -33,7 +32,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import TextEditor.Base.FileProcessor;
 import java.awt.Color;
-import java.awt.Font;
 import java.util.HashSet;
 import java.util.Set;
 import org.fife.ui.rtextarea.SearchContext;
@@ -131,13 +129,19 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
     }
 
     public List<String> getText() {
-
-        String[] split = textArea.getText().split("\n");
+        
+        String[] split = textArea.getText().replaceAll("\\r\\n", "\n").split("\n");
         ArrayList<String> out = new ArrayList<>();
         Charset charset = Charset.forName("UTF-8"); // ensure only utf8 character
         for (String s : split) {
             out.add(charset.decode(charset.encode(s)).toString());
         }
+        
+        while(textArea.getLineCount() != out.size()){
+            out.add("");
+        }
+
+        
         return out;
     }
 
@@ -176,6 +180,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
 
         textArea.dealWithFileProcessorJMenu(this); // enabling saving from JMenuBar
 
+        
         jPanel1.removeAll();
         jPanel1.add(BaseTextEditor.getMyTextAreaInScrollPane(textArea));
         f = new File(path);
@@ -367,12 +372,13 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
                 set.remove("");
                 out.clear();
                 out.addAll(set);
- 
+
                 // sort
                 Collator frCollator = Collator.getInstance(Locale.FRENCH);
                 frCollator.setStrength(Collator.PRIMARY);
                 Collections.sort(out, frCollator);
             }
+            // remove blank lines at begenning
             while (out.get(0).trim().isEmpty()) {
                 out.remove(0);
             }
@@ -634,7 +640,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(texPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 222, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 206, Short.MAX_VALUE)
                 .addComponent(reloadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -649,7 +655,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                 .addGap(2, 2, 2)
                 .addComponent(replacePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)

@@ -97,7 +97,8 @@ public class TexFoldParser implements FoldParser {
                 questionsList.add(line);
                 if (matcher.group().contains("]")) {
                     try {
-                        String versions = matcher.group().substring(4, matcher.group().length()-1);
+                        String versions = matcher.group().substring(4, matcher.group().indexOf("]"));
+                        //String versions = matcher.group().substring(4, matcher.group().length()-1);
                         for (String t : versions.split(",")){
                             String trimed = t.trim();
                             if (!tagsList.contains(trimed) && !trimed.equals("")){

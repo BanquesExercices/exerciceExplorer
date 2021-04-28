@@ -553,7 +553,7 @@ public class CreationCompoView extends javax.swing.JPanel {
 
     public void loadSet() {
         JFileChooser choix = new JFileChooser();
-        choix.setCurrentDirectory(new File(SavedVariables.getMainGitDir() + "/untracked/feuilles_exercices"));
+        choix.setCurrentDirectory(new File(SavedVariables.getOutputDir()));
         choix.addChoosableFileFilter(new javax.swing.filechooser.FileFilter() {
             @Override
             public boolean accept(File f) {

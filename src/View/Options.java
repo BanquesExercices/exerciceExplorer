@@ -36,7 +36,7 @@ public class Options extends JPanel {
     public Options() {
 
         initComponents();
-        
+
         // better dealing with jTextField : input is saved whenever the text changes : we do not wait for return key anymore
         Utils.addChangeListener(pdflatexInput, (ChangeEvent e) -> {
             SavedVariables.setPdflatexCmd(pdflatexInput.getText());
@@ -106,7 +106,11 @@ public class Options extends JPanel {
 
         pdflatexInput.setText(pdflatexInput.getText());
 
-        outputDirInput.setText(outputDirInput.getText());
+        if (outputDirInput.getText().isEmpty()) {
+            outputDirInput.setText("A remplir pour pouvoir exporter");
+        } else {
+            outputDirInput.setText(outputDirInput.getText());
+        }
 
         Utils.addChangeListener(globalDictTextField, (ChangeEvent e) -> {
             SavedVariables.setGlobalDict(globalDictTextField.getText());
@@ -130,7 +134,6 @@ public class Options extends JPanel {
         });
 
         this.guessEntries();
-       
 
     }
 
@@ -145,12 +148,12 @@ public class Options extends JPanel {
 
             try {
                 String decodedPath = OsRelated.pathAccordingToOS(URLDecoder.decode(localpath, "UTF-8").trim().split("bpep")[0] + "bpep");
-                if (OsRelated.isWindows()){
-                    decodedPath=decodedPath.replaceFirst("\\\\", "");
+                if (OsRelated.isWindows()) {
+                    decodedPath = decodedPath.replaceFirst("\\\\", "");
                     // this prevent windows to include a "\" before C:
                 }
                 this.gitFolderInput.setText(decodedPath);
-                
+
             } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(Options.class.getName()).log(Level.SEVERE, null, ex);
             }

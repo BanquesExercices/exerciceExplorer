@@ -62,10 +62,13 @@ SentenceWB                                 = ({RAnyCharWB} | {Whitespace} |{Appo
 
 
 /* BLOCKbegin may catch various options enclosed in brackets */
-BLOCKbegin = ("\n"|{Whitespace})*("\\begin{"{AnyChar}+"}") ("["{RAnyCharWB}*"]")? ("{"{RAnyCharWB}*"}")* ("\n")+
-BLOCKend = ("\\end{"{AnyChar}+"}")("\n")*
-ADDQbegin = ("\n"|{Whitespace})*("\\QR{")("\n"|{Whitespace})*
-ADDQloginBegin = ("\n"|{Whitespace})*("\\QR["{AnyChar}+"]{")("\n"|{Whitespace})*
+BLOCKbegin     = ("\n"|{Whitespace})* ("\\begin{"{AnyChar}+"}") ("["{SentenceWB}*"]")* ({OpenBracket}{SentenceWB}*{CloseBracket})* ("\n")+
+BLOCKbeginArgs = ("\n"|{Whitespace})*("\\begin{"{AnyChar}+"}") {Sentence}+ ("\n")+
+BLOCKend       = ("\\end{"{AnyChar}+"}")("\n")*
+
+ADDQbegin       = ("\n"|{Whitespace})*("\\QR{")("\n"|{Whitespace})*
+ADDQBaremeBegin = ("\n"|{Whitespace})*("\\QR[]["({AnyChar}|",")+"]{")("\n"|{Whitespace})*
+ADDQloginBegin  = ("\n"|{Whitespace})*("\\QR["{AnyChar}+"]{")("\n"|{Whitespace})*
 MLEbegin = ("\n"|{Whitespace})*("\\eq")("["{AnyChar}+"*"?"]")?("\n"|{Whitespace})*("{")("\n"|{Whitespace})*
 
 TCOLSbegin = ("\n"|{Whitespace})*("\\tcols{"{Number}"}{"{Number}"}{")("\n")*
@@ -86,15 +89,17 @@ FIGCAPbegin = ("\n"|{Whitespace}) * ("\\figCap")  ( "{" ({AnyChar}|".")+"}{"{RAn
 {ENONCEbegin}                              {startBracketBloc(yytext());}
 {ADDQbegin}                                {startBracketBloc(yytext());}
 {ADDQloginBegin}                           {startBracketBloc(yytext());}
+{ADDQBaremeBegin}                          {startBracketBloc(yytext());}
 {FIGCAPbegin}                              {startBracketBloc(yytext());}
 
-{BLOCKbegin}                                {this.startBlock();}
+{BLOCKbegin}                                {this.startBlock(1);}
+{BLOCKbeginArgs}                            {this.startBlock(2);}
 {BLOCKend}                                  {this.endBlock();}
 
 
 ("%"{Sentence}+)                            {this.currentLine += yytext(); }
 
-([\\]{AnyChar}+)			           {this.currentLine+=yytext(); }
+([\\]{AnyChar}+)			    {this.currentLine+=yytext(); }
 ("$"{Sentence}+"$")                         {this.currentLine+=yytext(); }
 {Whitespace}                                {this.addWhiteSpace();}
 {Appost}                                    {this.currentLine+=yytext();}

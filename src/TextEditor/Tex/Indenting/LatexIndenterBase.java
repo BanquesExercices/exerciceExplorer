@@ -187,7 +187,7 @@ public abstract class LatexIndenterBase {
      * state - deal with formating
      *
      */
-    public void startBlock() {
+    public void startBlock(int val) {
         if (!"".equals(this.currentLine)) {
             // non empty line : the previous line must be ended
             this.endLine();

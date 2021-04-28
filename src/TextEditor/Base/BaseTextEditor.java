@@ -6,7 +6,6 @@
 package TextEditor.Base;
 
 import Helper.SavedVariables;
-import TextEditor.Tex.LatexSpellCheckableTokenIdentifier;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;

@@ -8,7 +8,6 @@ package exerciceexplorer;
 import Helper.OsRelated;
 import Helper.SavedVariables;
 import Helper.Utils;
-import TexRessources.TexWriter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -138,12 +137,7 @@ public final class ExerciceFinder {
         return out;
     }
 
-    public void showExercices() {
-        exercices.stream().forEach((ex) -> {
-            System.out.println(ex.getName() + "  |  " + ex.getKind());
-        });
-    }
-
+   
     public DefaultListModel<Exercice> getListModel() {
         DefaultListModel<Exercice> out = new DefaultListModel<>();
         exercices.stream().forEach((ex) -> {

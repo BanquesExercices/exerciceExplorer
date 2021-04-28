@@ -426,7 +426,7 @@ SentenceWB                                 = ({RAnyCharWB} | {Whitespace} |{Appo
 MLEbegin = ("\\eq" ("["{AnyChar}+"*"?"]")?"{")
 ADDQbegin = ("\\QR{")
 ADDQloginBegin = ("\\QR["({AnyChar} | {Whitespace} | ",")+"]{")
-
+ADDQBaremeBegin = ("\\QR[]["({AnyChar} | {Whitespace} | ",")+"]{")
 
 %state EOL_COMMENT
 %state MLE
@@ -456,7 +456,9 @@ ADDQloginBegin = ("\\QR["({AnyChar} | {Whitespace} | ",")+"]{")
                                                 addToken(temp+5, zzMarkedPos-2, Token.RESERVED_WORD);
                                                 addToken(zzMarkedPos-1, zzMarkedPos-1, Token.RESERVED_WORD);
                                                         }
-<MLE,MLE_IN_Q,MLE_IN_A>({LineCommentBegin}({Sentence}|"$")*)			{addToken(Token.COMMENT_EOL); }
+<MLE,MLE_IN_Q,MLE_IN_A>
+([\\]%)					    { int temp = zzStartRead; addToken(temp, temp, Token.SEPARATOR); addToken(temp + 1, temp + 1, Token.IDENTIFIER);}
+({LineCommentBegin}({Sentence}|"$")*)	    {addToken(Token.COMMENT_EOL); }
 {Whitespace}				{ addToken(Token.WHITESPACE); }
 {Appost}  				{ addToken(Token.IDENTIFIER); }
 {RAnyCharWB}+                            { addToken(Token.IDENTIFIER); }
@@ -467,13 +469,14 @@ ADDQloginBegin = ("\\QR["({AnyChar} | {Whitespace} | ",")+"]{")
         {ADDQbegin}                                  { beginADDQ(ADDQ); }
 
         {ADDQloginBegin}                             { String logins = yytext(); first=true;
-                                                       //addToken(zzStartRead,zzStartRead+5,TOKEN_ADDQ_H);
-                                                       //addToken(zzStartRead+6,zzMarkedPos-3,TOKEN_ADDQ); 
-                                                       //addToken(zzMarkedPos-2,zzMarkedPos-1,TOKEN_ADDQ_H); 
+                                                      
                                                          addToken(TOKEN_ADDQ);
                                                       initBracketBlock(); addOpenBracket();
                                                       logins=logins.substring(4,logins.length()-2);
                                                       conditionalSwitch(logins,ADDQ,HIDDEN_ADDQ); }
+
+        {ADDQBaremeBegin}                        { beginADDQ(ADDQ); }
+
 
         {MLEbegin}                                   { beginMLE(MLE);  }       
                                                                     

@@ -62,15 +62,13 @@ public class ExportWindow extends javax.swing.JFrame {
         Utils.addChangeListener(nameField, (ChangeEvent e) -> {
             updateExportLoc();
         });
+        this.pack();
 
     }
 
     protected final void fillExportDirChoices() {
-        if (jSlider1.getValue() == 2) {
-            base = SavedVariables.getOutputDir();
-        } else {
-            base = SavedVariables.getMainGitDir() + "/untracked/feuilles_exercices";
-        }
+
+        base = SavedVariables.getOutputDir();
         File f = new File(base);
         this.jComboBox1.removeAllItems();
         int count = 0;
@@ -221,24 +219,24 @@ public class ExportWindow extends javax.swing.JFrame {
                         .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(4, 4, 4)
                         .addComponent(jLabel3)
-                        .addGap(112, 112, 112)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextArea1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextArea1, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(4, 4, 4)
-                                .addComponent(jLabel6)
-                                .addGap(18, 18, 18)
-                                .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(dirPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(4, 4, 4))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(jLabel6)
+                        .addGap(18, 18, 18)
+                        .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -264,8 +262,8 @@ public class ExportWindow extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -324,10 +322,10 @@ public class ExportWindow extends javax.swing.JFrame {
             }
 
             // hard copy
-            OsRelated.copy(exo.getPath(), compoDir.getPath() );
+            OsRelated.copy(exo.getPath(), compoDir.getPath());
         }
         // copy of file raccourcis_communs.sty : 
-        OsRelated.copy(SavedVariables.getMainGitDir() + "/fichiers_utiles/raccourcis_communs.sty", compoDir.getPath() );
+        OsRelated.copy(SavedVariables.getMainGitDir() + "/fichiers_utiles/raccourcis_communs.sty", compoDir.getPath());
         OsRelated.open(exportLoc);
         this.setVisible(false);
     }
@@ -335,32 +333,23 @@ public class ExportWindow extends javax.swing.JFrame {
     protected void exportLinks() {
         Enumeration<Exercice> elements = ccv.selectedExericesModel.elements();
 
-        File f = new File(exportLoc);
-        BufferedWriter b;
-        try {
-            b = new BufferedWriter(new FileWriter(f));
-            b.write("# type: " + kind);
-            b.newLine();
+        List<String> lines = new ArrayList<>();
+        lines.add("# type: " + kind);
 
-            b.write("# numero: " + nameField.getText().replaceAll("[^0-9]", ""));
-            b.newLine();
+        lines.add("# numero: " + nameField.getText().replaceAll("[^0-9]", ""));
 
-            b.write("# titre : " + nameField.getText().replaceAll("[0-9]", ""));
-            b.newLine();
-            b.newLine();
+        lines.add("# titre : " + nameField.getText().replaceAll("[0-9]", ""));
+        lines.add("");
 
-            while (elements.hasMoreElements()) {
-                Exercice e = elements.nextElement();
-                b.write(e.getPath());
-                b.newLine();
-            }
-            b.close();
-           OsRelated.open(exportLoc);
-            this.setVisible(false);
+        while (elements.hasMoreElements()) {
+            Exercice e = elements.nextElement();
+            lines.add(e.getPath());
 
-        } catch (IOException ex) {
-            System.out.println(exportLoc + " file cannot be outputed");
         }
+        OsRelated.writeToFile(lines, exportLoc);
+        OsRelated.open(exportLoc);
+        this.setVisible(false);
+
     }
 
     protected void updateExportLoc() {
