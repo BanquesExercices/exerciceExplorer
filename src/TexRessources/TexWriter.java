@@ -20,7 +20,7 @@ import java.util.List;
 public class TexWriter {
 
     public static void openPdf() {
-        OsRelated.open("output/output.pdf");
+        OsRelated.open("output.pdf");
     }
 
     protected static void getExercicestoTex(Enumeration<Exercice> exercices, List<String> output, List<String> imports, boolean localLinks) {
@@ -61,9 +61,9 @@ public class TexWriter {
 
     public static boolean latexToPdf() {
 
-        long lastTime = OsRelated.lastTimeOfModification("output/output.pdf");
-        String out = OsRelated.pdfLatex("./output");
-        long newTime = OsRelated.lastTimeOfModification("output/output.pdf");
+        long lastTime = OsRelated.lastTimeOfModification("output.pdf");
+        String out = OsRelated.pdfLatex(".");
+        long newTime = OsRelated.lastTimeOfModification("output.pdf");
         if ((lastTime < 0 && newTime > 0) || (newTime > lastTime)) {
             if (OsRelated.isWindows()) {
                 OsRelated.killCurrentProcess(); // usefull as pdflatex is started in a terminal window which is paused to let the user see the output.
@@ -79,13 +79,8 @@ public class TexWriter {
 
     public static boolean writeTexFile(List<String> in) {
 
-        File dir = new File("output");
-        if (!dir.exists() && !dir.isDirectory()) {
-            // create output dir if not existing
-            dir.mkdir();
-
-        }
-        return OsRelated.writeToFile(in, OsRelated.pathAccordingToOS("output/output.tex"));
+        
+        return OsRelated.writeToFile(in, "output.tex");
     }
 
     /**

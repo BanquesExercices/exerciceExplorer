@@ -182,12 +182,13 @@ public class OsRelated {
         //String[] command = new String[]{"pdflatex",  "-no-shell-escape", "-interaction=nonstopmode", "-output-directory='" + pathAccordingToOS(outputDir) + "'", pathAccordingToOS("./output/output.tex")};
         String[] out;
         if (OsRelated.isWindows()) {
-            String[] command = new String[]{"pdflatex", "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", "-output-directory=" + pathAccordingToOS(outputDir), pathAccordingToOS("./output/output.tex")};
+            //String[] command = new String[]{"pdflatex", "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", "-output-directory=" + pathAccordingToOS(outputDir), pathAccordingToOS("./output/output.tex")};
+            String[] command = new String[]{"pdflatex", "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", "output.tex"};
 
             out = OsRelated.execoWindows(command, 400, ".", false); // force exec from cmd and not powershell : unlimited wait time as user may end the cmd window himself
-            System.out.println("out : " + out[0]);
+            
         } else {
-            String[] command = new String[]{pathAccordingToOS(SavedVariables.getPdflatexCmd()), "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", "-output-directory='" + pathAccordingToOS(outputDir) + "'", pathAccordingToOS("./output/output.tex")};
+            String[] command = new String[]{pathAccordingToOS(SavedVariables.getPdflatexCmd()), "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", "output.tex"};
 
             out = OsRelated.execoUnix(command, 30, "."); // une durée d'attente de 30 secondes max semble un bon compromis.
 
@@ -252,13 +253,14 @@ public class OsRelated {
         lastItem = lastItem.trim();
         //lastItem = lastItem.strip();
         if (!powershell) {
-            lastItem += "& pause";
+            lastItem += "|| pause";
         }
 
         Command.add(lastItem);
 
         pb.command(Command);
         pb.directory(new File(location));
+        System.out.println("Executing command from " + pb.directory().getAbsolutePath());
         //pb.inheritIO();
         StringBuilder output = new StringBuilder(120);
         try {

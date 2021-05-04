@@ -229,7 +229,7 @@ public class CompoEditor extends javax.swing.JPanel implements MenuBarItemProvid
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         List<String> lines = this.getLines();
         TexWriter.writeTexFile(lines);
-        OsRelated.open("output/output.tex");
+        OsRelated.open("output.tex");
     }//GEN-LAST:event_jButton2ActionPerformed
 
 

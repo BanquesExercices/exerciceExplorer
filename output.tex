@@ -1,0 +1,50 @@
+% Il s'agit du template par defaut pour l'affichage d'un DS
+% ce fichier ne doit pas être modifié
+% Vous pouvez toutefois le copier puis l'adpater puis le linker dans l'IHM exerciceExplorer
+
+\documentclass[a4paper, 11pt, onside]{extarticle}
+\usepackage{C:/Users/migue/Documents/GitHub/bpep/fichiers_utiles/raccourcis_communs}
+\usepackage{hyperref}
+
+\newcommand{\theYear}{2020-2021}
+\newcommand{\dsNB}{x}
+\newcommand{\theDate}{xx/xx/xxxx}
+ \toggletrue{corrige}  % décommenter pour passer en mode corrigé
+
+
+\setmarginsrb{0.9cm}{0.5cm}{0.9cm}{0.5cm}{0.6cm}{0.6cm}{0.6cm}{0.9cm}
+
+ % IMPORTS automatiques
+\usepackage{amsmath,mathtools}
+
+ % fin des IMPORTS automatiques
+
+\begin{document}
+
+\begin{center}
+    \begin{LARGE}
+        Physique - Devoir Surveillé \dsNB \\
+    \end{LARGE}
+    \textbf{Le \theDate}
+\end{center}
+\vspace{1cm}
+
+\vspace{-10mm}
+\switch{
+\begin{center}
+Ce sujet comporte \pageref{LastPage} pages. Il est fortement conseillé de le parcourir intégralement avant de commencer à composer. Toutes vos réponses doivent impérativement être \textbf{encadrées}. De même il est de votre devoir de vérifier que ces résultats sont \textbf{homogènes}.
+\\
+\medskip
+\textbf{L'usage de la calculatrice est autorisé.}
+\end{center}
+}{}
+
+% la ligne suivante (contenant uniquement 4x* ) sera remplacée par les imports de vos exercices dans l'IHM
+\resetQ
+\subimport{C:/Users/migue/Documents/GitHub/bpep/exercices/DS/accelerateur_wideroe/}{sujet.tex}
+
+
+
+
+\label{LastPage}
+\end{document}
