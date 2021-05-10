@@ -5,6 +5,7 @@
  */
 package View;
 
+import Helper.GitWrapper;
 import Helper.ListTransferHandler;
 import Helper.OsRelated;
 import Helper.SavedVariables;
@@ -61,6 +62,9 @@ public class CreationCompoView extends javax.swing.JPanel {
 
             if (choixExercice.getSelectedValue() != null && !lth.isOnDrag()) {
                 MainWindow.getInstance().setExerciceDisplay((Exercice) choixExercice.getSelectedValue());
+                
+                
+                
                 this.listeExercices.clearSelection();
                 this.jLabel1.setText(String.valueOf(choixExercice.getSelectedIndex() + 1));
             }

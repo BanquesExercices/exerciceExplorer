@@ -758,15 +758,12 @@ public class Options extends JPanel {
     private void commitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitButtonActionPerformed
         this.setGitOutputText("requête en cours ...");
 
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                GitWrapper.commit();
-                Options.this.setGitOutputText("commit effectué");
-                String status = GitWrapper.status();
-                Options.this.checkStatus();
-                Options.this.appendGitOutputText("\n - - - - - - -\n" + status);
-            }
+        SwingUtilities.invokeLater(() -> {
+            GitWrapper.commit();
+            Options.this.setGitOutputText("commit effectué");
+            String status = GitWrapper.status();
+            Options.this.checkStatus();
+            Options.this.appendGitOutputText("\n - - - - - - -\n" + status);
         });
 
     }//GEN-LAST:event_commitButtonActionPerformed
@@ -774,28 +771,24 @@ public class Options extends JPanel {
     private void pullButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pullButtonActionPerformed
         this.setGitOutputText("requête en cours ...");
 
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-
-                if (GitWrapper.isConflictDetected()) {
-                    GitWrapper.rebaseContinue();
+        SwingUtilities.invokeLater(() -> {
+            if (GitWrapper.isConflictDetected()) {
+                GitWrapper.rebaseContinue();
+            } else {
+                GitWrapper.pull();
+                String out = GitWrapper.pull();
+                if (out.contains("succes")) {
+                    Options.this.setGitOutputText(out);
+                    MainWindow.getInstance().updateDatabase();
                 } else {
-                    GitWrapper.pull();
-                    String out = GitWrapper.pull();
-                    if (out.contains("succes")) {
-                        Options.this.setGitOutputText(out);
-                        MainWindow.getInstance().updateDatabase();
-                    } else {
-                        Options.this.setGitOutputText("Conflit(s) à résoudre");
 
-                    }
+                    Options.this.setGitOutputText("Conflits à résoudre. \n  -> Utilisez soit exerciceExplorer, le terminal ou github desktop pour les identifier/résoudre");
+
                 }
-                String status = GitWrapper.status();
-                Options.this.checkStatus();
-                Options.this.appendGitOutputText("\n - - - - - - -\n" + status);
-
             }
+            String status = GitWrapper.status();
+            Options.this.checkStatus();
+            Options.this.appendGitOutputText("\n - - - - - - -\n" + status);
         });
 
 
@@ -804,6 +797,11 @@ public class Options extends JPanel {
     private void checkStatus() {
         this.commitButton.setEnabled(GitWrapper.commitButton);
         this.pushButton.setEnabled(GitWrapper.pushButton);
+        if (GitWrapper.isConflictDetected()) {
+            this.pullButton.setText("Rebase");
+        } else {
+            this.pullButton.setText("Pull");
+        }
         this.pullButton.setEnabled(GitWrapper.pullButton);
 
     }
@@ -819,13 +817,17 @@ public class Options extends JPanel {
         }
     }
 
+    public void askStatusUpdateAndPrint() {
 
-    private void statusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusButtonActionPerformed
-        this.setGitOutputText("requête en cours ...");
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                String out = GitWrapper.status();
+        new Thread(() -> {
+
+            SwingUtilities.invokeLater(() -> {
+                this.setGitOutputText("requête en cours ...");
+            });
+
+            String out = GitWrapper.status();
+
+            SwingUtilities.invokeLater(() -> {
                 if (GitWrapper.isConflictDetected()) {
                     Options.this.pullButton.setText("Valider");
                 } else {
@@ -833,9 +835,14 @@ public class Options extends JPanel {
                 }
                 Options.this.setGitOutputText(out);
                 Options.this.checkStatus();
-            }
-        });
+            });
 
+        }).start();
+
+    }
+
+    private void statusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusButtonActionPerformed
+        askStatusUpdateAndPrint();
     }//GEN-LAST:event_statusButtonActionPerformed
 
     private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed

@@ -5,6 +5,7 @@
  */
 package View;
 
+import Helper.GitWrapper;
 import Helper.SavedVariables;
 import static View.Options.setUIFont;
 import com.formdev.flatlaf.FlatDarculaLaf;
@@ -311,15 +312,17 @@ public final class MainWindow extends javax.swing.JFrame {
     public void setExerciceDisplay(Exercice ex) {
         
         this.editorTabbedPane.removeChangeListener(cl);
-        boolean warning = false;
+        boolean warningUnsavedContent = false;
+       
         boolean toDelete = false;
 
+        // first check whether a file about to be closed by this opperation require a save action
         if (re != null) {
             toDelete = true;
             if (SavedVariables.getAutoSave()) {
                 re.saveFile();
             } else {
-                warning = re.needSaving() || warning;
+                warningUnsavedContent = re.needSaving() || warningUnsavedContent;
             }
 
         }
@@ -327,7 +330,7 @@ public final class MainWindow extends javax.swing.JFrame {
             if (SavedVariables.getAutoSave()) {
                 ke.saveFile();
             } else {
-                warning = ke.needSaving() || warning;
+                warningUnsavedContent = ke.needSaving() || warningUnsavedContent;
             }
 
         }
@@ -335,12 +338,12 @@ public final class MainWindow extends javax.swing.JFrame {
             if (SavedVariables.getAutoSave()) {
                 se.saveFile();
             } else {
-                warning = se.needSaving() || warning;
+                warningUnsavedContent = se.needSaving() || warningUnsavedContent;
             }
 
         }
 
-        if (warning) {
+        if (warningUnsavedContent) {
             int result = JOptionPane.showConfirmDialog(this, "Voulez vous sauvegarder les fichiers en cours ? (si non, les dernières modifications non sauvegardées seront effacées)");
             if (result == JOptionPane.YES_OPTION) {
                 re.saveFile();
@@ -351,6 +354,8 @@ public final class MainWindow extends javax.swing.JFrame {
                 return;
             }
         }
+        
+        
 
         if (toDelete) {
             this.editorTabbedPane.removeAll();
@@ -364,7 +369,22 @@ public final class MainWindow extends javax.swing.JFrame {
             }
             
         }
+        
+        // then check if a file about to be opened has unpulled changes from remote
+        // this check is performed on another thread in order not to slow the IHM 
+        new Thread(() -> {
+            boolean warningNewContentOnRemote = GitWrapper.isFileModifiedOnOrigin(ex.getReadmePath()) || GitWrapper.isFileModifiedOnOrigin(ex.getSubjectPath()) || GitWrapper.isFileModifiedOnOrigin(ex.getKeywordsPath());
+            
+            if (warningNewContentOnRemote) {
+                SwingUtilities.invokeLater(() -> {
+                    JOptionPane.showMessageDialog(MainWindow.this, "<html> L'exercice que vous souhaitez editer possède une version plus recente sur github.com <br> Il est donc <span style='color:green'>vivement conseillé</span> d'effectuer un git pull avant.</html>");
+                });
+            }
+        }).start();
 
+
+        
+        
         re = new ReadmeEditor(ex);
         this.editorTabbedPane.addTab("Readme",re);
         this.editorTabbedPane.setSelectedComponent(re);

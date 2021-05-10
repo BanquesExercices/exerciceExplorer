@@ -8,7 +8,9 @@ package Helper;
 import View.GitCredential;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -23,14 +25,23 @@ import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.RebaseCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.NoWorkTreeException;
+import org.eclipse.jgit.errors.RevisionSyntaxException;
 import org.eclipse.jgit.lib.BranchTrackingStatus;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.eclipse.jgit.transport.SshSessionFactory;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
+import org.eclipse.jgit.treewalk.filter.TreeFilter;
+
 /**
  *
  * @author mbrebion
@@ -46,11 +57,19 @@ public class GitWrapper {
     protected static List<File> files = new ArrayList<File>();
     protected static boolean conflictDetected = false;
     protected static Git git;
+    protected static boolean noMoreRecentRemoteCommit = true;
+    protected static long lastFetchTS = -1;
+    protected static int fetchRefreshDuration = 600;  // time in second before a new fetch is required
     public static boolean statusButton = true, pullButton = false, pushButton = false, commitButton = false;
+    protected static Status lastSatus;
+
+    public static final int NOERROR = 0, LOGINERROR = 1, REBASEERROR = 2;
 
     public static boolean isConflictDetected() {
         return conflictDetected;
     }
+    
+    
 
     public static String getRepoKind() {
         return repoKind;
@@ -80,6 +99,11 @@ public class GitWrapper {
                 mdpEncrypted = SavedVariables.getEncryptedGitMDP();
             }
 
+            RevWalk revWalk = new RevWalk(repository);
+            RevCommit local = revWalk.parseCommit(repository.resolve("correction_EOL"));
+            RevCommit remote = revWalk.parseCommit(repository.resolve("origin/correction_EOL"));
+            noMoreRecentRemoteCommit = revWalk.isMergedInto(remote, local);
+
             return true;
         } catch (IOException ex) {
             Logger.getLogger(GitWrapper.class.getName()).log(Level.SEVERE, null, ex);
@@ -90,8 +114,6 @@ public class GitWrapper {
         return false;
     }
 
-    
-    
     // https://www.adeveloperdiary.com/java/how-to-easily-encrypt-and-decrypt-text-in-java/
     protected static String encrypt(String strClearText, String strKey) throws Exception {
         String strData = "";
@@ -117,11 +139,16 @@ public class GitWrapper {
 
     }
 
-    protected static String decrypt(String strEncrypted, String strKey) throws Exception {
+    protected static String decrypt(String strEncrypted, String strKey) throws UnsupportedEncodingException {
         String strData = "";
 
         byte[] key = (strKey + SALT).getBytes("UTF-8");
-        MessageDigest sha = MessageDigest.getInstance("SHA-1");
+        MessageDigest sha = null;
+        try {
+            sha = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(GitWrapper.class.getName()).log(Level.SEVERE, null, ex);
+        }
         key = sha.digest(key);
         key = Arrays.copyOf(key, 16); // use only first 128 bit
 
@@ -167,26 +194,101 @@ public class GitWrapper {
         SavedVariables.setPersistentCredential(false);
     }
 
+    public static int fetch() {
+        try {
+
+            // do fetch
+            FetchResult fst = git.fetch().setCredentialsProvider(new UsernamePasswordCredentialsProvider(login, decrypt(mdpEncrypted, login))).call();
+            lastFetchTS = System.currentTimeMillis();
+            // check whether local branch is equal or forward to remote branch
+            RevWalk revWalk = new RevWalk(repository);
+            RevCommit local = revWalk.parseCommit(repository.resolve(repository.getBranch()));
+            RevCommit remote = revWalk.parseCommit(repository.resolve("origin/" + repository.getBranch()));
+            noMoreRecentRemoteCommit = revWalk.isMergedInto(remote, local);
+
+        } catch (org.eclipse.jgit.api.errors.TransportException te) {
+            System.out.println("probleme d'autentification");
+            //te.printStackTrace();
+
+            GitCredential gc = new GitCredential();
+            gc.setVisible(true);
+            return LOGINERROR;
+
+        } catch (Exception e) {
+            System.out.println("problem during fetch");
+            return REBASEERROR;
+        }
+        return NOERROR;
+    }
+
+    public static boolean isFileModifiedOnOrigin(String path) {
+        // if head is ahaed to origin, there is no problem and nothing to check
+        if (noMoreRecentRemoteCommit) {
+            return false;
+        }
+
+        // ask a fetch only if last one is too old
+        if (System.currentTimeMillis() - lastFetchTS > fetchRefreshDuration * 1000) {
+            fetch();
+        }
+
+        // if here, origin is ahead of head and we must check that file at path has not been modified in origin 
+        System.out.println("asked path : " + path);
+        path = path.replaceFirst(SavedVariables.getMainGitDir(), "");
+        if (path.startsWith("/")) {
+            path = path.replaceFirst("/", "");
+        }
+        System.out.println("new path : " + path);
+
+        try {
+
+            // local branch
+            CanonicalTreeParser currentTreeParser = new CanonicalTreeParser();
+            ObjectId treeId = git.getRepository().resolve("HEAD^{tree}");
+            ObjectReader reader = repository.newObjectReader();
+            currentTreeParser.reset(reader, treeId);
+
+            // remote (origin) branch
+            CanonicalTreeParser RemoteTreeParser = new CanonicalTreeParser();
+            treeId = repository.resolve("origin/" + repository.getBranch() + "^{tree}");
+            reader = repository.newObjectReader();
+            RemoteTreeParser.reset(reader, treeId);
+
+            // one should provide path starting from repository and not full path
+            TreeFilter tf = PathFilter.create(path);
+            List<DiffEntry> out = git.diff().setOldTree(currentTreeParser).setNewTree(RemoteTreeParser).setShowNameAndStatusOnly(true).setPathFilter(tf).call();
+            return !out.isEmpty();
+
+        } catch (IncorrectObjectTypeException ex) {
+            Logger.getLogger(GitWrapper.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (RevisionSyntaxException | GitAPIException | IOException | java.lang.NullPointerException ex) {
+            Logger.getLogger(GitWrapper.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
+    }
+
     public static String status() {
+
         String out = "git Status : \n";
         try {
             boolean nothingToDo = true;
             boolean needPush = false;
             boolean needPull = false;
 
-            try {
-
-                FetchResult fst = git.fetch().setCredentialsProvider(new UsernamePasswordCredentialsProvider(login, decrypt(mdpEncrypted, login))).call();
-
-            } catch (org.eclipse.jgit.api.errors.TransportException te) {
-                System.out.println("probleme d'autentification");
-                //te.printStackTrace();
-
-                GitCredential gc = new GitCredential();
-                gc.setVisible(true);
-                return "abort";
-            } catch (Exception e) {
-                System.out.println("problem during password decryption");
+            if (!isConflictDetected()) {
+                int fetchError = fetch();
+                if (fetchError == REBASEERROR) {
+                    conflictDetected=true;
+                    //return "Problème lors du fetch (rebasage en cours ?) \n   -> Consultez github desktop pour plus d'informations";
+                } else if (fetchError == LOGINERROR) {
+                    return "problème d'indentifiants d'accès à github.com \n   -> Re-essayez après les avoir saisis.";
+                }
+            }else{
+                //in conflict case, all concerned files are added before status is called to check whther conflitcs are solved
+                for (String s : lastSatus.getConflicting()){
+                    git.add().addFilepattern(s).call();
+                }
             }
 
             try {
@@ -203,62 +305,69 @@ public class GitWrapper {
                 conflictDetected = false;
             } catch (NullPointerException e) {
 
-                out+="Branche : " + repository.getBranch() +" non présente sur github \n";
+                out += "Branche : " + repository.getBranch() + " non présente sur github \n";
 
             }
 
-            Status st = git.status().call();
+            lastSatus = git.status().call();
 
             // get all files to add 
             files.clear();
-            st.getUntracked().forEach(name -> {
+            lastSatus.getUntracked().forEach(name -> {
                 files.add(new File(name));
             });
-            st.getModified().forEach(name -> {
+            lastSatus.getModified().forEach(name -> {
                 files.add(new File(name));
             });
-            st.getConflicting().forEach(name -> {
+            lastSatus.getConflicting().forEach(name -> {
                 files.add(new File(name));
             });
-            st.getMissing().forEach(name -> {
-                files.add(new File(name));
-            });
-            
-            st.getUncommittedChanges().forEach(name -> {
+            lastSatus.getMissing().forEach(name -> {
                 files.add(new File(name));
             });
 
-            if (st.getUncommittedChanges().size() -st.getMissing().size()  > 0) {
+            lastSatus.getUncommittedChanges().forEach(name -> {
+                files.add(new File(name));
+            });
+
+            if (lastSatus.getUncommittedChanges().size() - lastSatus.getMissing().size() > 0) {
                 nothingToDo = false;
-                out += " -> " + st.getUncommittedChanges().size() + " fichier(s) modifié(s) \n";  // -> 1
+                out += " -> " + lastSatus.getUncommittedChanges().size() + " fichier(s) modifié(s) \n";  // -> 1
             }
 
-            if (st.getUntracked().size() > 0) {
+            if (lastSatus.getUntracked().size() > 0) {
                 nothingToDo = false;
-                out += " -> " + st.getUntracked().size() + " nouveau(x) fichier(s) \n";  // -> 0
+                out += " -> " + lastSatus.getUntracked().size() + " nouveau(x) fichier(s) \n";  // -> 0
 
             }
 
-            if (st.getMissing().size() > 0) {
+            if (lastSatus.getMissing().size() > 0) {
                 nothingToDo = false;
-                out += " -> " + st.getMissing().size() + " fichier(s) supprimé(s) \n"; // -> 1
-                for (String f : st.getMissing()){
+                out += " -> " + lastSatus.getMissing().size() + " fichier(s) supprimé(s) \n"; // -> 1
+                for (String f : lastSatus.getMissing()) {
                     git.rm().addFilepattern(f).call();
                 }
             }
 
-            if (st.getConflicting().size() > 0) {
+            if (lastSatus.getConflicting().size() > 0) {
                 nothingToDo = false;
-                out += " -> " + st.getConflicting().size() + " fichier(s) conflictuels :  \n";
-                for (String f : st.getConflicting()) {
+                out += " -> " + lastSatus.getConflicting().size() + " fichier(s) conflictuels :  \n";
+                for (String f : lastSatus.getConflicting()) {
                     out += "   * " + f;
+                    
                 }
             }
 
             if (conflictDetected) {
 
-                out += " Valider le pull une fois les conflits réglés.";
-                pullButton = true;
+                
+                pullButton = lastSatus.getConflicting().size() == 0;
+                if (pullButton){                                   
+                    out += " Tous les conflits sont réglés, vous pouvez poursuivre le pull (Rebase)";
+                }else{
+                    out += " Les conflits doivent être réglés avant de poursuivre...";
+                }
+                
                 pushButton = false;
                 commitButton = false;
             } else if (nothingToDo) {
@@ -284,7 +393,7 @@ public class GitWrapper {
         try {
             String commitMessage = JOptionPane.showInputDialog("commentaire du commit");
             for (File f : files) {
-                
+
                 git.add().addFilepattern(f.getPath().replace("\\", "/")).call(); // même sous windows ; il faut des "/" pour les chemins d'acces.
                 System.out.println(f.getAbsolutePath());
             }
@@ -318,8 +427,8 @@ public class GitWrapper {
 
     public static String rebaseContinue() {
         try {
-            for (File f : files){
-                git.add().addFilepattern(f.getPath() ).call();
+            for (File f : files) {
+                git.add().addFilepattern(f.getPath()).call();
                 System.out.println(f.getAbsolutePath());
             }
             git.rebase().setOperation(RebaseCommand.Operation.CONTINUE).call();
@@ -343,17 +452,14 @@ public class GitWrapper {
                 return "problème rencontré lors du pull";
             }
 
+        } catch (org.eclipse.jgit.api.errors.TransportException te) {
+            return "problème d'identifiants";
         } catch (GitAPIException ex) {
-            System.out.println("probleme d'autentification");
-            GitCredential gc = new GitCredential();
-            gc.setVisible(true);
-        } catch (Exception e) {
-            System.out.println("problem during password decryption");
+            return "problème rencontré lors du pull";
+        } catch (UnsupportedEncodingException ex) {
+            return "problème d'identifiants";
         }
-        return "problème lors du pull";
 
     }
-
-   
 
 }
