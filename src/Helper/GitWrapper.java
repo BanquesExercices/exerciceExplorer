@@ -99,10 +99,8 @@ public class GitWrapper {
                 mdpEncrypted = SavedVariables.getEncryptedGitMDP();
             }
 
-            RevWalk revWalk = new RevWalk(repository);
-            RevCommit local = revWalk.parseCommit(repository.resolve("correction_EOL"));
-            RevCommit remote = revWalk.parseCommit(repository.resolve("origin/correction_EOL"));
-            noMoreRecentRemoteCommit = revWalk.isMergedInto(remote, local);
+           
+            noMoreRecentRemoteCommit = false;
 
             return true;
         } catch (IOException ex) {
@@ -208,10 +206,8 @@ public class GitWrapper {
 
         } catch (org.eclipse.jgit.api.errors.TransportException te) {
             System.out.println("probleme d'autentification");
-            //te.printStackTrace();
 
-            GitCredential gc = new GitCredential();
-            gc.setVisible(true);
+            GitCredential.displayGitCredential();
             return LOGINERROR;
 
         } catch (Exception e) {
@@ -417,8 +413,7 @@ public class GitWrapper {
             return "push effectué";
         } catch (GitAPIException ex) {
             System.out.println("probleme d'autentification");
-            GitCredential gc = new GitCredential();
-            gc.setVisible(true);
+            GitCredential.displayGitCredential();
         } catch (Exception e) {
             System.out.println("problem during password decryption");
         }

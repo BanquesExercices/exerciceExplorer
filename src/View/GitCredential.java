@@ -6,7 +6,11 @@
 package View;
 
 import Helper.GitWrapper;
+import Helper.Utils;
 import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 /**
  *
@@ -16,22 +20,40 @@ public class GitCredential extends javax.swing.JFrame {
 
     public static final String SSH = "SSH";
     public static final String HTTPS = "HTTPS";
-    
+
+    public static GitCredential instance = null;
+
     protected boolean persistance = false;
 
     /**
      * Creates new form gitCredential
      *
      */
-    public GitCredential() {
+    private GitCredential() {
         initComponents();
-        if (GitWrapper.getRepoKind()==SSH){
+        if (GitWrapper.getRepoKind() == SSH) {
             this.httpsPanel.setVisible(false);
-        }else{
+        } else {
             this.sshPanel.setVisible(false);
         }
         jSlider1StateChanged(null);
+        this.setAlwaysOnTop(true);
 
+        WindowListener exitListener = new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                instance = null;
+            }
+        };
+        this.addWindowListener(exitListener);
+    }
+
+    public static void displayGitCredential() {
+        if (instance == null && Utils.checkInternetConnection() ) {
+            instance = new GitCredential();
+            instance.setVisible(true);
+        }
     }
 
     /**
@@ -301,6 +323,7 @@ public class GitCredential extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         GitWrapper.setCredentials(loginField.getText(), passwordField.getPassword(), persistance);
         this.setVisible(false);
+        instance = null;
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

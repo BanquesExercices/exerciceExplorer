@@ -8,6 +8,10 @@ package Helper;
 import java.awt.Color;
 import java.awt.Frame;
 import java.beans.PropertyChangeEvent;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.Normalizer;
 import java.util.Objects;
 import javax.swing.JOptionPane;
@@ -28,7 +32,19 @@ import javax.swing.text.JTextComponent;
 public class Utils {
     
     
+   public static boolean checkInternetConnection(){
+   try {
+         URL url = new URL("http://www.github.com/");
+         URLConnection connection = url.openConnection();
+         connection.connect();
+         return true;
+      } catch (MalformedURLException e) {
+         return false;
+      } catch (IOException e) {
+         return false;
+      }
    
+   }
 
     public static void showLongTextMessageInDialog(String longMessage, Frame frame) {
         JTextArea textArea = new JTextArea(18, 50);

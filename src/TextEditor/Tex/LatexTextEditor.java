@@ -92,9 +92,7 @@ public class LatexTextEditor extends BaseTextEditor {
         // auto indent
         this.setAutoIndentEnabled(true);
 
-        // adding spell checker     
-        this.setupSpellChecker();
-
+       
         // adding folding abilities
         this.setCodeFoldingEnabled(true);
         tfp = new TexFoldParser();
@@ -105,6 +103,9 @@ public class LatexTextEditor extends BaseTextEditor {
 
         // adding auto-completion abilities
         this.setupAutoCompletion();
+        
+        // adding spell checker     
+        this.setupSpellChecker();
 
     }
 
@@ -203,7 +204,7 @@ public class LatexTextEditor extends BaseTextEditor {
         try {
             parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());
             parser.setSquiggleUnderlineColor(Color.BLACK);
-            this.clearParsers();
+            //this.clearParsers();
             this.addParser(parser);
         } catch (NullPointerException e) {
             System.err.println("problème lors du chargement du dictionnaire");

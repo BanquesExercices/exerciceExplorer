@@ -231,8 +231,7 @@ public final class MainWindow extends javax.swing.JFrame {
         gitCredentialAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GitCredential gc = new GitCredential();
-                gc.setVisible(true);
+                GitCredential.displayGitCredential();
             }
         };
 
