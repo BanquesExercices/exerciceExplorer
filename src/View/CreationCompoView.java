@@ -256,10 +256,15 @@ public class CreationCompoView extends javax.swing.JPanel {
         jLabel8 = new javax.swing.JLabel();
         newExercicePane = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
         jComboBox3 = new javax.swing.JComboBox();
         newTitleTextField = new javax.swing.JTextField();
         createNewExoButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        bpepKeywordPicker = new javax.swing.JComboBox<>();
+        AutoCompleteDecorator.decorate(bpepKeywordPicker);
         jSeparator3 = new javax.swing.JSeparator();
 
         jLabel3.setText("jLabel3");
@@ -346,15 +351,19 @@ public class CreationCompoView extends javax.swing.JPanel {
         jPanel1.setPreferredSize(new java.awt.Dimension(82, 50));
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
 
+        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
+
         jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "DS", "Colle", "TD" }));
-        jComboBox3.setPreferredSize(null);
+        jComboBox3.setMaximumSize(new java.awt.Dimension(250, 40));
         jComboBox3.setPrototypeDisplayValue("_Colle___");
         jComboBox3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox3ActionPerformed(evt);
             }
         });
-        jPanel1.add(jComboBox3);
+        jPanel2.add(jComboBox3);
+
+        jPanel1.add(jPanel2);
 
         newTitleTextField.setText(" ... Titre de l'exercice ...");
         newTitleTextField.setPreferredSize(new java.awt.Dimension(155, 20));
@@ -388,6 +397,19 @@ public class CreationCompoView extends javax.swing.JPanel {
         jPanel1.add(cancelButton);
 
         newExercicePane.add(jPanel1);
+
+        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
+
+        jLabel9.setText("Thème  :  ");
+        jPanel3.add(jLabel9);
+
+        bpepKeywordPicker.setModel(KeyWords.getMainComboBoxModelModel());
+        bpepKeywordPicker.setMaximumSize(null);
+        bpepKeywordPicker.setPreferredSize(null);
+        bpepKeywordPicker.setPrototypeDisplayValue("hey hey my my ohoh Ohio !");
+        jPanel3.add(bpepKeywordPicker);
+
+        newExercicePane.add(jPanel3);
 
         jSeparator3.setPreferredSize(new java.awt.Dimension(50, 20));
         newExercicePane.add(jSeparator3);
@@ -495,6 +517,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         String title = Utils.stripAccents(this.newTitleTextField.getText()); // dir with accents causes trouble ...
         this.ef.createExercice((String) jComboBox3.getSelectedItem(), title);
         this.updateDataBase();
+        this.ef.getExercice(title).addKeyword(KeyWords.getMainKeywordStart()+bpepKeywordPicker.getSelectedItem());
         MainWindow.getInstance().setExerciceDisplay(this.ef.getExercice(title));
         this.newExercicePane.setVisible(false);
     }//GEN-LAST:event_createNewExoButtonActionPerformed
@@ -527,6 +550,7 @@ public class CreationCompoView extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> bpepKeywordPicker;
     private javax.swing.JButton cancelButton;
     private javax.swing.JList choixExercice;
     private javax.swing.JButton createNewExoButton;
@@ -542,7 +566,10 @@ public class CreationCompoView extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator3;

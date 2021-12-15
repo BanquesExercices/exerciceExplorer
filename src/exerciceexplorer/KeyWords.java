@@ -5,6 +5,8 @@
  */
 package exerciceexplorer;
 
+import Helper.OsRelated;
+import Helper.SavedVariables;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +26,7 @@ public class KeyWords {
     protected List<String> keywords;
     protected static KeyWords instance = null;
     protected static Set<JComboBox> jcbs = new HashSet<>();
+    protected static String mainKeywordStart = "";
 
     public static void updateKeywordsList() {
         getInstance().rescanKeyWords();
@@ -39,6 +42,27 @@ public class KeyWords {
         getInstance().keywords.stream().forEach((kw) -> {
             out.addElement(kw);
         });
+        
+        for (String kw : OsRelated.readFile(SavedVariables.getMainGitDir()+"/fichiers_utiles/motsclesPrincipaux.txt")){
+            out.addElement(kw);
+        }
+        return out;
+    }
+
+    public static String getMainKeywordStart() {
+        return mainKeywordStart;
+    }
+    
+    
+    
+    public static DefaultComboBoxModel<String> getMainComboBoxModelModel() {      
+        DefaultComboBoxModel<String> out = new DefaultComboBoxModel<>();
+        for (String kw : OsRelated.readFile(SavedVariables.getMainGitDir()+"/fichiers_utiles/motsclesPrincipaux.txt")){
+            out.addElement(kw.split(":")[1]);
+            mainKeywordStart=kw.split(":")[0]+":";
+        }
+        // create the model
+        
         return out;
     }
 

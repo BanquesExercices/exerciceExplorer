@@ -348,6 +348,12 @@ public class Exercice implements Comparable<Exercice> {
         this.updateContent();
         return content;
     }
+    
+    public void addKeyword(String kw){
+        List<String> kws = new ArrayList<>();
+        kws.add(kw);
+        OsRelated.appendToFile(kws, this.getKeywordsPath());
+    }
 
     public int getCountGiven() {
         return OsRelated.readFile(this.getlastTimePath()).size();
