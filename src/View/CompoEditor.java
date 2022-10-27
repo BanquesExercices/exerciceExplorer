@@ -11,6 +11,7 @@ import TexRessources.TexWriter;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -124,13 +125,13 @@ public class CompoEditor extends javax.swing.JPanel implements MenuBarItemProvid
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         compileButton = new javax.swing.JButton();
-
-        jScrollPane1.setViewportView(jTextPane1);
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_pen-checkbox_353430.png"))); // NOI18N
         jButton2.setToolTipText("Ouvrir dans un editeur externe");
@@ -138,7 +139,6 @@ public class CompoEditor extends javax.swing.JPanel implements MenuBarItemProvid
         jButton2.setContentAreaFilled(false);
         jButton2.setPreferredSize(new java.awt.Dimension(32, 32));
         jButton2.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_pen-checkbox_353430_selected.png"))); // NOI18N
-        jButton2.setRolloverEnabled(true);
         jButton2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Content/if_pen-checkbox_353430_rollOver.png"))); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -169,55 +169,60 @@ public class CompoEditor extends javax.swing.JPanel implements MenuBarItemProvid
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(9, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(compileButton)
                 .addContainerGap())
         );
+
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane1.setViewportView(jTextPane1);
+
+        jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 169, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(0, 0, 0))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void compileAction(boolean open) {
         this.compileButton.setEnabled(false);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<String> lines = CompoEditor.this.getLines();
-                TexWriter.writeTexFile(lines);
-                if (TexWriter.latexToPdf()) {
-                    if (open) {
+        new Thread(() -> {
+            List<String> lines = CompoEditor.this.getLines();
+            TexWriter.writeTexFile(lines);
+            if (TexWriter.latexToPdf()) {
+                if (open) {
+                   
                         TexWriter.openPdf();
-                    }
-                } else {
-                    if (!OsRelated.isWindows()) {
-                        JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(CompoEditor.this);
-                        Utils.showLongTextMessageInDialog(TexWriter.latexLog, topFrame);
-                    }
+                    
                 }
-                SwingUtilities.invokeLater(() -> {
-                    CompoEditor.this.compileButton.setEnabled(true);
-                });
-
+            } else {
+                if (!OsRelated.isWindows()) {
+                    JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(CompoEditor.this);
+                    Utils.showLongTextMessageInDialog(TexWriter.latexLog, topFrame);
+                }
             }
+            SwingUtilities.invokeLater(() -> {
+                CompoEditor.this.compileButton.setEnabled(true);
+            });
         }).start();
 
     }
@@ -234,9 +239,11 @@ public class CompoEditor extends javax.swing.JPanel implements MenuBarItemProvid
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton compileButton;
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables

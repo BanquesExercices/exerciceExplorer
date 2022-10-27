@@ -70,6 +70,7 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <!-- self contained package : https://stackoverflow.com/questions/18451052/how-to-include-jars-in-lib-into-project-jar-file-in-netbeans -->
       <target name="package-for-store" depends="jar">
 
         <!-- Change the value of this property to be the name of your JAR,

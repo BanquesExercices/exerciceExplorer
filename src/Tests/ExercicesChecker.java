@@ -23,21 +23,26 @@ public  class ExercicesChecker {
     
     public static boolean stop=false;
     
-    protected static boolean checkOneExercice(Exercice e,String type) {
+    public static boolean checkOneExercice(Exercice e,String type) {
+        return checkOneExercice( e, type, "test");
+    }
+    
+    public static boolean checkOneExercice(Exercice e,String type,String name) {
         ArrayList<Exercice> exercices = new ArrayList<>();
         exercices.add(e);
         Enumeration<Exercice> enumer;
         enumer = Collections.enumeration(exercices);
+        
         // get englobing tex file -> tests are based on the DS profile provided by the user, so maybe not the default one.
 
         // maybe we should link to the default files which can be found easily (from the main git directory, in fichiers_utiles)
         List<String> lines = TexWriter.createTexFile(enumer, type, false,false); // last false : test exercice with selected templates files : use default templates if set to true
 
         // write englobing tex file
-        TexWriter.writeTexFile(lines);
+        TexWriter.writeTexFile(lines,name+".tex");
 
         // return suces status
-        return TexWriter.latexToPdf();
+        return TexWriter.latexToPdf(name);
     }
 
     public static void checkExercices(List<Exercice> exercices, String type , NewsReceiver nr) {
@@ -53,10 +58,6 @@ public  class ExercicesChecker {
                 for (Exercice e : exercices) {
                     count++;
                     boolean result = checkOneExercice(e,type);
-                    if (!result){
-                        // en cas d'echec, on retest (parfois, il faut deux compilations pour un fichier ...)
-                        result = checkOneExercice(e,type);
-                    }
                     
                     if (!result){
                         nr.getNewsTwo(e.getPath());

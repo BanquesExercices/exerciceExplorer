@@ -150,6 +150,23 @@ public class SavedVariables {
         }
 
     }
+    
+    public static void setPreviewSave(boolean as) {
+        if (as) {
+            prefs.put("previewSave", "true");
+        } else {
+            prefs.put("previewSave", "false");
+        }
+
+    }
+    
+    public static boolean getpreviewSave() {
+        if (prefs != null) {
+            return "true".equals(prefs.get("previewSave", ""));
+        } else {
+            return false;
+        }
+    }
 
     public static void setMultiEdit(boolean me) {
         if (me) {

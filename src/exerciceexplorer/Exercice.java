@@ -284,6 +284,7 @@ public class Exercice implements Comparable<Exercice> {
         this.readme.clear();
         for (String s : OsRelated.readFile(this.getReadmePath())) {
             this.readme.add(s.trim());
+            
         }
     }
 
@@ -323,7 +324,13 @@ public class Exercice implements Comparable<Exercice> {
     public String getlastTimePath() {
         return path + "/lastTime.txt";
     }
+    
+    public String getPreviewPath() {
+        return path + "/preview.pdf";
+    }
 
+    
+    
     /**
      * @return the kind
      */

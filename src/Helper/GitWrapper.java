@@ -229,13 +229,12 @@ public class GitWrapper {
         }
 
         // if here, origin is ahead of head and we must check that file at path has not been modified in origin 
-        System.out.println("asked path : " + path);
+        
         path = path.replaceFirst(SavedVariables.getMainGitDir(), "");
         if (path.startsWith("/")) {
             path = path.replaceFirst("/", "");
         }
-        System.out.println("new path : " + path);
-
+        
         try {
 
             // local branch

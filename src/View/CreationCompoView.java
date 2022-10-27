@@ -5,11 +5,11 @@
  */
 package View;
 
-import Helper.GitWrapper;
 import Helper.ListTransferHandler;
 import Helper.OsRelated;
 import Helper.SavedVariables;
 import Helper.Utils;
+import TexRessources.PreviewTex;
 import TexRessources.TexWriter;
 import exerciceexplorer.Exercice;
 import exerciceexplorer.ExerciceFinder;
@@ -62,9 +62,7 @@ public class CreationCompoView extends javax.swing.JPanel {
 
             if (choixExercice.getSelectedValue() != null && !lth.isOnDrag()) {
                 MainWindow.getInstance().setExerciceDisplay((Exercice) choixExercice.getSelectedValue());
-                
-                
-                
+
                 this.listeExercices.clearSelection();
                 this.jLabel1.setText(String.valueOf(choixExercice.getSelectedIndex() + 1));
             }
@@ -193,6 +191,12 @@ public class CreationCompoView extends javax.swing.JPanel {
         for (int i = 0; i < lm.getSize(); i++) {
             displayedExercices.add((Exercice) lm.getElementAt(i));
         }
+    }
+
+    public void previewExercice() {
+
+        PreviewTex.previewExercice((Exercice) choixExercice.getSelectedValue());
+
     }
 
     /**
@@ -517,7 +521,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         String title = Utils.stripAccents(this.newTitleTextField.getText()); // dir with accents causes trouble ...
         this.ef.createExercice((String) jComboBox3.getSelectedItem(), title);
         this.updateDataBase();
-        this.ef.getExercice(title).addKeyword(KeyWords.getMainKeywordStart()+bpepKeywordPicker.getSelectedItem());
+        this.ef.getExercice(title).addKeyword(KeyWords.getMainKeywordStart() + bpepKeywordPicker.getSelectedItem());
         MainWindow.getInstance().setExerciceDisplay(this.ef.getExercice(title));
         this.newExercicePane.setVisible(false);
     }//GEN-LAST:event_createNewExoButtonActionPerformed
@@ -543,9 +547,8 @@ public class CreationCompoView extends javax.swing.JPanel {
     public String getOutputType() {
         return (String) outputTypes.getSelectedItem();
     }
-    
-    
-    public void enableExport(boolean value){
+
+    public void enableExport(boolean value) {
         exportButton.setEnabled(value);
     }
 

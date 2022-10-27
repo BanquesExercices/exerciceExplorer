@@ -64,11 +64,11 @@ public class OsRelated {
         BufferedWriter b;
         try {
             b = new BufferedWriter(new FileWriter(f, true));
-            int count=0;
+            int count = 0;
             for (String line : in) {
                 b.write(line);
                 count++;
-                if (count<in.size()){
+                if (count < in.size()) {
                     b.write("\n"); // enforcing Unix style EOL
                 }
             }
@@ -88,17 +88,16 @@ public class OsRelated {
         try {
 
             b = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
-            
-            int count=0;
+
+            int count = 0;
             for (String line : in) {
                 b.write(line);
                 count++;
-                if (count<in.size()){
+                if (count < in.size()) {
                     b.write("\n"); // enforcing Unix style EOL
                 }
             }
-            
-            
+
             b.close();
 
         } catch (IOException ex) {
@@ -123,7 +122,7 @@ public class OsRelated {
 
         String readLine = "";
         try {
-            
+
             while ((readLine = b.readLine()) != null) {
                 out.add(readLine);
             }
@@ -143,6 +142,12 @@ public class OsRelated {
             Logger.getLogger(TexWriter.class.getName()).log(Level.SEVERE, null, ex);
             return "";
         }
+
+    }
+
+    public static boolean fileExists(String path) {
+        File f = new File(pathAccordingToOS(path));
+        return f.exists() && !f.isDirectory();
 
     }
 
@@ -178,17 +183,15 @@ public class OsRelated {
         }
     }
 
-    public static String pdfLatex(String outputDir) {
-        //String[] command = new String[]{"pdflatex",  "-no-shell-escape", "-interaction=nonstopmode", "-output-directory='" + pathAccordingToOS(outputDir) + "'", pathAccordingToOS("./output/output.tex")};
+    public static String pdfLatex(String outputDir, String fileName) {
         String[] out;
         if (OsRelated.isWindows()) {
-            //String[] command = new String[]{"pdflatex", "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", "-output-directory=" + pathAccordingToOS(outputDir), pathAccordingToOS("./output/output.tex")};
-            String[] command = new String[]{"pdflatex", "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", "output.tex"};
+            String[] command = new String[]{"pdflatex", "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", fileName};
 
             out = OsRelated.execoWindows(command, 400, ".", false); // force exec from cmd and not powershell : unlimited wait time as user may end the cmd window himself
-            
+
         } else {
-            String[] command = new String[]{pathAccordingToOS(SavedVariables.getPdflatexCmd()), "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", "output.tex"};
+            String[] command = new String[]{pathAccordingToOS(SavedVariables.getPdflatexCmd()), "-no-shell-escape", "-halt-on-error", "-interaction=nonstopmode", fileName};
 
             out = OsRelated.execoUnix(command, 30, "."); // une durée d'attente de 30 secondes max semble un bon compromis.
 
@@ -212,8 +215,6 @@ public class OsRelated {
             //return OsRelated.execo(new String[]{"which", "pdflatex"})[1];
         }
     }
-    
-   
 
     // exec command
     protected static String[] execo(String[] command) {
@@ -317,7 +318,6 @@ public class OsRelated {
         //lastItem = lastItem.strip();
         Command.add(lastItem);
 
-      
         pb.command(Command);
         pb.directory(new File(location));
         //pb.inheritIO();
@@ -332,14 +332,12 @@ public class OsRelated {
             long startTime = System.currentTimeMillis();
             // get process output (input from java point of view)
             is = p.getInputStream();
-            
-            
+
             int in;
             while (System.currentTimeMillis() - startTime < delay * 1000 && (in = is.read()) != -1) {
                 output.append((char) in);
             }
-           
-            
+
         } catch (IOException exp) {
             System.out.flush();
             System.out.println(exp.getMessage());
@@ -349,14 +347,14 @@ public class OsRelated {
         return new String[]{String.valueOf(out), output.toString()};
     }
 
-    public static void killCurrentProcess(){
+    public static void killCurrentProcess() {
         p.destroyForcibly();
         try {
             p.waitFor();
         } catch (InterruptedException ex) {
         }
     }
-    
+
     protected static String[] execo(String[] command, double delay, String location) {
         /**
          * This function can only be called after previous calls has been

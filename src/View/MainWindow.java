@@ -7,6 +7,7 @@ package View;
 
 import Helper.GitWrapper;
 import Helper.SavedVariables;
+import TexRessources.PreviewTex;
 import static View.Options.setUIFont;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -18,6 +19,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractAction;
@@ -41,8 +43,8 @@ public final class MainWindow extends javax.swing.JFrame {
     /**
      * Creates new form MainWindow
      */
-
     protected boolean firstDocumentOpened = false;
+    protected PdfDisplayPanel pdf = null;
     protected ReadmeEditor re = null;
     protected KeywordsEditor ke = null;
     protected CompoEditor ce = null;
@@ -76,12 +78,12 @@ public final class MainWindow extends javax.swing.JFrame {
         }
 
         System.setProperty("file.encoding", "UTF-8");
-        
+
         SavedVariables.instanciate(this.getClass());
         this.installTheme();
         setUIFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, SavedVariables.getFontSize()));
         // change the default font size (usefull on 4K displays)
-        
+
         UIManager.put("SplitPane.dividerSize", 15);
         UIManager.put("SplitPaneDivider.gripDotCount", 3);
         UIManager.put("SplitPaneDivider.gripDotSize", 7);
@@ -111,10 +113,6 @@ public final class MainWindow extends javax.swing.JFrame {
         updateMenuBar();
 
     }
-    
-    
-    
-    
 
     protected void setMainMenuBarItems() {
 
@@ -167,6 +165,8 @@ public final class MainWindow extends javax.swing.JFrame {
         file.add(removeAllItem);
 
         file.addSeparator();
+
+        file.addSeparator();
         // exit
         JMenuItem exitItem = new JMenuItem("Quitter");
 
@@ -206,9 +206,9 @@ public final class MainWindow extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if (MainWindow.this.cep ==null){
+                if (MainWindow.this.cep == null) {
                     MainWindow.this.cep = new CheckExercicesPanel();
-                }else{
+                } else {
                     return;
                 }
                 MainWindow.this.editorTabbedPane.insertTab("Test de compilation", null, MainWindow.this.cep, "", 0);
@@ -269,12 +269,12 @@ public final class MainWindow extends javax.swing.JFrame {
         }
 
     }
-    
-    public void removeCheckExercicesPanel(){
-        if (this.cep!=null){
-                this.editorTabbedPane.remove(this.cep);
-                this.cep=null;           
-        }        
+
+    public void removeCheckExercicesPanel() {
+        if (this.cep != null) {
+            this.editorTabbedPane.remove(this.cep);
+            this.cep = null;
+        }
     }
 
     protected void updateMenuBar() {
@@ -309,10 +309,10 @@ public final class MainWindow extends javax.swing.JFrame {
     }
 
     public void setExerciceDisplay(Exercice ex) {
-        
+
         this.editorTabbedPane.removeChangeListener(cl);
         boolean warningUnsavedContent = false;
-       
+
         boolean toDelete = false;
 
         // first check whether a file about to be closed by this opperation require a save action
@@ -353,27 +353,24 @@ public final class MainWindow extends javax.swing.JFrame {
                 return;
             }
         }
-        
-        
 
         if (toDelete) {
             this.editorTabbedPane.removeAll();
-            if (cep!=null){
-            this.editorTabbedPane.addTab("Test de compilation", cep);    
-            
-            
+            if (cep != null) {
+                this.editorTabbedPane.addTab("Test de compilation", cep);
+
             }
             if (ce != null) {
-                this.editorTabbedPane.addTab("Composition", ce);                
+                this.editorTabbedPane.addTab("Composition", ce);
             }
-            
+
         }
-        
+
         // then check if a file about to be opened has unpulled changes from remote
         // this check is performed on another thread in order not to slow the IHM 
         new Thread(() -> {
             boolean warningNewContentOnRemote = GitWrapper.isFileModifiedOnOrigin(ex.getReadmePath()) || GitWrapper.isFileModifiedOnOrigin(ex.getSubjectPath()) || GitWrapper.isFileModifiedOnOrigin(ex.getKeywordsPath());
-            
+
             if (warningNewContentOnRemote) {
                 SwingUtilities.invokeLater(() -> {
                     JOptionPane.showMessageDialog(MainWindow.this, "<html> L'exercice que vous souhaitez editer possède une version plus recente sur github.com <br> Il est donc <span style='color:green'>vivement conseillé</span> d'effectuer un git pull avant.</html>");
@@ -381,28 +378,49 @@ public final class MainWindow extends javax.swing.JFrame {
             }
         }).start();
 
-
-        
-        
         re = new ReadmeEditor(ex);
-        this.editorTabbedPane.addTab("Readme",re);
+        this.editorTabbedPane.addTab("Readme", re);
         this.editorTabbedPane.setSelectedComponent(re);
 
         ke = new KeywordsEditor(ex);
-        editorTabbedPane.addTab("Mots clés",ke);
+        editorTabbedPane.addTab("Mots clés", ke);
 
         SwingUtilities.invokeLater(() -> {
+
             se = new SubjectEditor(ex);
             editorTabbedPane.addTab("sujet.tex", se);
+            });
+        SwingUtilities.invokeLater(() -> {
+            pdf = new PdfDisplayPanel() {
+
+                @Override
+                public void action(boolean fast) {
+                    // Here, the action button must ask to a refresh of the preview
+                    if (!fast) {
+                        String f = PreviewTex.previewExercice(ex);
+                        PreviewTex.waitForPDF();
+                        this.updateFile(new File(f));
+                    } else {
+                        if (PreviewTex.isPreviewAvailable(ex)) {
+                            this.updateFile(new File(ex.getPreviewPath()));
+                        }
+                    }
+
+                }
+            };
+
+            this.editorTabbedPane.addTab("Preview", pdf);
+            pdf.action(true);
+
         } // on slow machines, this enables the readme file to be display a bit faster than keywords and subjects
         );
 
         this.editorTabbedPane.addChangeListener(cl);
         this.updateMenuBar();
-        
+
         if (!this.firstDocumentOpened) {
             firstDocumentOpened = true;
-            
+
             this.pack();
         }
 
@@ -424,15 +442,15 @@ public final class MainWindow extends javax.swing.JFrame {
         ce.updateMenuBarView(true);
         this.editorTabbedPane.insertTab("Composition", null, ce, "", 0);
         this.editorTabbedPane.setSelectedIndex(0);
-        
+
         if (!this.firstDocumentOpened) {
             firstDocumentOpened = true;
-            
+
             this.pack();
         }
     }
 
-    public void installTheme(){
+    public void installTheme() {
         int theme = SavedVariables.getTheme();
         switch (theme) {
             case 0:
@@ -442,7 +460,7 @@ public final class MainWindow extends javax.swing.JFrame {
                 FlatIntelliJLaf.install();
                 break;
             case 2:
-                FlatDarkLaf.install();             
+                FlatDarkLaf.install();
                 break;
             case 3:
                 FlatDarculaLaf.install();
@@ -452,7 +470,7 @@ public final class MainWindow extends javax.swing.JFrame {
         }
         SwingUtilities.updateComponentTreeUI(this);
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -531,14 +549,11 @@ public final class MainWindow extends javax.swing.JFrame {
                     System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Exercice Explorer");
                 }
 
-                
                 //FlatLightLaf.install(); // nice flat look and feel
-
                 javax.swing.ToolTipManager.sharedInstance().setDismissDelay(12000);
                 javax.swing.ToolTipManager.sharedInstance().setInitialDelay(400);
 
                 MainWindow.getInstance().setVisible(true);
-                
 
             }
         });

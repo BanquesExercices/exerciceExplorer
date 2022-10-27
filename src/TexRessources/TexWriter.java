@@ -10,6 +10,7 @@ import Helper.SavedVariables;
 import exerciceexplorer.Exercice;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -20,7 +21,11 @@ import java.util.List;
 public class TexWriter {
 
     public static void openPdf() {
-        OsRelated.open("output.pdf");
+        openPdf("output.pdf");
+    }
+    
+    public static void openPdf(String name) {
+        OsRelated.open(name);
     }
 
     protected static void getExercicestoTex(Enumeration<Exercice> exercices, List<String> output, List<String> imports, boolean localLinks) {
@@ -59,11 +64,11 @@ public class TexWriter {
 
     public static String latexLog = "";
 
-    public static boolean latexToPdf() {
+    public static boolean latexToPdf(String fileNameNoExtension) {
 
-        long lastTime = OsRelated.lastTimeOfModification("output.pdf");
-        String out = OsRelated.pdfLatex(".");
-        long newTime = OsRelated.lastTimeOfModification("output.pdf");
+        long lastTime = OsRelated.lastTimeOfModification(fileNameNoExtension+".pdf");
+        String out = OsRelated.pdfLatex(".",fileNameNoExtension+".tex");
+        long newTime = OsRelated.lastTimeOfModification(fileNameNoExtension+".pdf");
         if ((lastTime < 0 && newTime > 0) || (newTime > lastTime)) {
             if (OsRelated.isWindows()) {
                 OsRelated.killCurrentProcess(); // usefull as pdflatex is started in a terminal window which is paused to let the user see the output.
@@ -71,16 +76,27 @@ public class TexWriter {
             return true;
         }
         latexLog = out;
-        System.err.println("pdflatex could not latexize the texfile");
+        System.err.println("pdflatex could not latexize the texfile " + fileNameNoExtension+".tex");
 
         return false;
 
     }
+    
+    public static boolean latexToPdf() {
+
+        return latexToPdf("output");
+
+    }
 
     public static boolean writeTexFile(List<String> in) {
+        
+        return writeTexFile(in,"output.tex");
+    }
+    
+    public static boolean writeTexFile(List<String> in,String fileName) {
 
         
-        return OsRelated.writeToFile(in, "output.tex");
+        return OsRelated.writeToFile(in, fileName);
     }
 
     /**
@@ -100,6 +116,9 @@ public class TexWriter {
         List<String> output = new ArrayList<>(); // main file
         List<String> imports = new ArrayList<>(); // packages required by a specific exercice
 
+        
+        boolean previewMode = false ; // if true, addiational informations are added to file (keywords, readme, last time)
+        
         String fileName = "/DSmodel.tex";
         switch (kind) {
             case "DS":
@@ -114,13 +133,18 @@ public class TexWriter {
             case "Colle":
                 fileName = "/Collemodel.tex";
                 break;
+            case "Preview":
+                fileName="/Preview.tex";
+                previewMode = true;
+                break;
 
         }
         File f; // template file
-        if (!forceDefault) {
-            f = new File(OsRelated.pathAccordingToOS(SavedVariables.getTexModelsPaths() + fileName));
-        } else {
+        if (forceDefault || previewMode ) {
             f = new File(OsRelated.pathAccordingToOS(SavedVariables.getMainGitDir() + "/fichiers_utiles/defaultLatexTemplates" + fileName));
+            
+        } else {
+            f = new File(OsRelated.pathAccordingToOS(SavedVariables.getTexModelsPaths() + fileName));
         }
 
         List<String> lines = OsRelated.readFile(f.getAbsolutePath());
@@ -158,6 +182,42 @@ public class TexWriter {
             }
 
             if (readLine.trim().equals("****") && !blockTokenFound) {
+                
+                if (previewMode){
+                    
+                    ArrayList<Exercice> exes;
+                    exes = Collections.list(exercices);
+                    Exercice e = exes.get(0);
+                    exercices = Collections.enumeration(exes);
+                    
+                    output.add("\\vspace{-1cm}");
+                    if (e.getCountGiven()>0){
+                    output.add("Sujet déjà donné "+e.getCountGiven()+ " fois dont la dernière le " + e.getLastEntry()+" \\\\");
+                    
+                    }
+                    
+                    output.add("\\vspace{-1cm}");
+                    output.add("\\section*{Readme.txt} ");
+                    
+                    
+                    output.add("\\begin{Verbatim}[breaklines=true]");
+                    for (String l : e.getReadme()){
+                        output.add(l);
+                    }
+                    output.add("\\end{Verbatim}");
+                    
+                    output.add("\\vspace{-5mm}");
+                    output.add("\\section*{Mots clés} ");
+                    String keywords = "";
+                    output.add("\\begin{Verbatim}[breaklines=true]");
+                    for (String l : e.getKeywords()){
+                        keywords += l+ "    ";
+                    }
+                    output.add(keywords);
+                    output.add("\\end{Verbatim}");
+                }
+                
+                
                 getExercicestoTex(exercices, output, imports, localLinks);
                 continue;
             }
@@ -166,7 +226,7 @@ public class TexWriter {
 
         }
 
-        if (imports.size() > 0) {
+        if (!imports.isEmpty()) {
             // imports must be added before \begin{document}
             boolean found = false;
             int count = 0;

@@ -248,6 +248,7 @@ public class Options extends JPanel {
         jLabel3 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel12 = new javax.swing.JLabel();
+        jCheckBox3 = new javax.swing.JCheckBox();
         jSeparator3 = new javax.swing.JSeparator();
         editorPanel = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
@@ -413,6 +414,15 @@ public class Options extends JPanel {
 
         jLabel12.setText("Thème");
 
+        jCheckBox3.setSelected(SavedVariables.getpreviewSave());
+        jCheckBox3.setText("Sauvegarde des previews");
+        jCheckBox3.setToolTipText("<html>\nLes previews d'exercices seront sauvegardées dans les dossiers d'exercices\n<br>\nElle pourront donc être affichées beaucoup plus vite et un mécanisme se charge de les mettres à jour si besoin (modification du sujet, du readme ou des mots clés).\n<br>\nCes fichiers (preview.pdf) ne seront pas partagés sous git car ils peuvent allourdir considérablement la bpep.\n</html>");
+        jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout actionsPanelsLayout = new javax.swing.GroupLayout(actionsPanels);
         actionsPanels.setLayout(actionsPanelsLayout);
         actionsPanelsLayout.setHorizontalGroup(
@@ -422,8 +432,10 @@ public class Options extends JPanel {
                     .addGroup(actionsPanelsLayout.createSequentialGroup()
                         .addComponent(jCheckBox1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jCheckBox3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jCheckBox2)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 10, Short.MAX_VALUE))
                     .addGroup(actionsPanelsLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -431,14 +443,13 @@ public class Options extends JPanel {
                                 .addComponent(jLabel9)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(actionsPanelsLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                                 .addComponent(jLabel12)
                                 .addGap(4, 4, 4)
-                                .addComponent(jComboBox1, 0, 94, Short.MAX_VALUE)
+                                .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(15, 15, 15)
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jSpinner1, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)))))
+                                .addComponent(jSpinner1)))))
                 .addContainerGap())
         );
         actionsPanelsLayout.setVerticalGroup(
@@ -448,7 +459,8 @@ public class Options extends JPanel {
                 .addGap(2, 2, 2)
                 .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBox1)
-                    .addComponent(jCheckBox2))
+                    .addComponent(jCheckBox2)
+                    .addComponent(jCheckBox3))
                 .addGap(2, 2, 2)
                 .addGroup(actionsPanelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -698,7 +710,7 @@ public class Options extends JPanel {
                                 .addComponent(jLabel1)))
                         .addGap(10, 10, 10)
                         .addGroup(newPathesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(outputDirInput, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+                            .addComponent(outputDirInput, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
                             .addComponent(templatesFolderInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(gitFolderInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(pdflatexInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -905,6 +917,10 @@ public class Options extends JPanel {
         MainWindow.getInstance().installTheme();
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
+    private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
+        SavedVariables.setPreviewSave(jCheckBox3.isSelected());
+    }//GEN-LAST:event_jCheckBox3ActionPerformed
+
     public void tokenComboBoxAction() {
         int token = LatexTextEditor.getToken((String) tokenComboBox.getSelectedItem());
         Color c = SavedVariables.getColor(token);
@@ -928,6 +944,7 @@ public class Options extends JPanel {
     private javax.swing.JTextField globalDictTextField;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
+    private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
