@@ -5,19 +5,22 @@
  */
 package View;
 
+import Helper.MyObservable;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JMenuBar;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.pdfbox.Loader;
@@ -25,185 +28,37 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 
-class DisplayPanel extends javax.swing.JPanel {
-
-    protected PDFRenderer renderer;
-    protected PDDocument doc;
-    protected int page = 0;
-    protected BufferedImage bim = null; // current raw buffered image
-    protected BufferedImage rsbim = null; // current resampled buffered image
-
-    protected Map<Integer, BufferedImage> dict = new HashMap<>(); // this dictionnary is dedicated to store previously generated pdf pages (raw images)
-
-    protected int parentWidth = 10;
-    protected int parentHeight = 10;
-
-    protected boolean canDisplay = false;
-
-    public DisplayPanel() {
-    }
-
-    protected void setPdfRenderer(PDDocument doc) {
-        this.canDisplay = true;
-        this.doc = doc;
-        this.renderer = new PDFRenderer(doc);
-        this.dict.clear();
-        this.renderPage();        
-
-    }
-
-    protected void renderPage() {
-        
-
-            if (!dict.containsKey(page)) {
-                // a new page is rendered only once and then stored
-                new Thread(() -> {
-                    try {
-                        bim = renderer.renderImageWithDPI(page, 300, ImageType.RGB);
-                        dict.put(page, bim);
-                        askResampleBim(true);
-                        
-                    } catch (IOException ex) {
-                        System.err.println("Problème lors de la génération du PDF");
-                    }
-                
-                }).start();
-                
-            } else {
-                bim = dict.get(page);
-                askResampleBim(true);
-            }
-
-            
-
-        
-        revalidate();
-    }
-
-    public int getPage() {
-        return page;
-    }
-
-    protected boolean askNextPage() {
-        System.out.println("Draw next page");
-        if (page < doc.getNumberOfPages() - 1) {
-            page++;
-            renderPage();
-            return true;
-
-        }
-        return false;
-
-    }
-
-    protected boolean askPreviousPage() {
-        System.out.println("Draw previous page");
-        if (page > 0) {
-            page--;
-            renderPage();
-            return true;
-
-        }
-        return false;
-    }
-
-    protected BufferedImage resizeTN(BufferedImage img, int newW, int newH) {
-        BufferedImage thumbnail = null;
-        try {
-            thumbnail = Thumbnails.of(img).size(newW, newH).asBufferedImage();
-        } catch (IOException ex) {
-            Logger.getLogger(DisplayPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return thumbnail;
-    }
-
-    protected boolean askResampleBim(boolean force) {
-        if (force || parentWidth != this.getParent().getWidth()) {
-
-            new Thread(() -> {
-                parentWidth = DisplayPanel.this.getParent().getWidth();
-                parentHeight = DisplayPanel.this.getParent().getHeight();
-                int newX, newY;
-                newX = Integer.max(parentWidth, 600); // minimum size
-                newY = bim.getHeight() * newX / bim.getTileWidth();
-                rsbim = resizeTN(bim, newX, newY);
-                SwingUtilities.invokeLater(() -> {
-                    repaint();
-                    revalidate();
-                    
-                });
-            }).start();
-
-            return true;
-
-        }
-        return false;
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-        if (rsbim != null) {
-            return new Dimension(rsbim.getWidth(), rsbim.getHeight());
-        }
-        // default return value
-        return super.getPreferredSize();
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (!canDisplay) {
-            return;
-        }
-
-        askResampleBim(false);
-
-        if (rsbim != null) {
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.drawImage(rsbim, 0, 0, null);
-        }
-
-    }
-
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  *
  * @author mbrebion
  */
-public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Observer, MenuBarItemProvider {
+public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Observer {
 
     /**
      * Creates new form SubjectEditor
      */
     protected PDDocument pdfDocument;
-    protected int oldVPos = 0;
-    protected boolean scrollPageEnable = true;
 
     public PdfDisplayPanel() {
-        initComponents();
-
+        initComponents();        
     }
 
     public PdfDisplayPanel(File f) {
-
         initComponents();
-
         updateFile(f);
-
-        System.out.println("instanciated with " + f.getAbsolutePath());
-
     }
 
     public final void updateFile(File f) {
         try {
             pdfDocument = Loader.loadPDF(f);
+
+            // creating a brand new display pannel for (re)setting up stuff properly
+            this.displayPanel = new DisplayPanel();
+            this.jScrollPane1.setViewportView(this.displayPanel);
+            ((DisplayPanel) this.displayPanel).subscribe(this);
+
             ((DisplayPanel) this.displayPanel).setPdfRenderer(pdfDocument);
-            jLabel1.setText("page " + (((DisplayPanel) displayPanel).getPage() + 1) + "/" + pdfDocument.getNumberOfPages());
+            pageLabel.setText("page " + "x" + "/" + pdfDocument.getNumberOfPages());
         } catch (IOException ex) {
             System.err.println("Preview non disponible");
         }
@@ -223,11 +78,12 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
         jScrollPane1 = new javax.swing.JScrollPane();
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(18);
         displayPanel = new DisplayPanel();
+        ((DisplayPanel)displayPanel).subscribe(this);
         jPanel1 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        leftButton = new javax.swing.JButton();
+        pageLabel = new javax.swing.JLabel();
+        rightButton = new javax.swing.JButton();
+        actionButton = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(420, 186));
 
@@ -243,43 +99,43 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
         jPanel1Layout.rowHeights = new int[] {0};
         jPanel1.setLayout(jPanel1Layout);
 
-        jButton2.setText("<");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        leftButton.setText("<");
+        leftButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                leftButtonActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        jPanel1.add(jButton2, gridBagConstraints);
+        jPanel1.add(leftButton, gridBagConstraints);
 
-        jLabel1.setText("Page ....");
-        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pageLabel.setText("Page ....");
+        pageLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 13;
         gridBagConstraints.ipadx = 1;
         gridBagConstraints.insets = new java.awt.Insets(0, 9, 0, 7);
-        jPanel1.add(jLabel1, gridBagConstraints);
+        jPanel1.add(pageLabel, gridBagConstraints);
 
-        jButton3.setText(">");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        rightButton.setText(">");
+        rightButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                rightButtonActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 16;
         gridBagConstraints.gridy = 0;
-        jPanel1.add(jButton3, gridBagConstraints);
+        jPanel1.add(rightButton, gridBagConstraints);
 
-        jButton1.setText("Actualiser");
-        jButton1.setToolTipText("Permet de regenerer le pdf (si besoin)");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        actionButton.setText("Actualiser");
+        actionButton.setToolTipText("Permet de regenerer le pdf (si besoin)");
+        actionButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                actionButtonActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -287,7 +143,7 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
         gridBagConstraints.gridy = 0;
         gridBagConstraints.ipadx = 4;
         gridBagConstraints.insets = new java.awt.Insets(0, 16, 0, 16);
-        jPanel1.add(jButton1, gridBagConstraints);
+        jPanel1.add(actionButton, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -308,78 +164,291 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
 
     private void jScrollPane1MouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_jScrollPane1MouseWheelMoved
 
-        int vPos = jScrollPane1.getVerticalScrollBar().getValue();
-        int extent = jScrollPane1.getVerticalScrollBar().getModel().getExtent();
-
-        if (vPos > 0 && vPos < (jScrollPane1.getVerticalScrollBar().getMaximum() - extent)) {
-            scrollPageEnable = true;
-        }
-
-        if (vPos == 0 && evt.getPreciseWheelRotation() < -2.99d && scrollPageEnable) {
-            this.askPreviousPage();
-        }
-
-        if (vPos == (jScrollPane1.getVerticalScrollBar().getMaximum() - extent) && evt.getPreciseWheelRotation() > 2.99d && scrollPageEnable) {
-            this.askNextPage();
-
-        }
-
-
     }//GEN-LAST:event_jScrollPane1MouseWheelMoved
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void leftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftButtonActionPerformed
         askPreviousPage();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_leftButtonActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void rightButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rightButtonActionPerformed
         askNextPage();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_rightButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void actionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionButtonActionPerformed
         this.action(false);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_actionButtonActionPerformed
 
     protected void askPreviousPage() {
-        scrollPageEnable = false;
-        if (((DisplayPanel) this.displayPanel).askPreviousPage()) {
-            int extent = jScrollPane1.getVerticalScrollBar().getModel().getExtent();
-            jScrollPane1.getVerticalScrollBar().setValue(jScrollPane1.getVerticalScrollBar().getMaximum() - extent);
-            jLabel1.setText("page " + (((DisplayPanel) displayPanel).getPage() + 1) + "/" + pdfDocument.getNumberOfPages());
-        }
+
     }
 
     protected void askNextPage() {
-        scrollPageEnable = false;
-        if (((DisplayPanel) this.displayPanel).askNextPage()) {
-            jScrollPane1.getVerticalScrollBar().setValue(0);
-            jLabel1.setText("page " + (((DisplayPanel) displayPanel).getPage() + 1) + "/" + pdfDocument.getNumberOfPages());
-        }
+
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton actionButton;
     private javax.swing.JPanel displayPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton leftButton;
+    private javax.swing.JLabel pageLabel;
+    private javax.swing.JButton rightButton;
     // End of variables declaration//GEN-END:variables
 
     public abstract void action(boolean fast);
 
     @Override
     public void update(Observable o, Object arg) {
+        System.out.println("update page");
+        pageLabel.setText("Page " + ((DisplayPanel) displayPanel).getPage() + "/" + pdfDocument.getNumberOfPages());
+    }
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// companion class, which does all the job !
+class DisplayPanel extends javax.swing.JPanel {
+
+    // pdf and renderer
+    protected PDFRenderer renderer;
+    protected PDDocument doc;
+
+    // white bufferImage used before real pdf pages for speedup
+    protected BufferedImage emptyRawImage = null;
+    protected BufferedImage emptyScaledImage = null;
+
+    // lists need to store pages, images and labels used to display them
+    protected ArrayList<BufferedImage> rawImages = new ArrayList<>();
+    protected ArrayList<Boolean> rendered = new ArrayList<>();
+    protected ArrayList<JLabel> labels = new ArrayList<>();
+
+    // parent size (help to detect change)
+    protected int parentWidth = 600;
+    protected int parentHeight = 600;
+
+    // speeding up variables
+    protected boolean resampling = false;
+    protected long lastResamplingTimeAsk = 0;
+    protected boolean canDisplay = false;
+    protected Thread resamplingThread;
+
+    // estimation of the page visible on the jpanel
+    protected int pageDisplayed = 0;
+
+    // Esthetic values
+    protected static final int SEP = 20; // space between pages
+    protected static final int DPI = 220; // best resolution for raw bueffered images
+
+    // observer pattern
+    MyObservable mo = new MyObservable();
+
+    //debug
+    protected static final boolean DEBUG = true;
+
+    public DisplayPanel() {
+    }
+
+    public int getPage() {
+        return pageDisplayed;
+    }
+
+    public void subscribe(Observer o) {
+        mo.addObserver(o);
+    }
+
+    protected void setPdfRenderer(PDDocument doc) {
+        this.canDisplay = true;
+        this.doc = doc;
+        this.renderer = new PDFRenderer(doc);
+
+        // layout
+        GridLayout gl = new GridLayout(doc.getNumberOfPages(), 1);
+        gl.setVgap(SEP);
+        this.setLayout(gl);
+
+        // crating white bufferedImages
+        prepareBlankBuffer();
+
+        // populating arrays
+        for (int i = 0; i < doc.getNumberOfPages(); i++) {
+            rawImages.add(emptyRawImage);
+            rendered.add(false);
+            JLabel label = new JLabel();
+            labels.add(label);
+            label.setIcon(new ImageIcon(emptyScaledImage));
+            label.setPreferredSize(new Dimension(emptyScaledImage.getWidth(), emptyScaledImage.getHeight()));
+
+            this.add(label);
+
+        }
+
+        // at startup, only the first page is rendered
+        // renderAndSamplePage(0);
+    }
+
+    protected void prepareBlankBuffer() {
+        parentWidth = Integer.max(DisplayPanel.this.getParent().getWidth(), 700);
+        parentHeight = Integer.max(DisplayPanel.this.getParent().getHeight(), 533);
+
+        emptyRawImage = new BufferedImage(2100 / 10, 2970 / 10, BufferedImage.TYPE_INT_RGB); // divided by ten for speedup ; based on A4 paper
+
+        Graphics2D ig2 = emptyRawImage.createGraphics();
+        ig2.setBackground(Color.WHITE);
+        ig2.clearRect(0, 0, emptyRawImage.getWidth(), emptyRawImage.getHeight());
+        ig2.dispose();
+
+        emptyScaledImage = new BufferedImage(parentWidth, (int) (parentWidth * 29.7 / 21), BufferedImage.TYPE_INT_RGB);
+        ig2 = emptyScaledImage.createGraphics();
+        ig2.setBackground(Color.WHITE);
+        ig2.clearRect(0, 0, emptyScaledImage.getWidth(), emptyScaledImage.getHeight());
+        ig2.dispose();
+    }
+
+    protected void renderAndSamplePage(int page) {
+
+        if (rendered.get(page)) {
+            // do not render twice a page
+            return;
+        }
+
+        rendered.set(page, true); // setting to true early prevent from concurent re-rendering
+        if (DEBUG) {
+            System.out.println("rendering page " + page);
+        }
+        new Thread(() -> {
+            try {
+
+                rawImages.set(page, renderer.renderImageWithDPI(page, DPI, ImageType.RGB));
+                resampleBim(page);
+
+            } catch (IOException ex) {
+                System.err.println("problem during reendering of page " + page);
+            }
+
+        }).start();
+
+    }
+
+    protected BufferedImage resizeTN(BufferedImage img, int newW, int newH) {
+        // using thumbnail library help to produce good quality scaled images, fast.
+        try {
+            return Thumbnails.of(img).size(newW, newH).asBufferedImage();
+        } catch (IOException ex) {
+            System.err.println("Error while resampling PDF bufferedImage");
+        }
+
+        return null;
+    }
+
+    protected boolean detectResizeAndUpdate() {
+        // check wether parent containenr has been resized
+        boolean out = (parentHeight != DisplayPanel.this.getParent().getHeight() || parentWidth != DisplayPanel.this.getParent().getWidth());
+        if (out) {
+            parentWidth = DisplayPanel.this.getParent().getWidth();
+            parentHeight = DisplayPanel.this.getParent().getHeight();
+        }
+        return out;
+    }
+
+    protected void resampleBim(int page) {
+        // resample a raw bufferImage (usefull on creation of raw image or in case of container resizing).
+
+        BufferedImage bim = rawImages.get(page);
+        int newX, newY;
+        newX = Integer.max(parentWidth, 500); // minimum size
+        newY = bim.getHeight() * newX / bim.getTileWidth();
+        labels.get(page).setIcon(new ImageIcon(resizeTN(bim, newX, newY)));
+    }
+
+    protected void askResampling() {
+        // this method help to temperate resampling calls. 
+        // when multiple calls are done while a ressampling is performed, only the last one is asked.
+        lastResamplingTimeAsk = System.currentTimeMillis();
+        if (!resampling) {
+            resampleEveryOne();
+        } else if (DEBUG) {
+
+            System.out.println("ressampling prevented");
+        }
+
+    }
+
+    protected void resampleEveryOne() {
+
+        resampling = true;
+        if (DEBUG) {
+            System.out.println("resampling everyone");
+        }
+
+        resamplingThread = new Thread(() -> {
+            long now = System.currentTimeMillis();
+            for (int i = 0; i < doc.getNumberOfPages(); i++) {
+                resampleBim(i);
+            }
+            repaint();
+            resampling = false;
+            if (lastResamplingTimeAsk > now) {
+                // in this case, a posponed call must be adressed.
+                // this ensure that the last ask of resampling is always executed
+                SwingUtilities.invokeLater(() -> {
+                    if (DEBUG) {
+                        System.out.println("extra resampling called");
+                    }
+                    askResampling();
+                });
+            }
+
+        });
+        resamplingThread.start();
+
+    }
+
+    protected void checkIfNewPageVisible() {
+        // check which pages are displayed on screen
+        int oldPageDisplay = pageDisplayed;
+        for (int i = 0; i < doc.getNumberOfPages(); i++) {
+            Rectangle r = labels.get(i).getVisibleRect();
+            if (!r.isEmpty()) {
+                renderAndSamplePage(i);
+                pageDisplayed = i + 1;
+            }
+
+        }
+
+        if (oldPageDisplay != pageDisplayed) {
+            mo.advert();
+        }
 
     }
 
     @Override
-    public void setMenuBar(JMenuBar jmb) {
+    public Dimension getPreferredSize() {
+
+        if (!labels.isEmpty()) {
+            Icon icon = labels.get(0).getIcon();
+            return new Dimension(icon.getIconWidth(), ((icon.getIconHeight() + SEP) * doc.getNumberOfPages()));
+        }
+        // default return value
+        return super.getPreferredSize();
     }
 
     @Override
-    public void updateMenuBarView(boolean show) {
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        if (!canDisplay) {
+            return;
+        }
+        if (detectResizeAndUpdate()) {
+            askResampling();
+        }
+
+        checkIfNewPageVisible();
+
     }
 
 }
