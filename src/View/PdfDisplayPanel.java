@@ -12,6 +12,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +24,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -40,12 +43,18 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
     protected PDDocument pdfDocument;
 
     public PdfDisplayPanel() {
-        initComponents();        
+        initComponents();
     }
 
     public PdfDisplayPanel(File f) {
         initComponents();
         updateFile(f);
+    }
+    
+    public void setPreferedWidth(int w){
+    // width of white buffered images and pdf pages on startup
+    // This is needed as on creation, the component as no yet width.
+    ((DisplayPanel) this.displayPanel).setPreferedWidth(w);
     }
 
     public final void updateFile(File f) {
@@ -53,7 +62,12 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
             pdfDocument = Loader.loadPDF(f);
 
             // creating a brand new display pannel for (re)setting up stuff properly
+            int preferedWidth=500;
+            if (displayPanel!=null){
+                preferedWidth = ((DisplayPanel) this.displayPanel).parentWidth;
+            }
             this.displayPanel = new DisplayPanel();
+            ((DisplayPanel) this.displayPanel).parentWidth = preferedWidth;
             this.jScrollPane1.setViewportView(this.displayPanel);
             ((DisplayPanel) this.displayPanel).subscribe(this);
 
@@ -63,6 +77,10 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
             System.err.println("Preview non disponible");
         }
 
+    }
+
+    public void preventTimer() {
+        ((DisplayPanel) this.displayPanel).preventTimer();
     }
 
     /**
@@ -179,11 +197,39 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
     }//GEN-LAST:event_actionButtonActionPerformed
 
     protected void askPreviousPage() {
+        int amount = jScrollPane1.getVerticalScrollBar().getVisibleAmount();
+        jScrollPane1.getVerticalScrollBar().setVisibleAmount(0);
+        int pos = jScrollPane1.getVerticalScrollBar().getValue();
+        int max = jScrollPane1.getVerticalScrollBar().getMaximum() - jScrollPane1.getVerticalScrollBar().getVisibleAmount();
+        int sizePage = (max + DisplayPanel.SEP) / (pdfDocument.getNumberOfPages());
+        int page = (pos) / sizePage;
+        int newPos;
+        if (page > 0) {
+            newPos = (page) * sizePage - DisplayPanel.SEP / 2;
+        } else {
+            newPos = 0;
+        }
 
+        jScrollPane1.getVerticalScrollBar().setValue(newPos);
+        jScrollPane1.getVerticalScrollBar().setVisibleAmount(amount);
     }
 
     protected void askNextPage() {
+        int amount = jScrollPane1.getVerticalScrollBar().getVisibleAmount();
+        jScrollPane1.getVerticalScrollBar().setVisibleAmount(0);
+        int pos = jScrollPane1.getVerticalScrollBar().getValue();
+        int max = jScrollPane1.getVerticalScrollBar().getMaximum() - jScrollPane1.getVerticalScrollBar().getVisibleAmount();
+        int sizePage = (max + DisplayPanel.SEP) / (pdfDocument.getNumberOfPages());
+        int page = (pos + DisplayPanel.SEP / 2) / sizePage;
+        int newPos;
+        if (page < pdfDocument.getNumberOfPages()) {
+            newPos = (page + 1) * sizePage - DisplayPanel.SEP / 2;
+        } else {
+            newPos = (page) * sizePage - DisplayPanel.SEP / 2;
+        }
 
+        jScrollPane1.getVerticalScrollBar().setValue(newPos);
+        jScrollPane1.getVerticalScrollBar().setVisibleAmount(amount);
     }
 
 
@@ -201,7 +247,6 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
 
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("update page");
         pageLabel.setText("Page " + ((DisplayPanel) displayPanel).getPage() + "/" + pdfDocument.getNumberOfPages());
     }
 
@@ -235,6 +280,7 @@ class DisplayPanel extends javax.swing.JPanel {
     protected long lastResamplingTimeAsk = 0;
     protected boolean canDisplay = false;
     protected Thread resamplingThread;
+    protected Timer t;
 
     // estimation of the page visible on the jpanel
     protected int pageDisplayed = 0;
@@ -250,8 +296,14 @@ class DisplayPanel extends javax.swing.JPanel {
     protected static final boolean DEBUG = true;
 
     public DisplayPanel() {
+        parentWidth=500;
     }
 
+    public void setPreferedWidth(int w){
+        parentWidth = w;
+        System.out.println("prefered width : " + w);
+    }
+    
     public int getPage() {
         return pageDisplayed;
     }
@@ -285,14 +337,24 @@ class DisplayPanel extends javax.swing.JPanel {
             this.add(label);
 
         }
+        ActionListener al = (ActionEvent e) -> {
+            renderAndSamplePage(0);
+        };
 
         // at startup, only the first page is rendered
-        // renderAndSamplePage(0);
+        t = new Timer(500, al);
+        t.setRepeats(false);
+        t.start();
+
+    }
+
+    protected void preventTimer() {
+        if (t != null) {
+            t.stop();
+        }
     }
 
     protected void prepareBlankBuffer() {
-        parentWidth = Integer.max(DisplayPanel.this.getParent().getWidth(), 700);
-        parentHeight = Integer.max(DisplayPanel.this.getParent().getHeight(), 533);
 
         emptyRawImage = new BufferedImage(2100 / 10, 2970 / 10, BufferedImage.TYPE_INT_RGB); // divided by ten for speedup ; based on A4 paper
 
@@ -301,6 +363,7 @@ class DisplayPanel extends javax.swing.JPanel {
         ig2.clearRect(0, 0, emptyRawImage.getWidth(), emptyRawImage.getHeight());
         ig2.dispose();
 
+        System.out.println("used width : " + parentWidth);
         emptyScaledImage = new BufferedImage(parentWidth, (int) (parentWidth * 29.7 / 21), BufferedImage.TYPE_INT_RGB);
         ig2 = emptyScaledImage.createGraphics();
         ig2.setBackground(Color.WHITE);

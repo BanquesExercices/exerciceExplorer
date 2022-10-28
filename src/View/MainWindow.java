@@ -341,6 +341,10 @@ public final class MainWindow extends javax.swing.JFrame {
             }
 
         }
+        
+        if (pdf != null) {
+            pdf.preventTimer();
+        }
 
         if (warningUnsavedContent) {
             int result = JOptionPane.showConfirmDialog(this, "Voulez vous sauvegarder les fichiers en cours ? (si non, les dernières modifications non sauvegardées seront effacées)");
@@ -381,15 +385,18 @@ public final class MainWindow extends javax.swing.JFrame {
         re = new ReadmeEditor(ex);
         this.editorTabbedPane.addTab("Readme", re);
         this.editorTabbedPane.setSelectedComponent(re);
+        
 
         ke = new KeywordsEditor(ex);
         editorTabbedPane.addTab("Mots clés", ke);
+        
 
         SwingUtilities.invokeLater(() -> {
-
+            
             se = new SubjectEditor(ex);
             editorTabbedPane.addTab("sujet.tex", se);
             });
+        
         SwingUtilities.invokeLater(() -> {
             pdf = new PdfDisplayPanel() {
 
@@ -408,7 +415,7 @@ public final class MainWindow extends javax.swing.JFrame {
 
                 }
             };
-
+            pdf.setPreferedWidth(re.getWidth()-12); // -12 by trial and error
             this.editorTabbedPane.addTab("Preview", pdf);
             pdf.action(true);
 

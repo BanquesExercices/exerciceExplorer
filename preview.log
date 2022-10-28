@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.10.28)  28 OCT 2022 11:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.10.28)  28 OCT 2022 15:22
 entering extended mode
  %&-line parsing enabled.
 **preview.tex
@@ -1476,7 +1476,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 
-22.
+19.
 
 (/usr/local/texlive/2020/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1489,106 +1489,44 @@ Package microtype Info: Character `texttrademark ' is missing
 (microtype)             in font `TS1/lmtt/m/n/10.95'.
 (microtype)             Ignoring protrusion settings for this character.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 29.
+(Font)              <5> on input line 27.
 
-(/Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/sujet.tex
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <14.4> on input line 2.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 2.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 2.
-</Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/images/schema_
-3D.png, id=4, 620.3175pt x 401.24907pt>
-File: /Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/images/sc
-hema_3D.png Graphic file (type png)
-<use /Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/images/sch
-ema_3D.png>
-Package pdftex.def Info: /Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_p
-articules/images/schema_3D.png  used on input line 26.
-(pdftex.def)             Requested size: 214.40112pt x 138.6821pt.
-Package microtype Info: Character `029' is missing
-(microtype)             in font `T1/lmr/m/sc/10.95'.
-(microtype)             Ignoring protrusion settings for this character.
+(/Users/mbrebion/prepa/bpep/exercices/Colle/accumulateur_lithium_metal/sujet.te
+x) [1
 
-Overfull \hbox (6.06734pt too wide) in paragraph at lines 26--26
-[][] []
- []
+{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 35.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 35.
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 26--26
-
- []
-
-[1
-
-{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map} </Users/
-mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/images/schema_3D.png>]
-</Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/images/schema_
-plan.jpg, id=28, 746.79pt x 542.025pt>
-File: /Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/images/sc
-hema_plan.jpg Graphic file (type jpg)
-<use /Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/images/sch
-ema_plan.jpg>
-Package pdftex.def Info: /Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_p
-articules/images/schema_plan.jpg  used on input line 193.
-(pdftex.def)             Requested size: 284.40773pt x 206.42651pt.
-</Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/images/courbe.
-jpg, id=29, 653.44125pt x 517.935pt>
-File: /Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/images/co
-urbe.jpg Graphic file (type jpg)
-<use /Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/images/cou
-rbe.jpg>
-Package pdftex.def Info: /Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_p
-articules/images/courbe.jpg  used on input line 193.
-(pdftex.def)             Requested size: 246.11838pt x 195.07866pt.
-
-Overfull \hbox (0.59265pt too wide) in paragraph at lines 193--193
-[][] []
- []
-
-) [2 </Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/images/sc
-hema_plan.jpg> </Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules
-/images/courbe.jpg>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 37.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 37.
- (./preview.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 37.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 37.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
+(./preview.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 35.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 35.
  ) 
 Here is how much of TeX's memory you used:
- 42363 strings out of 480608
- 997470 string characters out of 5903629
- 1583976 words of memory out of 5000000
- 57359 multiletter control sequences out of 15000+600000
- 613342 words of font info for 124 fonts, out of 8000000 for 9000
+ 42218 strings out of 480608
+ 994437 string characters out of 5903629
+ 1577976 words of memory out of 5000000
+ 57271 multiletter control sequences out of 15000+600000
+ 584310 words of font info for 77 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 73i,16n,103p,840b,705s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/
-texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/20
+ 73i,14n,102p,840b,912s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/lo
+cal/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/20
 20/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2020/texmf-d
 ist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/
 dvips/lm/lm-ts1.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/l
-mbx12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmcsc10.pfb
-></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/loc
-al/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi12.pfb></usr/local/texlive
-/2020/texmf-dist/fonts/type1/public/lm/lmmi6.pfb></usr/local/texlive/2020/texmf
--dist/fonts/type1/public/lm/lmmi8.pfb></usr/local/texlive/2020/texmf-dist/fonts
-/type1/public/lm/lmr10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/publ
-ic/lm/lmr6.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr8.p
-fb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/l
-ocal/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texliv
-e/2020/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2020/texm
-f-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2020/texmf-dist/fon
-ts/type1/public/esvect/vect10.pfb>
-Output written on preview.pdf (2 pages, 362190 bytes).
+mbx10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmbx12.pfb>
+</usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/loca
+l/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi6.pfb></usr/local/texlive/2
+020/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2020/texmf-d
+ist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2020/texmf-dist/fonts/ty
+pe1/public/lm/lmsy10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public
+/lm/lmsy6.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy8.p
+fb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
+Output written on preview.pdf (1 page, 144521 bytes).
 PDF statistics:
- 84 PDF objects out of 1000 (max. 8388607)
- 61 compressed objects within 1 object stream
+ 62 PDF objects out of 1000 (max. 8388607)
+ 48 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 28188 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 16397 words of extra memory for PDF output out of 17280 (max. 10000000)
 
