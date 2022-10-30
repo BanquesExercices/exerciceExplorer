@@ -16,6 +16,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.Collections;
@@ -24,12 +25,12 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Observer;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.fife.ui.autocomplete.TemplateCompletion;
@@ -71,13 +72,16 @@ public class LatexTextEditor extends BaseTextEditor {
 
     }
 
+    public void updateFoldsAndQuestions() {
+        tfp.getFolds(this);
+    }
+
     public static JScrollPane getMyTextAreaInScrollPane(LatexTextEditor instance) {
         RTextScrollPane sp = new RTextScrollPane(instance);
         return sp;
     }
 
     protected final void myInit() {
-
         // theme
         if (SavedVariables.getTheme() >= 2) {
             try {
@@ -89,10 +93,11 @@ public class LatexTextEditor extends BaseTextEditor {
             }
         }
 
+        this.addKeyListener(new KeyAdapterImpl());
+
         // auto indent
         this.setAutoIndentEnabled(true);
 
-       
         // adding folding abilities
         this.setCodeFoldingEnabled(true);
         tfp = new TexFoldParser();
@@ -103,7 +108,7 @@ public class LatexTextEditor extends BaseTextEditor {
 
         // adding auto-completion abilities
         this.setupAutoCompletion();
-        
+
         // adding spell checker     
         this.setupSpellChecker();
 
@@ -192,23 +197,21 @@ public class LatexTextEditor extends BaseTextEditor {
 
     @Override
     public void setupSpellChecker() {
-        if (!SavedVariables.getSpellCheck()) {
-            // no need for spell check
-            return;
-        }
-        if (dictLoaded) {
+        if (!SavedVariables.getSpellCheck() || dictLoaded) {
             return;
         }
 
-        this.setDictParser();
-        try {
-            parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());
-            parser.setSquiggleUnderlineColor(Color.BLACK);
-            //this.clearParsers();
-            this.addParser(parser);
-        } catch (NullPointerException e) {
-            System.err.println("problème lors du chargement du dictionnaire");
-        }
+        // intensive task (loading of dict is very long) ; muste be done outside of EDT
+        new Thread(() -> {
+            this.setDictParser();
+            try {
+                parser.setSpellCheckableTokenIdentifier(new LatexSpellCheckableTokenIdentifier());
+                parser.setSquiggleUnderlineColor(Color.BLACK);
+                this.addParser(parser);
+            } catch (NullPointerException e) {
+                System.err.println("problème lors du chargement du dictionnaire");
+            }
+        }).start();
 
     }
 
@@ -465,10 +468,25 @@ public class LatexTextEditor extends BaseTextEditor {
         menuBar.remove(viewMenu);
     }
 
-    private JMenuItem createMenuItem(Action action) {
-        JMenuItem item = new JMenuItem(action);
-        item.setToolTipText(null); // Swing annoyingly adds tool tip text to the menu item
-        return item;
+    
+    
+    // this key adaptater helps to correct the "deadkey bug" but in a bad way, i.e. it reload what is altered by this bug instead of preventing it.
+    private class KeyAdapterImpl extends KeyAdapter {
+
+        public KeyAdapterImpl() {
+
+        }
+
+        @Override
+        public void keyTyped(KeyEvent event) {
+
+            if (event.getExtendedKeyCode() == 0) {
+                SwingUtilities.invokeLater(() -> {
+                    LatexTextEditor.this.setupAutoCompletion();
+                });
+
+            }
+        }
     }
 
 }

@@ -54,7 +54,7 @@ public class Exercice implements Comparable<Exercice> {
             }
             if (status) {
                 String importLine = line.replace("%", "");
-                if (!importLine.isEmpty()){
+                if (!importLine.isEmpty()) {
                     imports.add(importLine);
                 }
             }
@@ -233,7 +233,7 @@ public class Exercice implements Comparable<Exercice> {
         boolean out = false;
         for (int i = 0; i < keywords.size(); i++) {
             if (before.equals(keywords.get(i))) {
-                if (doReplace){
+                if (doReplace) {
                     keywords.set(i, after);
                 }
                 out = true;
@@ -273,7 +273,7 @@ public class Exercice implements Comparable<Exercice> {
     protected void updateKeywords() {
         this.keywords.clear();
         for (String s : OsRelated.readFile(this.getKeywordsPath())) {
-            if (s.trim()!=""){
+            if (s.trim() != "") {
                 this.keywords.add(s.trim());
             }
         }
@@ -284,7 +284,7 @@ public class Exercice implements Comparable<Exercice> {
         this.readme.clear();
         for (String s : OsRelated.readFile(this.getReadmePath())) {
             this.readme.add(s.trim());
-            
+
         }
     }
 
@@ -324,13 +324,11 @@ public class Exercice implements Comparable<Exercice> {
     public String getlastTimePath() {
         return path + "/lastTime.txt";
     }
-    
+
     public String getPreviewPath() {
         return path + "/preview.pdf";
     }
 
-    
-    
     /**
      * @return the kind
      */
@@ -355,24 +353,30 @@ public class Exercice implements Comparable<Exercice> {
         this.updateContent();
         return content;
     }
-    
-    public void addKeyword(String kw){
+
+    public void addKeyword(String kw) {
         List<String> kws = new ArrayList<>();
         kws.add(kw);
         OsRelated.appendToFile(kws, this.getKeywordsPath());
     }
 
     public int getCountGiven() {
-        return OsRelated.readFile(this.getlastTimePath()).size();
+        if (OsRelated.fileExists(this.getlastTimePath())) {
+            return OsRelated.readFile(this.getlastTimePath()).size();
+        } else {
+            return 0;
+        }
     }
 
     public String getLastEntry() {
-        List<String> out = OsRelated.readFile(this.getlastTimePath());
-        if (out.size() > 0) {
-            return out.get(out.size() - 1);
-        } else {
-            return "N.A.";
+        if (OsRelated.fileExists(this.getlastTimePath())) {
+            List<String> out = OsRelated.readFile(this.getlastTimePath());
+            if (!out.isEmpty()) {
+                return out.get(out.size() - 1);
+            }
         }
+
+        return "N.A.";
     }
 
     @Override

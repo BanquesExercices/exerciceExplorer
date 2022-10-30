@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,11 +58,10 @@ public class OsRelated {
     }
 
     public static boolean appendToFile(List<String> in, String path) {
-
-        File f = new File(pathAccordingToOS(path));
         BufferedWriter b;
         try {
-            b = new BufferedWriter(new FileWriter(f, true));
+            b = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8));
+            
             int count = 0;
             for (String line : in) {
                 b.write(line);
@@ -153,6 +151,10 @@ public class OsRelated {
 
     public static void copy(String from, String to) {
         OsRelated.execo(new String[]{"cp", "-r", pathAccordingToOS(from), pathAccordingToOS(to)});
+    }
+    
+    public static void remove(String path) {
+        OsRelated.execo(new String[]{"rm", pathAccordingToOS(path)});
     }
 
     public static void openDirectoryOf(String PathToFile) {

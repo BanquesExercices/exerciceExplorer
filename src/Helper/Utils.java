@@ -52,6 +52,7 @@ public class Utils {
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
         JOptionPane.showMessageDialog(frame, scrollPane);
+        
     }
     
     public static void showShortTextMessageInDialog(String longMessage, Frame frame) {

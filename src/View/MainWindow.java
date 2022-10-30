@@ -1,6 +1,6 @@
 /*
  * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template fileMenu, choose Tools | Templates
  * and open the template in the editor.
  */
 package View;
@@ -54,7 +54,7 @@ public final class MainWindow extends javax.swing.JFrame {
 
     JMenuBar menuBar;
     protected AbstractAction replaceKeywordAction, replaceWordAction, checkAllExercicesAction, toZeroAction, gitCredentialAction;
-    protected JMenu global, file;
+    protected JMenu advancedMenu, fileMenu, previewMenu;
 
     private static MainWindow instance = null;
 
@@ -116,8 +116,8 @@ public final class MainWindow extends javax.swing.JFrame {
 
     protected void setMainMenuBarItems() {
 
-        // file : 
-        file = new JMenu("Fichier");
+        // fileMenu : 
+        fileMenu = new JMenu("Fichier");
 
         // new exercice
         JMenuItem newExo = new JMenuItem("Nouvel exercice");
@@ -129,7 +129,7 @@ public final class MainWindow extends javax.swing.JFrame {
         });
         int mod = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
         newExo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, mod));
-        file.add(newExo);
+        fileMenu.add(newExo);
 
         // export the set of exercices
         JMenuItem exportItem = new JMenuItem("Exporter la composition");
@@ -139,43 +139,43 @@ public final class MainWindow extends javax.swing.JFrame {
                 MainWindow.this.creationSujetView1.exportSetOFExercices();
             }
         });
-        file.add(exportItem);
+        fileMenu.add(exportItem);
 
         // load a set of exercices
         JMenuItem loadSetItem = new JMenuItem("Charger une composition");
         loadSetItem.addActionListener((ActionEvent e) -> {
             MainWindow.this.creationSujetView1.loadSet();
         });
-        file.add(loadSetItem);
+        fileMenu.add(loadSetItem);
 
-        file.addSeparator();
+        fileMenu.addSeparator();
 
         // add all displayed exercices to composition
         JMenuItem addAllItem = new JMenuItem("ajouter tous les exercices");
         addAllItem.addActionListener((ActionEvent e) -> {
             MainWindow.this.creationSujetView1.addAllExercices();
         });
-        file.add(addAllItem);
+        fileMenu.add(addAllItem);
 
         // remove all exercices from composition
         JMenuItem removeAllItem = new JMenuItem("retirer tous les exercices");
         removeAllItem.addActionListener((ActionEvent e) -> {
             MainWindow.this.creationSujetView1.removeAllExercices();
         });
-        file.add(removeAllItem);
+        fileMenu.add(removeAllItem);
 
-        file.addSeparator();
+        fileMenu.addSeparator();
 
-        file.addSeparator();
+        fileMenu.addSeparator();
         // exit
         JMenuItem exitItem = new JMenuItem("Quitter");
 
         exitItem.addActionListener((ActionEvent e) -> {
             System.exit(0);
         });
-        file.add(exitItem);
+        fileMenu.add(exitItem);
 
-        // global : 
+        // advancedMenu : 
         replaceKeywordAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -235,27 +235,47 @@ public final class MainWindow extends javax.swing.JFrame {
             }
         };
 
+        previewMenu = new JMenu("Preview");
+        JMenuItem compileMenuItem = new JMenuItem("(Re)compile la preview");
+        compileMenuItem.addActionListener((ActionEvent e) -> {
+            if (pdf!=null){
+                this.focusToPreview();
+                
+                Exercice ex = re.getExercice();
+                if (pdf.isAlreadyRendered() && PreviewTex.isPreviewAvailable(ex)){
+                    // no need to recompile here as pdf is already rendered and display
+                    return;
+                }
+                pdf.action(false);
+                
+            }
+        });
+
+        compileMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, mod));
+        previewMenu.add(compileMenuItem);
+        
+        
         // menu items
-        global = new JMenu("Avancé");
+        advancedMenu = new JMenu("Avancé");
 
         JMenuItem replaceKeywordMI = new JMenuItem("Remplacer un mot_clef");
-        global.add(replaceKeywordMI);
+        advancedMenu.add(replaceKeywordMI);
         replaceKeywordMI.addActionListener(replaceKeywordAction);
 
         JMenuItem replaceWordMI = new JMenuItem("Remplacer un mot");
-        global.add(replaceWordMI);
+        advancedMenu.add(replaceWordMI);
         replaceWordMI.addActionListener(replaceWordAction);
 
         JMenuItem checkExercicesMI = new JMenuItem("Compiler tous les exercices");
-        global.add(checkExercicesMI);
+        advancedMenu.add(checkExercicesMI);
         checkExercicesMI.addActionListener(checkAllExercicesAction);
 
         JMenuItem toZeroMI = new JMenuItem("Remise à zero des preferences");
-        global.add(toZeroMI);
+        advancedMenu.add(toZeroMI);
         toZeroMI.addActionListener(toZeroAction);
 
         JMenuItem gitCredentialMI = new JMenuItem("Paramètres Github");
-        global.add(gitCredentialMI);
+        advancedMenu.add(gitCredentialMI);
         gitCredentialMI.addActionListener(gitCredentialAction);
 
         this.updateGlobalMenuBarStatus();
@@ -263,9 +283,9 @@ public final class MainWindow extends javax.swing.JFrame {
     }
 
     public void updateGlobalMenuBarStatus() {
-        menuBar.remove(global);
+        menuBar.remove(advancedMenu);
         if (SavedVariables.getMultiEdit()) {
-            menuBar.add(global);
+            menuBar.add(advancedMenu);
         }
 
     }
@@ -279,8 +299,13 @@ public final class MainWindow extends javax.swing.JFrame {
 
     protected void updateMenuBar() {
         menuBar.removeAll();
-        menuBar.add(file);
-        // file menu
+        
+        
+        menuBar.add(fileMenu);
+        if (this.firstDocumentOpened){
+            menuBar.add(previewMenu);
+        }
+        
 
         this.updateGlobalMenuBarStatus();
 
@@ -292,6 +317,7 @@ public final class MainWindow extends javax.swing.JFrame {
             editingPanels.add(ce);
         }
         editingPanels.add(se);
+        
 
         for (MenuBarItemProvider mbip : editingPanels) {
             SwingUtilities.invokeLater(() -> {
@@ -315,7 +341,7 @@ public final class MainWindow extends javax.swing.JFrame {
 
         boolean toDelete = false;
 
-        // first check whether a file about to be closed by this opperation require a save action
+        // first check whether a fileMenu about to be closed by this opperation require a save action
         if (re != null) {
             toDelete = true;
             if (SavedVariables.getAutoSave()) {
@@ -341,7 +367,7 @@ public final class MainWindow extends javax.swing.JFrame {
             }
 
         }
-        
+
         if (pdf != null) {
             pdf.preventTimer();
         }
@@ -370,7 +396,7 @@ public final class MainWindow extends javax.swing.JFrame {
 
         }
 
-        // then check if a file about to be opened has unpulled changes from remote
+        // then check if a fileMenu about to be opened has unpulled changes from remote
         // this check is performed on another thread in order not to slow the IHM 
         new Thread(() -> {
             boolean warningNewContentOnRemote = GitWrapper.isFileModifiedOnOrigin(ex.getReadmePath()) || GitWrapper.isFileModifiedOnOrigin(ex.getSubjectPath()) || GitWrapper.isFileModifiedOnOrigin(ex.getKeywordsPath());
@@ -385,18 +411,16 @@ public final class MainWindow extends javax.swing.JFrame {
         re = new ReadmeEditor(ex);
         this.editorTabbedPane.addTab("Readme", re);
         this.editorTabbedPane.setSelectedComponent(re);
-        
 
         ke = new KeywordsEditor(ex);
         editorTabbedPane.addTab("Mots clés", ke);
-        
 
         SwingUtilities.invokeLater(() -> {
-            
+
             se = new SubjectEditor(ex);
             editorTabbedPane.addTab("sujet.tex", se);
-            });
-        
+        });
+
         SwingUtilities.invokeLater(() -> {
             pdf = new PdfDisplayPanel() {
 
@@ -405,8 +429,12 @@ public final class MainWindow extends javax.swing.JFrame {
                     // Here, the action button must ask to a refresh of the preview
                     if (!fast) {
                         String f = PreviewTex.previewExercice(ex);
-                        PreviewTex.waitForPDF();
-                        this.updateFile(new File(f));
+                        if (PreviewTex.waitForPDF()) {
+                            // true only of pdf compiled properly
+                            this.updateFile(new File(f));
+                        } else {
+                            this.updateFile(null);
+                        }
                     } else {
                         if (PreviewTex.isPreviewAvailable(ex)) {
                             this.updateFile(new File(ex.getPreviewPath()));
@@ -415,15 +443,15 @@ public final class MainWindow extends javax.swing.JFrame {
 
                 }
             };
-            pdf.setPreferedWidth(re.getWidth()-12); // -12 by trial and error
+            pdf.setPreferedWidth(re.getWidth() - 12); // -12 by trial and error
             this.editorTabbedPane.addTab("Preview", pdf);
             pdf.action(true);
+            this.updateMenuBar();
 
-        } // on slow machines, this enables the readme file to be display a bit faster than keywords and subjects
+        } // on slow machines, this enables the readme fileMenu to be display a bit faster than keywords and subjects
         );
 
         this.editorTabbedPane.addChangeListener(cl);
-        this.updateMenuBar();
 
         if (!this.firstDocumentOpened) {
             firstDocumentOpened = true;
@@ -436,6 +464,12 @@ public final class MainWindow extends javax.swing.JFrame {
     public void focusToComposition() {
         if (ce != null) {
             this.editorTabbedPane.setSelectedComponent(ce);
+        }
+    }
+    
+    public void focusToPreview() {
+        if (pdf != null) {
+            this.editorTabbedPane.setSelectedComponent(pdf);
         }
     }
 

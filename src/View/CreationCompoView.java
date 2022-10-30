@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package View;
+package View; 
 
 import Helper.ListTransferHandler;
 import Helper.OsRelated;
@@ -411,6 +411,11 @@ public class CreationCompoView extends javax.swing.JPanel {
         bpepKeywordPicker.setMaximumSize(null);
         bpepKeywordPicker.setPreferredSize(null);
         bpepKeywordPicker.setPrototypeDisplayValue("hey hey my my ohoh Ohio !");
+        bpepKeywordPicker.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bpepKeywordPickerActionPerformed(evt);
+            }
+        });
         jPanel3.add(bpepKeywordPicker);
 
         newExercicePane.add(jPanel3);
@@ -543,6 +548,10 @@ public class CreationCompoView extends javax.swing.JPanel {
     private void newTitleTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTitleTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_newTitleTextFieldActionPerformed
+
+    private void bpepKeywordPickerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bpepKeywordPickerActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bpepKeywordPickerActionPerformed
 
     public String getOutputType() {
         return (String) outputTypes.getSelectedItem();

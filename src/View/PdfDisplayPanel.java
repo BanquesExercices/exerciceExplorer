@@ -23,6 +23,7 @@ import java.util.Observer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import net.coobird.thumbnailator.Thumbnails;
@@ -36,34 +37,48 @@ import org.apache.pdfbox.rendering.ImageType;
  * @author mbrebion
  */
 public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Observer {
-
+ 
     /**
      * Creates new form SubjectEditor
      */
     protected PDDocument pdfDocument;
+    protected JMenuBar menuBar;
+    protected String path = "";
 
     public PdfDisplayPanel() {
         initComponents();
     }
-
-    public PdfDisplayPanel(File f) {
-        initComponents();
-        updateFile(f);
-    }
     
-    public void setPreferedWidth(int w){
-    // width of white buffered images and pdf pages on startup
-    // This is needed as on creation, the component as no yet width.
-    ((DisplayPanel) this.displayPanel).setPreferedWidth(w);
+    public boolean isAlreadyRendered(){
+        return ((DisplayPanel) this.displayPanel).canDisplay;
+    }
+
+    public void setPreferedWidth(int w) {
+        // width of white buffered images and pdf pages on startup
+        // This is needed as on creation, the component as no yet width.
+        ((DisplayPanel) this.displayPanel).setPreferedWidth(w);
     }
 
     public final void updateFile(File f) {
+
+        if (f == null) {
+            int preferedWidth = 500;
+            if (displayPanel != null) {
+                preferedWidth = ((DisplayPanel) this.displayPanel).parentWidth;
+            }
+            this.displayPanel = new DisplayPanel();
+            ((DisplayPanel) this.displayPanel).parentWidth = preferedWidth;
+            this.jScrollPane1.setViewportView(this.displayPanel);
+            return;
+        }
+        path = f.getAbsolutePath();
+
         try {
             pdfDocument = Loader.loadPDF(f);
 
             // creating a brand new display pannel for (re)setting up stuff properly
-            int preferedWidth=500;
-            if (displayPanel!=null){
+            int preferedWidth = 500;
+            if (displayPanel != null) {
                 preferedWidth = ((DisplayPanel) this.displayPanel).parentWidth;
             }
             this.displayPanel = new DisplayPanel();
@@ -293,17 +308,16 @@ class DisplayPanel extends javax.swing.JPanel {
     MyObservable mo = new MyObservable();
 
     //debug
-    protected static final boolean DEBUG = true;
+    protected static final boolean DEBUG = false;
 
     public DisplayPanel() {
-        parentWidth=500;
+        parentWidth = 500;
     }
 
-    public void setPreferedWidth(int w){
+    public void setPreferedWidth(int w) {
         parentWidth = w;
-        System.out.println("prefered width : " + w);
     }
-    
+
     public int getPage() {
         return pageDisplayed;
     }
@@ -337,11 +351,11 @@ class DisplayPanel extends javax.swing.JPanel {
             this.add(label);
 
         }
+
+        // at startup, only the first page is rendered
         ActionListener al = (ActionEvent e) -> {
             renderAndSamplePage(0);
         };
-
-        // at startup, only the first page is rendered
         t = new Timer(500, al);
         t.setRepeats(false);
         t.start();
@@ -363,7 +377,6 @@ class DisplayPanel extends javax.swing.JPanel {
         ig2.clearRect(0, 0, emptyRawImage.getWidth(), emptyRawImage.getHeight());
         ig2.dispose();
 
-        System.out.println("used width : " + parentWidth);
         emptyScaledImage = new BufferedImage(parentWidth, (int) (parentWidth * 29.7 / 21), BufferedImage.TYPE_INT_RGB);
         ig2 = emptyScaledImage.createGraphics();
         ig2.setBackground(Color.WHITE);

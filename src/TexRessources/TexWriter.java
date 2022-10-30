@@ -73,6 +73,7 @@ public class TexWriter {
             if (OsRelated.isWindows()) {
                 OsRelated.killCurrentProcess(); // usefull as pdflatex is started in a terminal window which is paused to let the user see the output.
             }
+            latexLog = "";
             return true;
         }
         latexLog = out;

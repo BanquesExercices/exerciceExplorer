@@ -1,0 +1,111 @@
+%&/Users/mbrebion/prepa/bpep/untracked/style_perso/bpepFormatDS
+\documentclass[a4paper, 11pt, onside]{extarticle}
+
+
+\usepackage{/Users/mbrebion/prepa/bpep/fichiers_utiles/raccourcis_communs}
+% twick graphiques
+\newenvironment{myitemize}{\renewcommand\labelitemi{$\bullet$} \renewcommand\labelitemii{$\ast$} \begin{itemize}}{\end{itemize}}
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\renewcommand{\thesection}{\Roman{section}} 
+\renewcommand{\thesubsection}{\thesection.\Alph{subsection}}
+
+\csname endofdump\endcsname
+
+\renewcommand{\niveauUn}{}
+\renewcommand{\niveauDeux}{}
+\renewcommand{\niveauTrois}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%% Bloc à modifier %%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\toggletrue{corrige}  % décommenter pour passer en mode corrige
+\newcommand{\theYear}{2022-2023}
+\newcommand{\dsNB}{x}
+\newcommand{\theDate}{xx/xx/xxxx}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%% switches corrigé ou sujet
+\AtBeginDocument{
+\sisetup{inter-unit-product = \cdot }
+\begin{center}
+    \begin{LARGE}
+        Physique - Devoir Surveillé \dsNB \\
+    \end{LARGE}
+    \textbf{Le \theDate}
+\end{center}
+\vspace{1cm}
+}
+
+% Les macros importées dans raccourcis_communs sont définie à l'aide de \BeforeBeginEnvironment{document}
+% Cela permet de prendre en compte des changements de valeurs de variables dans le préambule
+% il faut donc se placer à la suite pour modifier le comportement
+\BeforeBeginEnvironment{document}{
+
+
+% mode corrigé en deux pages par feuille
+\switch{
+    \setmarginsrb{0.9cm}{0.5cm}{0.9cm}{0.5cm}{0.6cm}{0.6cm}{0.6cm}{0.9cm}
+    }{
+
+    \setmarginsrb{1.8cm}{1.8 cm}{0cm}{0.1cm}{0cm}{0.6cm}{0cm}{0.7cm}
+    \RequirePackage{pgfpages}
+    \pgfpagesuselayout{2 on 1}[a4paper,landscape,border shrink=0mm] 
+    }
+
+% style de page
+\pagestyle{fancy}
+\renewcommand{\footrulewidth}{0.5pt} 
+\fancyhf{}
+%\fancyhead[L]{$\mathcal{PCSI}~1\&2$}
+\fancyhead[L]{$\mathcal{PCSI}~1$}
+\fancyhead[R]{\theYear}
+\fancyfoot[C]{}
+\fancyfoot[L]{\textbf{Lycée Loritz} - \bsc{E. Antoine, M. Miguel-Brebion}}
+\fancyfoot[R]{\textit{DS\dsNB}  \textbf{\thepage/\pageref{LastPage}}}
+
+% affichage du mode sujet ou corrigé
+\switch{
+    \fancyhead[C]{Sujet}
+}{
+    \fancyhead[C]{Corrigé}
+}
+
+
+% énoncé en italique si corrigé visible
+\renewcommand{\addQq}[1]{ % questions en italiques pour le corrige
+           \iftoggle{corrige}{
+                {\itshape #1} 
+            }{
+                #1 % affichage hors mode corrigé
+            }
+        }
+
+}
+
+
+
+
+\begin{document}
+\vspace{-10mm}
+\switch{
+\begin{center}
+Ce sujet comporte \pageref{LastPage} pages. Il est fortement conseillé de le parcourir intégralement avant de commencer à composer. Toutes vos réponses doivent impérativement être \textbf{encadrées}. De même il est de votre devoir de vérifier que ces résultats sont \textbf{homogènes}.
+\\
+\medskip
+\textbf{L'usage de la calculatrice est autorisé.}
+\end{center}
+}{}
+
+\resetQ
+\subimport{/Users/mbrebion/prepa/bpep/exercices/TD/accelerateur_particules/}{sujet.tex}
+
+
+
+\label{LastPage}
+\end{document}

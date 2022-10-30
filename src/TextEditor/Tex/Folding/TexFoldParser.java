@@ -10,6 +10,7 @@ package TextEditor.Tex.Folding;
  * @author mbrebion
  */
 import Helper.MyObservable;
+import TextEditor.Tex.Coloring.LatexTokenMaker;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.folding.*;
 
 public class TexFoldParser implements FoldParser {
+    //TODO : adapter cette classe pour ne pas prendre en compte les questions non affichées et pour gerer les questions imbriquées
 
     public static final int QUESTION_FOLD = FoldType.FOLD_TYPE_USER_DEFINED_MIN + 1;
     public static final int ANSWER_FOLD = FoldType.FOLD_TYPE_USER_DEFINED_MIN + 2;
@@ -36,26 +38,26 @@ public class TexFoldParser implements FoldParser {
         this.buildPattern();
         obs = new MyObservable();
     }
-    
-    public void advert(){
-      obs.advert();
+
+    public void advert() {
+        obs.advert();
     }
-    
-    public void addObserver(Observer o){
+
+    public void addObserver(Observer o) {
         obs.addObserver(o);
     }
-    
-    public void removeObserver(Observer o){
+
+    public void removeObserver(Observer o) {
         obs.deleteObserver(o);
     }
-    
-    public void clearAllObservers(){
+
+    public void clearAllObservers() {
         obs.deleteObservers();
     }
 
     public void buildPattern() {
         StringBuilder sb = new StringBuilder();
-        for (String token : new String[]{ "\\\\enonce", "\n", "\\\\QR(\\[.*\\])?"}) {
+        for (String token : new String[]{"\\\\enonce", "\\\\begin\\{blocQR\\}", "\\\\end\\{blocQR\\}", "\\n", "\\\\QR(\\[.*\\])?"}) {
             sb.append(""); // Start of word boundary
             sb.append(token);
             sb.append("|"); // End of word boundary and an or for the next word
@@ -71,8 +73,8 @@ public class TexFoldParser implements FoldParser {
     public List<Integer> getQuestionLines() {
         return Collections.unmodifiableList(questionsList);
     }
-    
-     public List<String> getTags() {
+
+    public List<String> getTags() {
         return Collections.unmodifiableList(tagsList);
     }
 
@@ -83,6 +85,7 @@ public class TexFoldParser implements FoldParser {
         questionsList.clear();
         tagsList.clear();
         tagsList.add("original");
+        boolean stopTaggingQuestionLines = false;
 
         List<Fold> folds = new ArrayList<>();
         String txt = textArea.getText();
@@ -93,19 +96,38 @@ public class TexFoldParser implements FoldParser {
                 line++; // we know in which line we are 
             }
 
-            if (matcher.group().contains("\\QR")) {
+            if (matcher.group().contains("begin{blocQR")) {
                 questionsList.add(line);
+                stopTaggingQuestionLines = true;
+            }
+            if (matcher.group().contains("end{blocQR")) {
+                stopTaggingQuestionLines = false;
+            }
+
+            if (matcher.group().contains("\\QR")) {
+
                 if (matcher.group().contains("]")) {
+                    // question available in selected versions
                     try {
                         String versions = matcher.group().substring(4, matcher.group().indexOf("]"));
+                        if (versions.contains(LatexTokenMaker.login)) {
+                            if (!stopTaggingQuestionLines) {
+                                questionsList.add(line);
+                            }
+                        }
                         //String versions = matcher.group().substring(4, matcher.group().length()-1);
-                        for (String t : versions.split(",")){
+                        for (String t : versions.split(",")) {
                             String trimed = t.trim();
-                            if (!tagsList.contains(trimed) && !trimed.equals("")){
+                            if (!tagsList.contains(trimed) && !trimed.equals("")) {
                                 tagsList.add(trimed);
                             }
                         }
                     } catch (Exception e) {
+                    }
+                } else {
+                    // question always available
+                    if (!stopTaggingQuestionLines) {
+                        questionsList.add(line);
                     }
                 }
                 int qBegin = matcher.start();
@@ -150,7 +172,8 @@ public class TexFoldParser implements FoldParser {
                     System.err.println("Bad loc in Fold :" + qBegin);
                 }
 
-            } else if (matcher.group().contains("\\enonce")) {
+            }
+            if (matcher.group().contains("\\enonce")) {
                 int qBegin = matcher.start();
                 try {
                     int found = 0;
@@ -189,7 +212,5 @@ public class TexFoldParser implements FoldParser {
         this.advert();
         return folds;
     }
-
-   
 
 }

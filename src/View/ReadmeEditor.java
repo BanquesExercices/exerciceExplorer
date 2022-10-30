@@ -24,6 +24,10 @@ public class ReadmeEditor extends javax.swing.JPanel implements Observer,MenuBar
     public ReadmeEditor() {
         initComponents();
     }
+    
+    public Exercice getExercice(){
+        return ex;
+    }
 
     public ReadmeEditor(Exercice ex) {
         initComponents();

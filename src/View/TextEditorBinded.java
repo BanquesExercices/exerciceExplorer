@@ -640,7 +640,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(texPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 206, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
                 .addComponent(reloadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -655,7 +655,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
                 .addGap(2, 2, 2)
                 .addComponent(replacePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -727,11 +727,10 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
 
     private void versionChooserComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_versionChooserComboBoxActionPerformed
         LatexTokenMaker.login = (String) versionChooserComboBox.getSelectedItem();
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                ((LatexTextEditor) textArea).updateWholeDocumentHighlighting();
-            }
+        SwingUtilities.invokeLater(() -> {
+            ((LatexTextEditor) textArea).updateWholeDocumentHighlighting();
+            ((LatexTextEditor) textArea).updateFoldsAndQuestions();
+            
         });
     }//GEN-LAST:event_versionChooserComboBoxActionPerformed
 

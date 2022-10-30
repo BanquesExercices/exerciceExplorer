@@ -22,10 +22,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.text.BadLocationException;
 import org.fife.com.swabunga.spell.engine.SpellDictionaryHashMap;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextArea;
+import org.fife.ui.rtextarea.RTextAreaUI;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.RecordableTextAction;
 
@@ -46,7 +48,7 @@ public class BaseTextEditor extends RSyntaxTextArea {
         this.setLineWrap(true);
         this.setTabSize(3);
         this.initiateEditMenu();
-        
+
     }
 
     public BaseTextEditor() {
@@ -55,6 +57,8 @@ public class BaseTextEditor extends RSyntaxTextArea {
         this.setTabSize(3);
         initiateEditMenu();
     }
+
+    
 
     protected void initiateEditMenu() {
         editMenu = new JMenu("Edit");
