@@ -99,7 +99,7 @@
         <Component class="javax.swing.JButton" name="actionButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Actualiser"/>
-            <Property name="toolTipText" type="java.lang.String" value="Permet de regenerer le pdf (si besoin)"/>
+            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Permet de (re)compiler le document.&#xa;&lt;br&gt;&#xa;Le PDF associ&#xe9; sera supprim&#xe9; si les fichiers sujet.tex, readme.txt ou motscles.txt sont modifi&#xe9;s ult&#xe9;rieurement.&#xa;&lt;br&gt;&#xa;&lt;br&gt;&#xa;Pour obtenir une version sp&#xe9;cifique, il faut ajouter le &quot;\u005crenewcommand{\u005cversion}{blabla}&quot; dans le fichier sujet.tex. &lt;br&gt;&#xa;Pensez toutefois &#xe0; le RETIRER &#xe0; la fin.&#xa;&lt;/html&gt;" containsInvalidXMLChars="true"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="actionButtonActionPerformed"/>

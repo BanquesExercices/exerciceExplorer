@@ -193,11 +193,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         }
     }
 
-    public void previewExercice() {
-
-        PreviewTex.previewExercice((Exercice) choixExercice.getSelectedValue());
-
-    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.

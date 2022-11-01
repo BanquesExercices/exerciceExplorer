@@ -20,11 +20,11 @@ public class PreviewTex {
     static Thread t = null;
     static boolean passStatus = false;
 
-    public static String previewExercice(Exercice e) {
+    public static String previewExercice(Exercice e,boolean force) {
 
         String openPath = "preview.pdf";
         t = null;
-        if (isPreviewAvailable(e)) {
+        if (!force && isPreviewAvailable(e) ) {
             passStatus=true;
             return e.getPreviewPath();
         }

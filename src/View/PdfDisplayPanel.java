@@ -22,6 +22,7 @@ import java.util.Observer;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import net.coobird.thumbnailator.Thumbnails;
@@ -39,12 +40,21 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
     /**
      * Creates new form SubjectEditor
      */
+    public static final int IFAVAILABLE=1, COMPILEIFNEEDED=2, FORCERECOMPILE=3;
+    
     protected PDDocument pdfDocument;
     protected JMenuBar menuBar;
     protected String path = "";
 
     public PdfDisplayPanel() {
         initComponents();
+        JLabel jl1 = new JLabel("Aucune preview à jours disponible.");
+        jl1.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel jl2 = new JLabel("Veuillez re-actualiser cette page.");
+        jl2.setHorizontalAlignment(SwingConstants.CENTER);
+        ((DisplayPanel) this.displayPanel).add(jl1);
+        ((DisplayPanel) this.displayPanel).add(jl2);
+        
     }
     
     public boolean isAlreadyRendered(){
@@ -163,7 +173,7 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
         jPanel1.add(rightButton, gridBagConstraints);
 
         actionButton.setText("Actualiser");
-        actionButton.setToolTipText("Permet de regenerer le pdf (si besoin)");
+        actionButton.setToolTipText("<html>\nPermet de (re)compiler le document.\n<br>\nLe PDF associé sera supprimé si les fichiers sujet.tex, readme.txt ou motscles.txt sont modifiés ultérieurement.\n<br>\n<br>\nPour obtenir une version spécifique, il faut ajouter le \"\\renewcommand{\\version}{blabla}\" dans le fichier sujet.tex. <br>\nPensez toutefois à le RETIRER à la fin.\n</html>");
         actionButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 actionButtonActionPerformed(evt);
@@ -206,7 +216,7 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
     }//GEN-LAST:event_rightButtonActionPerformed
 
     private void actionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionButtonActionPerformed
-        this.action(false);
+        this.action(FORCERECOMPILE);
     }//GEN-LAST:event_actionButtonActionPerformed
 
     protected void askPreviousPage() {
@@ -256,7 +266,7 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
     private javax.swing.JButton rightButton;
     // End of variables declaration//GEN-END:variables
 
-    public abstract void action(boolean fast);
+    public abstract void action(int type);
 
     @Override
     public void update(Observable o, Object arg) {
@@ -310,6 +320,9 @@ class DisplayPanel extends javax.swing.JPanel {
 
     public DisplayPanel() {
         parentWidth = 500;
+        GridLayout gl = new GridLayout(2,1);
+        gl.setVgap(SEP);
+        this.setLayout(gl);
     }
 
     public void setPreferedWidth(int w) {

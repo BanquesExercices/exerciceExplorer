@@ -472,7 +472,7 @@ public class LatexTextEditor extends BaseTextEditor {
 
     
     
-    // this key adaptater helps to correct the "deadkey bug" but in a bad way, i.e. it reload what is altered by this bug instead of preventing it.
+    // this key adaptater helps to correct the "deadkey bug" on OSX but in a bad way, i.e. it reload what is altered by this bug instead of preventing it.
     private class KeyAdapterImpl extends KeyAdapter {
 
         public KeyAdapterImpl() {
@@ -486,7 +486,7 @@ public class LatexTextEditor extends BaseTextEditor {
             System.out.println(event.getExtendedKeyCode() + " / "+event.getKeyCode());
             if (event.getExtendedKeyCode() == 0) {
                 SwingUtilities.invokeLater(() -> {
-                    //LatexTextEditor.this.setupAutoCompletion();
+                    LatexTextEditor.this.setupAutoCompletion();
                 });
 
             }

@@ -127,7 +127,10 @@ public final class MainWindow extends javax.swing.JFrame {
                 MainWindow.this.creationSujetView1.toggleCreateNewExercicePanel();
             }
         });
-        int mod = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+        int mod = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+        
+        
+        
         newExo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, mod));
         fileMenu.add(newExo);
 
@@ -236,23 +239,38 @@ public final class MainWindow extends javax.swing.JFrame {
         };
 
         previewMenu = new JMenu("Preview");
-        JMenuItem compileMenuItem = new JMenuItem("(Re)compile la preview");
-        compileMenuItem.addActionListener((ActionEvent e) -> {
+        
+        JMenuItem gotoPreviewMenuItem = new JMenuItem("Aller à la preview");
+        gotoPreviewMenuItem.addActionListener((ActionEvent e) -> {
             if (pdf!=null){
                 this.focusToPreview();
                 
                 Exercice ex = re.getExercice();
                 if (pdf.isAlreadyRendered() && PreviewTex.isPreviewAvailable(ex)){
-                    // no need to recompile here as pdf is already rendered and display
                     return;
                 }
-                pdf.action(false);
+                
+                pdf.action(PdfDisplayPanel.IFAVAILABLE);
                 
             }
         });
 
-        compileMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, mod));
-        previewMenu.add(compileMenuItem);
+        gotoPreviewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, mod));
+        previewMenu.add(gotoPreviewMenuItem);
+        
+        JMenuItem updatePreviewMenuItem = new JMenuItem("Réactualiser la preview");
+        updatePreviewMenuItem.addActionListener((ActionEvent e) -> {
+            if (pdf!=null){
+                this.focusToPreview();                  
+                System.out.println("hey");
+                pdf.action(PdfDisplayPanel.FORCERECOMPILE);
+                
+            }
+        });
+
+        updatePreviewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, mod |  
+                         ActionEvent.SHIFT_MASK));
+        previewMenu.add(updatePreviewMenuItem);
         
         
         // menu items
@@ -425,17 +443,17 @@ public final class MainWindow extends javax.swing.JFrame {
             pdf = new PdfDisplayPanel() {
 
                 @Override
-                public void action(boolean fast) {
+                public void action(int type) {
                     // Here, the action button must ask to a refresh of the preview
-                    if (!fast) {
-                        String f = PreviewTex.previewExercice(ex);
+                    if (type == PdfDisplayPanel.COMPILEIFNEEDED || type == PdfDisplayPanel.FORCERECOMPILE) {
+                        String f = PreviewTex.previewExercice(ex,type == PdfDisplayPanel.FORCERECOMPILE);
                         if (PreviewTex.waitForPDF()) {
                             // true only of pdf compiled properly
                             this.updateFile(new File(f));
                         } else {
                             this.updateFile(null);
                         }
-                    } else {
+                    } else if (type == PdfDisplayPanel.IFAVAILABLE) {
                         if (PreviewTex.isPreviewAvailable(ex)) {
                             this.updateFile(new File(ex.getPreviewPath()));
                         }
@@ -445,7 +463,7 @@ public final class MainWindow extends javax.swing.JFrame {
             };
             pdf.setPreferedWidth(re.getWidth() - 12); // -12 by trial and error
             this.editorTabbedPane.addTab("Preview", pdf);
-            pdf.action(true);
+            pdf.action(PdfDisplayPanel.IFAVAILABLE);
             this.updateMenuBar();
 
         } // on slow machines, this enables the readme fileMenu to be display a bit faster than keywords and subjects
