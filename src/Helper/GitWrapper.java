@@ -17,6 +17,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JOptionPane;
@@ -230,7 +231,7 @@ public class GitWrapper {
 
         // if here, origin is ahead of head and we must check that file at path has not been modified in origin 
         
-        path = path.replaceFirst(SavedVariables.getMainGitDir(), "");
+        path = path.replaceFirst(Pattern.quote(SavedVariables.getMainGitDir()), "");
         if (path.startsWith("/")) {
             path = path.replaceFirst("/", "");
         }

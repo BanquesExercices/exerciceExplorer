@@ -263,7 +263,7 @@ public class OsRelated {
 
         pb.command(Command);
         pb.directory(new File(location));
-        System.out.println("Executing command from " + pb.directory().getAbsolutePath());
+        System.out.println("Executing command  "+ command[0] + " from " + pb.directory().getAbsolutePath());
         //pb.inheritIO();
         StringBuilder output = new StringBuilder(120);
         try {
@@ -292,7 +292,7 @@ public class OsRelated {
                 out = -2; // -2 means unfinished task
                 return new String[]{String.valueOf(out), ""};
             }
-            System.out.println("durée : " + (System.currentTimeMillis() - startTime));
+            System.out.println("durée : "+  (System.currentTimeMillis() - startTime));
 
             while ((in = is.read()) != -1) {
                 output.append((char) in);

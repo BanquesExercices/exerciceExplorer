@@ -7,7 +7,6 @@ package View;
 
 import Helper.MyObservable;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -20,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
@@ -302,7 +300,7 @@ class DisplayPanel extends javax.swing.JPanel {
 
     // Esthetic values
     protected static final int SEP = 20; // space between pages
-    protected static final int DPI = 220; // best resolution for raw bueffered images
+    protected static final int DPI = 320; // best resolution for raw bueffered images
 
     // observer pattern
     MyObservable mo = new MyObservable();
@@ -346,7 +344,7 @@ class DisplayPanel extends javax.swing.JPanel {
             JLabel label = new JLabel();
             labels.add(label);
             label.setIcon(new ImageIcon(emptyScaledImage));
-            label.setPreferredSize(new Dimension(emptyScaledImage.getWidth(), emptyScaledImage.getHeight()));
+            //label.setPreferredSize(new Dimension(emptyScaledImage.getWidth(), emptyScaledImage.getHeight()));
 
             this.add(label);
 
@@ -412,7 +410,8 @@ class DisplayPanel extends javax.swing.JPanel {
     protected BufferedImage resizeTN(BufferedImage img, int newW, int newH) {
         // using thumbnail library help to produce good quality scaled images, fast.
         try {
-            return Thumbnails.of(img).size(newW, newH).asBufferedImage();
+            
+            return  Thumbnails.of(img).size(newW, newH).asBufferedImage();
         } catch (IOException ex) {
             System.err.println("Error while resampling PDF bufferedImage");
         }
@@ -501,16 +500,7 @@ class DisplayPanel extends javax.swing.JPanel {
 
     }
 
-    @Override
-    public Dimension getPreferredSize() {
-
-        if (!labels.isEmpty()) {
-            Icon icon = labels.get(0).getIcon();
-            return new Dimension(icon.getIconWidth(), ((icon.getIconHeight() + SEP) * doc.getNumberOfPages()));
-        }
-        // default return value
-        return super.getPreferredSize();
-    }
+    
 
     @Override
     public void paintComponent(Graphics g) {

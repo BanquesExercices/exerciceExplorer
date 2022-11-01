@@ -5,6 +5,7 @@
  */
 package TextEditor.Tex;
 
+import Helper.OsRelated;
 import TextEditor.Tex.Folding.TexFoldParser;
 import TextEditor.Tex.Coloring.LatexTokenMaker;
 import TextEditor.Tex.Indenting.LatexIndenterImpl;
@@ -93,8 +94,9 @@ public class LatexTextEditor extends BaseTextEditor {
             }
         }
 
-        this.addKeyListener(new KeyAdapterImpl());
-
+        if (!OsRelated.isWindows()){
+            this.addKeyListener(new KeyAdapterImpl());
+        }
         // auto indent
         this.setAutoIndentEnabled(true);
 
@@ -263,7 +265,7 @@ public class LatexTextEditor extends BaseTextEditor {
 
         DefaultCompletionProvider provider = new DefaultCompletionProvider();
         provider.setAutoActivationRules(false, "\\");
-
+        
         if (acb != null) {
             // uninstall acb if it already exists
             acb.uninstall();
@@ -476,13 +478,15 @@ public class LatexTextEditor extends BaseTextEditor {
         public KeyAdapterImpl() {
 
         }
-
+        
+        
+        
         @Override
         public void keyTyped(KeyEvent event) {
-
+            System.out.println(event.getExtendedKeyCode() + " / "+event.getKeyCode());
             if (event.getExtendedKeyCode() == 0) {
                 SwingUtilities.invokeLater(() -> {
-                    LatexTextEditor.this.setupAutoCompletion();
+                    //LatexTextEditor.this.setupAutoCompletion();
                 });
 
             }
