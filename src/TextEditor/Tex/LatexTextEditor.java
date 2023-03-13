@@ -483,7 +483,6 @@ public class LatexTextEditor extends BaseTextEditor {
         
         @Override
         public void keyTyped(KeyEvent event) {
-            System.out.println(event.getExtendedKeyCode() + " / "+event.getKeyCode());
             if (event.getExtendedKeyCode() == 0) {
                 SwingUtilities.invokeLater(() -> {
                     LatexTextEditor.this.setupAutoCompletion();

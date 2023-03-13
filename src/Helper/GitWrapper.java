@@ -6,6 +6,7 @@
 package Helper;
 
 import View.GitCredential;
+import exerciceexplorer.ExerciceFinder;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -14,6 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,7 +59,7 @@ public class GitWrapper {
     protected static String ALGO = "Blowfish";
     protected static List<File> files = new ArrayList<File>();
     protected static boolean conflictDetected = false;
-    protected static Git git;
+    protected static Git git = null;
     protected static boolean noMoreRecentRemoteCommit = true;
     protected static long lastFetchTS = -1;
     protected static int fetchRefreshDuration = 600;  // time in second before a new fetch is required
@@ -69,8 +71,10 @@ public class GitWrapper {
     public static boolean isConflictDetected() {
         return conflictDetected;
     }
-    
-    
+
+    public static boolean isOn() {
+        return git != null;
+    }
 
     public static String getRepoKind() {
         return repoKind;
@@ -100,9 +104,16 @@ public class GitWrapper {
                 mdpEncrypted = SavedVariables.getEncryptedGitMDP();
             }
 
-           
             noMoreRecentRemoteCommit = false;
 
+            new Thread(() -> {
+                ExerciceFinder.updateExercicesTimes();
+            }).start();
+
+            // il reste pleins de bugs !!!
+            // mauvais ordres
+            // non mise à jour auto en fonction du type de tri
+            // trop lent
             return true;
         } catch (IOException ex) {
             Logger.getLogger(GitWrapper.class.getName()).log(Level.SEVERE, null, ex);
@@ -111,6 +122,7 @@ public class GitWrapper {
             Logger.getLogger(GitWrapper.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+
     }
 
     // https://www.adeveloperdiary.com/java/how-to-easily-encrypt-and-decrypt-text-in-java/
@@ -230,12 +242,11 @@ public class GitWrapper {
         }
 
         // if here, origin is ahead of head and we must check that file at path has not been modified in origin 
-        
         path = path.replaceFirst(Pattern.quote(SavedVariables.getMainGitDir()), "");
         if (path.startsWith("/")) {
             path = path.replaceFirst("/", "");
         }
-        
+
         try {
 
             // local branch
@@ -275,14 +286,14 @@ public class GitWrapper {
             if (!isConflictDetected()) {
                 int fetchError = fetch();
                 if (fetchError == REBASEERROR) {
-                    conflictDetected=true;
+                    conflictDetected = true;
                     //return "Problème lors du fetch (rebasage en cours ?) \n   -> Consultez github desktop pour plus d'informations";
                 } else if (fetchError == LOGINERROR) {
                     return "problème d'indentifiants d'accès à github.com \n   -> Re-essayez après les avoir saisis.";
                 }
-            }else{
+            } else {
                 //in conflict case, all concerned files are added before status is called to check whther conflitcs are solved
-                for (String s : lastSatus.getConflicting()){
+                for (String s : lastSatus.getConflicting()) {
                     git.add().addFilepattern(s).call();
                 }
             }
@@ -350,20 +361,19 @@ public class GitWrapper {
                 out += " -> " + lastSatus.getConflicting().size() + " fichier(s) conflictuels :  \n";
                 for (String f : lastSatus.getConflicting()) {
                     out += "   * " + f;
-                    
+
                 }
             }
 
             if (conflictDetected) {
 
-                
                 pullButton = lastSatus.getConflicting().size() == 0;
-                if (pullButton){                                   
+                if (pullButton) {
                     out += " Tous les conflits sont réglés, vous pouvez poursuivre le pull (Rebase)";
-                }else{
+                } else {
                     out += " Les conflits doivent être réglés avant de poursuivre...";
                 }
-                
+
                 pushButton = false;
                 commitButton = false;
             } else if (nothingToDo) {
@@ -456,5 +466,42 @@ public class GitWrapper {
         }
 
     }
+
+    public static String relativePath(String path) {
+        // return path relative to repo 
+        String repo = git.getRepository().getDirectory().getParentFile().getName();
+        String fs = path.replace("\\", "/").replace("//", "/").split(repo + "/")[1].trim();    // forcing / separator whatever the OS as requested by git log
+        return fs;
+    }
+
+    public static long[] getTimes(String path) {
+        // retrieve times of first and last commits concerning file at path path.
+        // output longs[] {firstcommit ; lastcommit}
+        // This method may take a long time as all git tree is walked.
+        
+        try {
+            Iterator<RevCommit> irc = git.log().addPath(relativePath(path)).call().iterator();
+
+            long maxtime = -1;
+            long mintime = -1;
+
+            while (irc.hasNext()) {
+                long time = irc.next().getCommitTime();
+                if (time > maxtime || maxtime<0) {
+                    maxtime = time;
+                }
+                if (time < mintime || mintime<0) {
+                    mintime = time;
+                }
+            }
+            return new long[]{mintime,maxtime};
+
+        } catch (Exception ex) {
+            Logger.getLogger(GitWrapper.class.getName()).log(Level.SEVERE, null, ex);
+            return new long[]{0,0};
+        }
+    }
+
+    
 
 }

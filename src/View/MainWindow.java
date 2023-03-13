@@ -448,7 +448,7 @@ public final class MainWindow extends javax.swing.JFrame {
                     if (type == PdfDisplayPanel.COMPILEIFNEEDED || type == PdfDisplayPanel.FORCERECOMPILE) {
                         String f = PreviewTex.previewExercice(ex,type == PdfDisplayPanel.FORCERECOMPILE);
                         if (PreviewTex.waitForPDF()) {
-                            // true only of pdf compiled properly
+                            // true only if pdf compiled properly
                             this.updateFile(new File(f));
                         } else {
                             this.updateFile(null);
@@ -576,6 +576,8 @@ public final class MainWindow extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        
+        
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -613,6 +615,8 @@ public final class MainWindow extends javax.swing.JFrame {
                 javax.swing.ToolTipManager.sharedInstance().setInitialDelay(400);
 
                 MainWindow.getInstance().setVisible(true);
+                
+                
 
             }
         });

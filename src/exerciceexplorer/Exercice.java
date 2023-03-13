@@ -5,6 +5,7 @@
  */
 package exerciceexplorer;
 
+import Helper.GitWrapper;
 import Helper.OsRelated;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,9 @@ public class Exercice implements Comparable<Exercice> {
     protected List<String> keywords = new ArrayList<>();
     protected List<String> readme = new ArrayList<>();
     protected List<String> content = new ArrayList<>();
+    protected boolean timeFileExist = false;
+    protected long creationTime;
+    protected long modificationTime;
 
     public Exercice(String name, String path, String kind) {
         this.name = name;
@@ -30,10 +34,67 @@ public class Exercice implements Comparable<Exercice> {
             this.kind = kind;
         } else {
             this.kind = DS;
-        }
-
+        }                   
+        this.readTimesFromFile();
     }
-
+    
+    
+    public void readTimesFromFile(){
+        
+        
+        if (OsRelated.fileExists(getTimeFilePath())){
+            List<String> lines = OsRelated.readFile(getTimeFilePath());
+            creationTime = Long.valueOf(lines.get(1));
+            modificationTime = Long.valueOf(lines.get(2));
+            
+            // we should better call git from here, file by file, when data is unavailable
+            // global update should only be applied in case of commit/pull
+            
+            
+        }else{
+            creationTime = 22222222222L;  // 12 March 2674 -> after that date, newly created exercices wont appear top of the list before first commit !!!
+            modificationTime = 22222222222L;
+        }        
+    }
+    
+    public void updateTimes(){
+        long[] times =GitWrapper.getTimes(getSubjectPath());
+        if (creationTime != times[0] || modificationTime != times[1]){
+            creationTime = times[0];
+            modificationTime = times[1];
+            ArrayList<String> lines = new ArrayList<>();
+            lines.add("Date du premier / dernier commit concernant cet exercice");
+            lines.add(String.valueOf(creationTime));
+            lines.add(String.valueOf(modificationTime));
+            OsRelated.writeToFile(lines, getTimeFilePath());
+        }
+        
+    
+    }
+    
+    
+    
+    public int compareCreationTo(Exercice another){
+        if (creationTime<another.creationTime){
+            return 1;
+        }
+        if (creationTime==another.creationTime){
+            return 0;           
+        }
+        return -1;
+    }
+    
+    public int compareModificationTo(Exercice another){
+        if (modificationTime<another.modificationTime){
+            return 1;
+        }
+        if (modificationTime==another.modificationTime){
+            return 0;           
+        }
+        return -1;
+    }
+    
+    
     public List<String> getImports() {
         /**
          * return latex packages which must be manually imported for this
@@ -328,6 +389,10 @@ public class Exercice implements Comparable<Exercice> {
     public String getPreviewPath() {
         return path + "/preview.pdf";
     }
+    
+    public String getTimeFilePath() {
+        return path + "/timeFile.txt";
+    }
 
     /**
      * @return the kind
@@ -378,7 +443,9 @@ public class Exercice implements Comparable<Exercice> {
 
         return "N.A.";
     }
-
+    
+    
+    
     @Override
     public int compareTo(Exercice o) {
         return this.name.compareToIgnoreCase(o.name);

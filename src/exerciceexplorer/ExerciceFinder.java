@@ -5,14 +5,18 @@
  */
 package exerciceexplorer;
 
+import Helper.GitWrapper;
 import Helper.OsRelated;
 import Helper.SavedVariables;
 import Helper.Utils;
+import View.MainWindow;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -94,6 +98,19 @@ public final class ExerciceFinder {
         return true;
     }
 
+    public static void updateExercicesTimes() {
+        // update of all creation an modification times of exercices
+        for (int i=0 ; i<exercices.size() ; i++){
+        
+            exercices.get(i).updateTimes();
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            MainWindow.getInstance().creationSujetView1.updateModel();
+        });
+
+    }
+
     public boolean updateList() {
         this.exercices.clear();
         String[] dirs = {Exercice.DS, Exercice.TD, Exercice.Colle};
@@ -137,43 +154,76 @@ public final class ExerciceFinder {
         return out;
     }
 
-   
     public DefaultListModel<Exercice> getListModel() {
-        DefaultListModel<Exercice> out = new DefaultListModel<>();
+        ArrayList<Exercice> out = new ArrayList<>();
         exercices.stream().forEach((ex) -> {
-            out.addElement(ex);
+            out.add(ex);
         });
-        return out;
+        return sortList(out);
     }
 
     public DefaultListModel<Exercice> getListModel(String kind) {
-        DefaultListModel<Exercice> out = new DefaultListModel<>();
+        ArrayList<Exercice> out = new ArrayList<>();
         exercices.stream().forEach((ex) -> {
             if (ex.getKind().equals(kind)) {
-                out.addElement(ex);
+                out.add(ex);
             }
         });
-        return out;
+        return sortList(out);
     }
 
     public DefaultListModel<Exercice> getListModel(List<String> keywords, String kind) {
-        DefaultListModel<Exercice> out = new DefaultListModel<>();
+        ArrayList<Exercice> out = new ArrayList<>();
         exercices.stream().forEach((ex) -> {
             if (ex.getKind().equals(kind) && ex.containsKeyWords(keywords)) {
-                out.addElement(ex);
+                out.add(ex);
             }
         });
-        return out;
+        return sortList(out);
     }
 
     public DefaultListModel<Exercice> getListModel(List<String> keywords) {
-        DefaultListModel<Exercice> out = new DefaultListModel<>();
+        ArrayList<Exercice> out = new ArrayList<>();
         exercices.stream().forEach((ex) -> {
             if (ex.containsKeyWords(keywords)) {
-                out.addElement(ex);
+                out.add(ex);
             }
         });
 
+        return sortList(out);
+    }
+
+    protected DefaultListModel<Exercice> sortList(ArrayList<Exercice> list) {
+        DefaultListModel<Exercice> out = new DefaultListModel<>();
+
+        
+            Comparator<Exercice> c = new Comparator<Exercice>() {
+                @Override
+                public int compare(Exercice o1, Exercice o2) {
+                    switch (SavedVariables.getSort()) {
+                        case 0:
+                            // alphabetic order
+                            return o1.compareTo(o2);
+
+                        case 1:
+                            // historic order (creation)
+                            return o1.compareCreationTo(o2);
+
+                        case 2:
+                            // historic order (modification)
+
+                            return o1.compareModificationTo(o2);
+                        default:
+                            // same as alphabetic
+
+                            return o1.compareTo(o2);
+                    }
+                }
+            };
+            list.sort(c);
+        
+
+        out.addAll(list);
         return out;
     }
 

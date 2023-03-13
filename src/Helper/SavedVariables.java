@@ -49,6 +49,20 @@ public class SavedVariables {
         prefs.put("theme", String.valueOf(theme));
     }
 
+     //theme
+        public static int getSort() {
+
+        if (prefs != null) {
+            return Integer.valueOf(prefs.get("sort", "0"));
+        } else {
+            return 0;
+        }
+    }
+
+    public static void setSort(int sort) {
+        prefs.put("sort", String.valueOf(sort));
+    }
+    
     // font size
     public static int getFontSize() {
 

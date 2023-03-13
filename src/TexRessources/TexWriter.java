@@ -185,6 +185,7 @@ public class TexWriter {
             if (readLine.trim().equals("****") && !blockTokenFound) {
                 
                 if (previewMode){
+                    // additional content in case of preview (in app)
                     
                     ArrayList<Exercice> exes;
                     exes = Collections.list(exercices);
@@ -193,7 +194,7 @@ public class TexWriter {
                     
                     output.add("\\vspace{-1cm}");
                     if (e.getCountGiven()>0){
-                    output.add("Sujet déjà donné "+e.getCountGiven()+ " fois dont la dernière le " + e.getLastEntry()+" \\\\");
+                    output.add("Sujet déjà donné "+e.getCountGiven()+ " fois dont la dernière le \\verb@" + e.getLastEntry()+"@ \\\\");
                     
                     }
                     

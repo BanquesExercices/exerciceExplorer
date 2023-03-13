@@ -5,11 +5,11 @@
  */
 package View; 
 
+import Helper.GitWrapper;
 import Helper.ListTransferHandler;
 import Helper.OsRelated;
 import Helper.SavedVariables;
 import Helper.Utils;
-import TexRessources.PreviewTex;
 import TexRessources.TexWriter;
 import exerciceexplorer.Exercice;
 import exerciceexplorer.ExerciceFinder;
@@ -61,6 +61,8 @@ public class CreationCompoView extends javax.swing.JPanel {
             ListTransferHandler lth = (ListTransferHandler) choixExercice.getTransferHandler();
 
             if (choixExercice.getSelectedValue() != null && !lth.isOnDrag()) {
+                
+                
                 MainWindow.getInstance().setExerciceDisplay((Exercice) choixExercice.getSelectedValue());
 
                 this.listeExercices.clearSelection();
@@ -145,7 +147,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         return out;
     }
 
-    public Exercice getSelectedExercice() {
+    public Exercice getSelectedExercice() {               
         return (Exercice) choixExercice.getSelectedValue();
     }
 
