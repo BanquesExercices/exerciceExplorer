@@ -306,6 +306,8 @@ public class LatexTextEditor extends BaseTextEditor {
         provider.addCompletion(new TemplateCompletion(provider, "scalaire", "scalaire", "scalaire", "produit scalaire", "produit scalaire"));
 
         // maths & Latex accelerators templates
+        provider.addCompletion(new TemplateCompletion(provider, "left[", "left[...] -> pac{ }", "pac{ ${cursor} }", "Crochets", "Crochets"));
+        provider.addCompletion(new TemplateCompletion(provider, "left(", "left(...) -> pa{ }", "pa{ ${cursor} }", "Parentheses", "Parentheses"));
         provider.addCompletion(new TemplateCompletion(provider, "frac{", "frac{...}{...}", "frac{ ${cursor} }{}", "Fraction", "Fraction"));
         provider.addCompletion(new TemplateCompletion(provider, "Rightarrow", "Rightarrow", "Rightarrow ${cursor}", "Implication", "Implication"));
         provider.addCompletion(new TemplateCompletion(provider, "RightLeftarrow", "RightLeftarrow", "RightLeftarrow ${cursor}", "equivalence", "equivalence"));
@@ -484,6 +486,8 @@ public class LatexTextEditor extends BaseTextEditor {
         @Override
         public void keyTyped(KeyEvent event) {
             if (event.getExtendedKeyCode() == 0) {
+                // autocompletion is reloaded only when special characters such as ^ or ` are typed on non windows OSs
+                // such characters interfer badly with the text editor
                 SwingUtilities.invokeLater(() -> {
                     LatexTextEditor.this.setupAutoCompletion();
                 });

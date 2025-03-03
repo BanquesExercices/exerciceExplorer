@@ -42,7 +42,7 @@
               <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -52,7 +52,11 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="keywordPicker" min="-2" pref="170" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="jLabel10" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
@@ -75,7 +79,10 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="newExercicePane" min="-2" pref="60" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-              <Component id="jLabel5" min="-2" pref="30" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel5" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                  <Component id="jLabel10" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -218,6 +225,9 @@
       <SubComponents>
         <Component class="javax.swing.JList" name="choixExercice">
           <Properties>
+            <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
+              <StringArray count="0"/>
+            </Property>
             <Property name="selectionMode" type="int" value="0"/>
             <Property name="toolTipText" type="java.lang.String" value="Faite glisser un element vers la zone ci dessous pour l&apos;inclure dans la composition."/>
             <Property name="visibleRowCount" type="int" value="10"/>
@@ -326,6 +336,7 @@
                         <StringItem index="2" value="TD"/>
                       </StringArray>
                     </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Type d&apos;exercice &#xe0; cr&#xe9;er (les DMs et DSs sont regroup&#xe9;s)"/>
                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[250, 40]"/>
                     </Property>
@@ -341,7 +352,8 @@
             </Container>
             <Component class="javax.swing.JTextField" name="newTitleTextField">
               <Properties>
-                <Property name="text" type="java.lang.String" value=" ... Titre de l&apos;exercice ..."/>
+                <Property name="text" type="java.lang.String" value=" ... nom_du_dossier ..."/>
+                <Property name="toolTipText" type="java.lang.String" value="Nom du dossier qui va contenir le nouvel exercice. Ce dernier ne doit pas contenir d&apos;espaces ni de caract&#xe8;res sp&#xe9;ciaux"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[155, 20]"/>
                 </Property>
@@ -425,5 +437,18 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JLabel" name="jLabel10">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Helvetica Neue" size="13" style="3"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="33" red="33" type="rgb"/>
+        </Property>
+        <Property name="horizontalAlignment" type="int" value="0"/>
+        <Property name="text" type="java.lang.String" value="Fin de la BPEP sur Github ! "/>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;La BPEP quitte github fin f&#xe9;vrier 2025. Vous utilisez la dernier version d&apos;ExerciceExplorer pour github &lt;br&gt; et il n&apos;y aura plus de mise &#xe0; jours, ni du logiciel, ni des exercices.&#xa;&lt;br&gt;&#xa;Deux choix sont propos&#xe9;s :&#xa;&lt;ol&gt;&#xa;    &lt;li&gt; Continuer &#xe0; utiliser cette version (sans les MaJ d&apos;exercices par d&apos;autres coll&#xe8;gues)&#xa;    &lt;li&gt; Migrer vers le Git&#xe9;a de l&apos;UPS ; plus d&apos;information sur https://mmb.netlify.app/bpep/bpep &lt;br&gt; ou dans vos mails !&#xa;&lt;/ol&gt;&#xa;&#xa;&lt;/html&gt;"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>

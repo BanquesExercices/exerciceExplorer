@@ -7,6 +7,7 @@ package View;
 
 import Helper.MyObservable;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -92,8 +93,10 @@ public abstract class PdfDisplayPanel extends javax.swing.JPanel implements Obse
             this.displayPanel = new DisplayPanel();
             ((DisplayPanel) this.displayPanel).parentWidth = preferedWidth;
             this.jScrollPane1.setViewportView(this.displayPanel);
+            
             ((DisplayPanel) this.displayPanel).subscribe(this);
-
+            this.displayPanel.setMaximumSize(new Dimension(400,400));
+            
             ((DisplayPanel) this.displayPanel).setPdfRenderer(pdfDocument);
             pageLabel.setText("page " + "x" + "/" + pdfDocument.getNumberOfPages());
         } catch (IOException ex) {
@@ -310,7 +313,7 @@ class DisplayPanel extends javax.swing.JPanel {
 
     // Esthetic values
     protected static final int SEP = 20; // space between pages
-    protected static final int DPI = 320; // best resolution for raw bueffered images
+    protected static final int DPI = 300; // best resolution for raw bueffered images
 
     // observer pattern
     MyObservable mo = new MyObservable();
@@ -345,6 +348,7 @@ class DisplayPanel extends javax.swing.JPanel {
         // layout
         GridLayout gl = new GridLayout(doc.getNumberOfPages(), 1);
         gl.setVgap(SEP);
+        
         this.setLayout(gl);
 
         // crating white bufferedImages
@@ -356,6 +360,7 @@ class DisplayPanel extends javax.swing.JPanel {
             rendered.add(false);
             JLabel label = new JLabel();
             labels.add(label);
+            
             label.setIcon(new ImageIcon(emptyScaledImage));
             //label.setPreferredSize(new Dimension(emptyScaledImage.getWidth(), emptyScaledImage.getHeight()));
 
@@ -423,7 +428,6 @@ class DisplayPanel extends javax.swing.JPanel {
     protected BufferedImage resizeTN(BufferedImage img, int newW, int newH) {
         // using thumbnail library help to produce good quality scaled images, fast.
         try {
-            
             return  Thumbnails.of(img).size(newW, newH).asBufferedImage();
         } catch (IOException ex) {
             System.err.println("Error while resampling PDF bufferedImage");
@@ -433,7 +437,7 @@ class DisplayPanel extends javax.swing.JPanel {
     }
 
     protected boolean detectResizeAndUpdate() {
-        // check wether parent containenr has been resized
+        // check whether parent container has been resized
         boolean out = (parentHeight != DisplayPanel.this.getParent().getHeight() || parentWidth != DisplayPanel.this.getParent().getWidth());
         if (out) {
             parentWidth = DisplayPanel.this.getParent().getWidth();
@@ -449,7 +453,9 @@ class DisplayPanel extends javax.swing.JPanel {
         int newX, newY;
         newX = Integer.max(parentWidth, 500); // minimum size
         newY = bim.getHeight() * newX / bim.getTileWidth();
+        
         labels.get(page).setIcon(new ImageIcon(resizeTN(bim, newX, newY)));
+        
     }
 
     protected void askResampling() {

@@ -27,7 +27,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import TextEditor.Base.FileProcessor;
@@ -78,14 +77,17 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
 
         // specific to find and replace
         findTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 TextEditorBinded.this.findAction(true, TextEditorBinded.this.findTextField.getText());
             }
 
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 TextEditorBinded.this.findAction(true, TextEditorBinded.this.findTextField.getText());
             }
 
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 TextEditorBinded.this.findAction(true, TextEditorBinded.this.findTextField.getText());
             }
@@ -215,11 +217,8 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         if (this.syntaxStyle == exerciceFile) {
 
             // show question number according to carret
-            textArea.addCaretListener(new CaretListener() {
-                @Override
-                public void caretUpdate(CaretEvent e) {
-                    updateQuestionLabel();
-                }
+            textArea.addCaretListener((CaretEvent e) -> {
+                updateQuestionLabel();
             });
         } else {
             this.texPanel.setVisible(false);
@@ -241,7 +240,9 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
     @Override
     public void toggleFindPanel() {
         if (!this.findPanel.isVisible()) {
+            
             this.startFindPanel();
+            
         } else {
             this.endFindPanel();
         }
@@ -283,10 +284,16 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
 
     public void startFindPanel() {
         this.findPanel.setVisible(true);
-        this.replacePanel.setVisible(false);
+        
         this.findTextField.setText("...");
+        if (this.replacePanel.isVisible()){
+                this.findTextField.setText(this.replaceWhatTextField.getText());
+                
+                this.endReplacePanel();
+            }
         this.findTextField.selectAll();
         this.findTextField.requestFocusInWindow();
+        this.context.setSearchFor(findTextField.getText());
 
     }
 
@@ -307,12 +314,14 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
     }
 
     public void startReplacePanel() {
-
-        if (this.findPanel.isVisible()) {
-            replaceWhatTextField.setText(findTextField.getText());
-        }
+        
         this.replacePanel.setVisible(true);
         this.replaceWhatTextField.setText("...");
+        if (this.findPanel.isVisible()) {
+            replaceWhatTextField.setText(findTextField.getText());
+            this.endFindPanel();
+            
+        }
         this.replaceWhatTextField.selectAll();
         this.replaceWhatTextField.requestFocusInWindow();
         this.replaceWithTextField.setText("");
@@ -322,7 +331,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
     public void endReplacePanel() {
         this.replacePanel.setVisible(false);
         this.context.setSearchFor("abcdzpretztpo");
-        SearchResult sr = SearchEngine.find(textArea, context);
+        SearchEngine.find(textArea, context);
     }
 
     public void replaceNext() {
@@ -549,7 +558,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         });
         findPanel.add(nextButton);
 
-        previousButton.setText("précédant");
+        previousButton.setText("précédent");
         previousButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 previousButtonActionPerformed(evt);
@@ -571,7 +580,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
 
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
 
-        jLabel1.setText("  Find what :        ");
+        jLabel1.setText("Remplacer :        ");
         jPanel3.add(jLabel1);
 
         replaceWhatTextField.setText("...");
@@ -593,13 +602,13 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
 
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.LINE_AXIS));
 
-        jLabel4.setText("  Replace with :   ");
+        jLabel4.setText("Par :                   ");
         jPanel4.add(jLabel4);
 
         replaceWithTextField.setText("...");
         jPanel4.add(replaceWithTextField);
 
-        replaceNextButton.setText("Replace Next");
+        replaceNextButton.setText("suivant");
         replaceNextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 replaceNextButtonActionPerformed(evt);
@@ -607,7 +616,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         });
         jPanel4.add(replaceNextButton);
 
-        replaceAllButton.setText("Replace All");
+        replaceAllButton.setText("tous");
         replaceAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 replaceAllButtonActionPerformed(evt);
@@ -640,7 +649,7 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(texPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 205, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
                 .addComponent(reloadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -655,19 +664,19 @@ public class TextEditorBinded extends javax.swing.JPanel implements FileProcesso
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
                 .addGap(2, 2, 2)
                 .addComponent(replacePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(findPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(texPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(reloadButton)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(reloadButton)
+                        .addComponent(texPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, 0))
         );
     }// </editor-fold>//GEN-END:initComponents

@@ -546,7 +546,6 @@ public final class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jSplitPane1.setBorder(null);
         jSplitPane1.setDividerSize(20);
         jSplitPane1.setForeground(new java.awt.Color(204, 204, 204));
 
