@@ -90,15 +90,22 @@ public class GitWrapper {
                     .build();
 
             String url = repository.getConfig().getString("remote", "origin", "url");
+            System.out.println("url : " + url);
             if (url.contains("https")) {
                 repoKind = GitCredential.HTTPS;
             } else {
                 repoKind = GitCredential.SSH;
+                // not dealed
+                
+            }
+            if (! url.contains("ups")){
+                System.out.println("mauvais repo (pas le gitéa de l'ups)");
+                return false;
             }
 
             git = new Git(repository);
 
-            // we get git credentials for github if user has previously agreed to save them (in an encrpyted way)
+            // we get git credentials for gitea if user has previously agreed to save them (in an encrpyted way)
             if (SavedVariables.getPersistentCredential()) {
                 login = SavedVariables.getGitLogin();
                 mdpEncrypted = SavedVariables.getEncryptedGitMDP();
@@ -287,9 +294,9 @@ public class GitWrapper {
                 int fetchError = fetch();
                 if (fetchError == REBASEERROR) {
                     conflictDetected = true;
-                    //return "Problème lors du fetch (rebasage en cours ?) \n   -> Consultez github desktop pour plus d'informations";
+                    //return "Problème lors du fetch (rebasage en cours ?) \n   
                 } else if (fetchError == LOGINERROR) {
-                    return "problème d'indentifiants d'accès à github.com \n   -> Re-essayez après les avoir saisis.";
+                    return "problème d'indentifiants d'accès à gitéa.com \n   -> Re-essayez après les avoir saisis.";
                 }
             } else {
                 //in conflict case, all concerned files are added before status is called to check whther conflitcs are solved
@@ -301,18 +308,18 @@ public class GitWrapper {
             try {
                 BranchTrackingStatus trackingStatus = BranchTrackingStatus.of(repository, repository.getBranch());
                 if (trackingStatus.getBehindCount() > 0) {
-                    out += "\n   " + trackingStatus.getBehindCount() + " nouveau(x) commit(s) sur github. \n Effectuez un pull pour les obtenir\n\n";
+                    out += "\n   " + trackingStatus.getBehindCount() + " nouveau(x) commit(s) sur gitéa. \n Effectuez un pull pour les obtenir\n\n";
                     needPull = true;
                 }
 
                 if (trackingStatus.getAheadCount() > 0) {
-                    out += "\n   " + trackingStatus.getAheadCount() + " commit(s) non envoyés sur github \n\n";
+                    out += "\n   " + trackingStatus.getAheadCount() + " commit(s) non envoyés sur gitéa \n\n";
                     needPush = true;
                 }
                 conflictDetected = false;
             } catch (NullPointerException e) {
 
-                out += "Branche : " + repository.getBranch() + " non présente sur github \n";
+                out += "Branche : " + repository.getBranch() + " non présente sur gitéa \n";
 
             }
 

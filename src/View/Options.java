@@ -305,7 +305,7 @@ public class Options extends JPanel {
         jPanel5.add(statusButton);
 
         pushButton.setText("Push");
-        pushButton.setToolTipText("<html>\nEnvoie le dernier commit effetué (sauvegarde) sur le serveur. \n<br>\nLes conflits (plusieurs personnes modifiant le même fichier en même temps) n'étant pas gérés à partir de l'interface graphique. Il faudra dans ce cas utiliser un logiciel dédié ou bien le terminal.\n</html>");
+        pushButton.setToolTipText("<html>\nEnvoie le dernier commit effectué sur le serveur gitéa de l'UPS. \n<br>\nLes conflits (plusieurs personnes modifiant le même fichier en même temps) n'étant pas gérés à partir de l'interface graphique. Il faudra dans ce cas utiliser un logiciel dédié ou bien le terminal.\n</html>");
         pushButton.setEnabled(false);
         pushButton.setMaximumSize(null);
         pushButton.addActionListener(new java.awt.event.ActionListener() {
@@ -316,7 +316,7 @@ public class Options extends JPanel {
         jPanel5.add(pushButton);
 
         pullButton.setText("Pull");
-        pullButton.setToolTipText("Réccupère les nouvelles données (dernier commit) depuis le serveur.");
+        pullButton.setToolTipText("Réccupère les nouvelles données (dernier(s) commit(s)) depuis le serveur gitéa.");
         pullButton.setEnabled(false);
         pullButton.setMaximumSize(null);
         pullButton.addActionListener(new java.awt.event.ActionListener() {
@@ -327,7 +327,7 @@ public class Options extends JPanel {
         jPanel5.add(pullButton);
 
         commitButton.setText("Commit");
-        commitButton.setToolTipText("Réalise une sauvegarde (commit) de la base de donnée. Ce commit pourra ensuite être envoyé sur le serveur (push)");
+        commitButton.setToolTipText("Réalise une sauvegarde (commit) de la base de donnée locale. Ce commit pourra ensuite être envoyé sur le serveur gitéa (push)");
         commitButton.setEnabled(false);
         commitButton.setMaximumSize(null);
         commitButton.setMinimumSize(new java.awt.Dimension(70, 29));
@@ -705,7 +705,7 @@ public class Options extends JPanel {
         jLabel1.setText("pdflatex");
 
         gitFolderInput.setText(SavedVariables.getMainGitDir());
-        gitFolderInput.setToolTipText("Chemin d'acces (absolu) vers le dossier contenant le repository git de la BPEP.");
+        gitFolderInput.setToolTipText("Chemin d'acces (absolu) vers le dossier BPEP (qui contient les dossiers ExerciceExplorer, exercices et fichiers_utiles).");
         gitFolderInput.setPreferredSize(new java.awt.Dimension(240, 24));
         gitFolderInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

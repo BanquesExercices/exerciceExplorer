@@ -110,7 +110,7 @@
                     <Component class="javax.swing.JButton" name="pushButton">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Push"/>
-                        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Envoie le dernier commit effetu&#xe9; (sauvegarde) sur le serveur. &#xa;&lt;br&gt;&#xa;Les conflits (plusieurs personnes modifiant le m&#xea;me fichier en m&#xea;me temps) n&apos;&#xe9;tant pas g&#xe9;r&#xe9;s &#xe0; partir de l&apos;interface graphique. Il faudra dans ce cas utiliser un logiciel d&#xe9;di&#xe9; ou bien le terminal.&#xa;&lt;/html&gt;"/>
+                        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Envoie le dernier commit effectu&#xe9; sur le serveur git&#xe9;a de l&apos;UPS. &#xa;&lt;br&gt;&#xa;Les conflits (plusieurs personnes modifiant le m&#xea;me fichier en m&#xea;me temps) n&apos;&#xe9;tant pas g&#xe9;r&#xe9;s &#xe0; partir de l&apos;interface graphique. Il faudra dans ce cas utiliser un logiciel d&#xe9;di&#xe9; ou bien le terminal.&#xa;&lt;/html&gt;"/>
                         <Property name="enabled" type="boolean" value="false"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="null"/>
@@ -123,7 +123,7 @@
                     <Component class="javax.swing.JButton" name="pullButton">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Pull"/>
-                        <Property name="toolTipText" type="java.lang.String" value="R&#xe9;ccup&#xe8;re les nouvelles donn&#xe9;es (dernier commit) depuis le serveur."/>
+                        <Property name="toolTipText" type="java.lang.String" value="R&#xe9;ccup&#xe8;re les nouvelles donn&#xe9;es (dernier(s) commit(s)) depuis le serveur git&#xe9;a."/>
                         <Property name="enabled" type="boolean" value="false"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="null"/>
@@ -136,7 +136,7 @@
                     <Component class="javax.swing.JButton" name="commitButton">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Commit"/>
-                        <Property name="toolTipText" type="java.lang.String" value="R&#xe9;alise une sauvegarde (commit) de la base de donn&#xe9;e. Ce commit pourra ensuite &#xea;tre envoy&#xe9; sur le serveur (push)"/>
+                        <Property name="toolTipText" type="java.lang.String" value="R&#xe9;alise une sauvegarde (commit) de la base de donn&#xe9;e locale. Ce commit pourra ensuite &#xea;tre envoy&#xe9; sur le serveur git&#xe9;a (push)"/>
                         <Property name="enabled" type="boolean" value="false"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="null"/>
@@ -755,7 +755,7 @@
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                       <Connection code="SavedVariables.getMainGitDir()" type="code"/>
                     </Property>
-                    <Property name="toolTipText" type="java.lang.String" value="Chemin d&apos;acces (absolu) vers le dossier contenant le repository git de la BPEP."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Chemin d&apos;acces (absolu) vers le dossier BPEP (qui contient les dossiers ExerciceExplorer, exercices et fichiers_utiles)."/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[240, 24]"/>
                     </Property>

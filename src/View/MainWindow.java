@@ -292,7 +292,7 @@ public final class MainWindow extends javax.swing.JFrame {
         advancedMenu.add(toZeroMI);
         toZeroMI.addActionListener(toZeroAction);
 
-        JMenuItem gitCredentialMI = new JMenuItem("Paramètres Github");
+        JMenuItem gitCredentialMI = new JMenuItem("Paramètres Gitéa");
         advancedMenu.add(gitCredentialMI);
         gitCredentialMI.addActionListener(gitCredentialAction);
 
@@ -421,7 +421,7 @@ public final class MainWindow extends javax.swing.JFrame {
 
             if (warningNewContentOnRemote) {
                 SwingUtilities.invokeLater(() -> {
-                    JOptionPane.showMessageDialog(MainWindow.this, "<html> L'exercice que vous souhaitez editer possède une version plus recente sur github.com <br> Il est donc <span style='color:green'>vivement conseillé</span> d'effectuer un git pull avant.</html>");
+                    JOptionPane.showMessageDialog(MainWindow.this, "<html> L'exercice que vous souhaitez editer possède une version plus recente sur gitéa.com <br> Il est donc <span style='color:green'>vivement conseillé</span> d'effectuer un git pull avant.</html>");
                 });
             }
         }).start();

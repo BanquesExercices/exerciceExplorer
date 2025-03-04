@@ -31,11 +31,7 @@ public class GitCredential extends javax.swing.JFrame {
      */
     private GitCredential() {
         initComponents();
-        if (GitWrapper.getRepoKind() == SSH) {
-            this.httpsPanel.setVisible(false);
-        } else {
-            this.sshPanel.setVisible(false);
-        }
+      
         jSlider1StateChanged(null);
         this.setAlwaysOnTop(true);
 
@@ -66,8 +62,6 @@ public class GitCredential extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel4 = new javax.swing.JPanel();
-        sshPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         httpsPanel = new javax.swing.JPanel();
         passwordField = new javax.swing.JPasswordField();
         promptLabel = new javax.swing.JLabel();
@@ -98,26 +92,6 @@ public class GitCredential extends javax.swing.JFrame {
 
         setTitle("Git login & mdp");
         setAlwaysOnTop(true);
-
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 3, 18)); // NOI18N
-        jLabel1.setText("Connexion depuis une passerelle SSH impossible");
-
-        javax.swing.GroupLayout sshPanelLayout = new javax.swing.GroupLayout(sshPanel);
-        sshPanel.setLayout(sshPanelLayout);
-        sshPanelLayout.setHorizontalGroup(
-            sshPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(sshPanelLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        sshPanelLayout.setVerticalGroup(
-            sshPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(sshPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5))
-        );
 
         passwordField.setToolTipText("");
         passwordField.addActionListener(new java.awt.event.ActionListener() {
@@ -156,7 +130,7 @@ public class GitCredential extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,8 +155,8 @@ public class GitCredential extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -206,11 +180,11 @@ public class GitCredential extends javax.swing.JFrame {
 
         jLabel6.setText("login :");
 
-        jLabel7.setText("Jeton github :");
+        jLabel7.setText("Jeton gitéa :");
 
         loginField.setToolTipText("");
 
-        jLabel13.setText("L'accès à github est soumis à identification");
+        jLabel13.setText("L'accès à gitéa est soumis à identification");
 
         javax.swing.GroupLayout httpsPanelLayout = new javax.swing.GroupLayout(httpsPanel);
         httpsPanel.setLayout(httpsPanelLayout);
@@ -222,15 +196,14 @@ public class GitCredential extends javax.swing.JFrame {
                     .addGroup(httpsPanelLayout.createSequentialGroup()
                         .addGroup(httpsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(httpsPanelLayout.createSequentialGroup()
-                                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
-                                .addGap(22, 22, 22)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)
                                 .addGroup(httpsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(httpsPanelLayout.createSequentialGroup()
                                         .addGap(11, 11, 11)
-                                        .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jSlider1, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
                                         .addGap(30, 30, 30)
-                                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE))
                                     .addGroup(httpsPanelLayout.createSequentialGroup()
                                         .addGroup(httpsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel6)
@@ -243,7 +216,7 @@ public class GitCredential extends javax.swing.JFrame {
                                 .addComponent(jButton2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton1))
-                            .addComponent(promptLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(promptLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE))
                         .addGap(8, 8, 8))
                     .addGroup(httpsPanelLayout.createSequentialGroup()
                         .addComponent(jLabel13)
@@ -259,9 +232,9 @@ public class GitCredential extends javax.swing.JFrame {
                 .addGroup(httpsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(httpsPanelLayout.createSequentialGroup()
                         .addGroup(httpsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
                             .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                         .addGroup(httpsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
                             .addComponent(loginField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -286,15 +259,11 @@ public class GitCredential extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(httpsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(sshPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(sshPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(4, 4, 4)
                 .addComponent(httpsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -339,7 +308,6 @@ public class GitCredential extends javax.swing.JFrame {
     private javax.swing.JPanel httpsPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -354,6 +322,5 @@ public class GitCredential extends javax.swing.JFrame {
     private javax.swing.JTextField loginField;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JLabel promptLabel;
-    private javax.swing.JPanel sshPanel;
     // End of variables declaration//GEN-END:variables
 }

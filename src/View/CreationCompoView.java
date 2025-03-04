@@ -268,7 +268,6 @@ public class CreationCompoView extends javax.swing.JPanel {
         bpepKeywordPicker = new javax.swing.JComboBox<>();
         AutoCompleteDecorator.decorate(bpepKeywordPicker);
         jSeparator3 = new javax.swing.JSeparator();
-        jLabel10 = new javax.swing.JLabel();
 
         jLabel3.setText("jLabel3");
 
@@ -424,12 +423,6 @@ public class CreationCompoView extends javax.swing.JPanel {
         jSeparator3.setPreferredSize(new java.awt.Dimension(50, 20));
         newExercicePane.add(jSeparator3);
 
-        jLabel10.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(51, 51, 255));
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setText("Fin de la BPEP sur Github ! ");
-        jLabel10.setToolTipText("<html>\nLa BPEP quitte github fin février 2025. Vous utilisez la dernier version d'ExerciceExplorer pour github <br> et il n'y aura plus de mise à jours, ni du logiciel, ni des exercices.\n<br>\nDeux choix sont proposés :\n<ol>\n    <li> Continuer à utiliser cette version (sans les MaJ d'exercices par d'autres collègues)\n    <li> Migrer vers le Gitéa de l'UPS ; plus d'information sur https://mmb.netlify.app/bpep/bpep <br> ou dans vos mails !\n</ol>\n\n</html>");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -450,7 +443,7 @@ public class CreationCompoView extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -459,10 +452,7 @@ public class CreationCompoView extends javax.swing.JPanel {
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(keywordPicker, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jLabel5))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel6)
@@ -479,9 +469,7 @@ public class CreationCompoView extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(newExercicePane, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -583,7 +571,6 @@ public class CreationCompoView extends javax.swing.JPanel {
     private javax.swing.JComboBox jComboBox2;
     private javax.swing.JComboBox jComboBox3;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
