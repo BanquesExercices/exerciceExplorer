@@ -1,0 +1,100 @@
+%&/Users/mmb/bpep/untracked/style_perso/bpepFormatCOLLE
+\documentclass[a4paper, 11pt, onside]{extarticle}
+\usepackage{/Users/mmb/bpep/fichiers_utiles/raccourcis_communs}
+
+\usepackage{hyperref}
+\setmarginsrb{1.8cm}{1.8 cm}{0cm}{0.1cm}{0cm}{0.6cm}{0cm}{0.7cm}
+\setmarginsrb{0.9cm}{0.5cm}{0.9cm}{0.5cm}{0.6cm}{0.6cm}{0.6cm}{0.9cm}
+\renewcommand{\thesubsection}{\Alph{subsection}}
+
+\renewcommand{\titreExercice}[1]{
+    \begin{center}
+    \framebox{\Large \textbf{#1} }
+    \end{center}
+}
+
+\csname endofdump\endcsname
+
+\usepackage{qrcode}
+\newcommand{\qr}[1]{
+\begin{tikzpicture}[overlay, remember picture]
+  \node[xshift=-0cm,yshift=-0cm] at (current page.north east) {
+\qrcode[nolink,height=3cm]{mailto:maxence.miguelbrebion@gmail.com?subject=Demande\%20de\%20correction&body=Pour\%20l'exo\%20#1\%20Merci.} };  
+  \node[xshift=-0cm,yshift=-1.9cm] at (current page.north east) {\small Pour demander};
+﻿  \node[xshift=-0cm,yshift=-2.3cm] at (current page.north east) {\small le corrigé !};
+;  
+\end{tikzpicture}
+}
+
+\newcommand{\titl}[2]{
+\clearpage
+\begin{center}
+    \Huge  \textbf{Sujet de colle \dsNB -#1}
+\end{center}
+\qr{\dsNB -#1}
+
+\tcols{0.75}{0.24}{
+\textbf{Question de cours} : 
+\itshape #2
+}{}
+\bigskip
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Bloc à modifier %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ \toggletrue{corrige}  % décommenter pour passer en mode corrigé
+\newcommand{\dsNB}{22}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+\resetQ
+\titl{1}{ %Question de cours :
+ Expressions des moment \textbf{et} énergie cinétique d'un solide en rotation autour d'un axe fixe $\Delta$ (démonstration avec la somme).
+}
+
+\subimport{/Users/mmb/bpep/exercices/DS/oscillation_piston/}{sujet.tex}
+
+
+\resetQ
+\titl{2}{ %Question de cours :
+Démonstration de la formule de la pression cinétique pour le GP : 
+$$ 
+	p = \frac{1}{3}m n^* v^{*2}
+$$
+où $n^*=N/V$ et $v^*$ représente la vitesse quadratique moyenne des particules
+}
+
+\subimport{/Users/mmb/bpep/exercices/Colle/glissement_plaque/}{sujet.tex}
+
+
+\resetQ
+\titl{3}{ %Question de cours :
+Démonstration de la formule de la pression cinétique pour le GP : 
+$$ 
+	p = \frac{1}{3}m n^* v^{*2}
+$$
+où $n^*=N/V$ et $v^*$ représente la vitesse quadratique moyenne des particules.
+
+}
+
+\subimport{/Users/mmb/bpep/exercices/Colle/fil_tire/}{sujet.tex}
+
+
+\resetQ
+\titl{4}{ %Question de cours :
+Obtention de l'équation du mouvement pour le pendule de torsion constitué d'une tige d'axe $\vec e_z$ et soumise à un couple $\vec \Gamma = - C \theta \vec e_z$ et de moment d'inertie $J$. (frottements négligés).
+}
+
+\subimport{/Users/mmb/bpep/exercices/Colle/libre_parcours_moyen/}{sujet.tex}
+
+
+
+
+\end{document}

@@ -32,6 +32,21 @@ import javax.swing.text.JTextComponent;
 public class Utils {
     
     
+     public static final int DISTANCE(String word,String target) {
+        // compute distance between word and target
+        if (word.equals(target)){return 0;}
+        
+        if (word.contains(target)){
+            return word.length()-target.length();
+        }
+        
+        
+        
+        // default case
+        return 10000000;
+    };
+     
+    
    public static boolean checkInternetConnection(){
    try {
          URL url = new URL("http://www.github.com/");

@@ -184,9 +184,6 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="keywordPicker">
       <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="KeyWords.getDefaultComboBoxModelModel(keywordPicker)" type="code"/>
-        </Property>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="null"/>
         </Property>
@@ -201,7 +198,8 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="keywordPickerActionPerformed"/>
       </Events>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="AutoCompleteDecorator.decorate(keywordPicker); &#xa;ComboBoxCellEditor editor = new ComboBoxCellEditor(keywordPicker);&#xa;CellEditorListener listener = new CellEditorListener() {&#xa;        @Override&#xa;public void editingStopped(ChangeEvent e) {&#xa;            String name=(String)keywordPicker.getSelectedItem();&#xa;            // check wether the keyword is already selected.&#xa;            for (KeyWordView k : CreationCompoView.this.selectedKeyWords){&#xa;                if (k.getNameString().equals(name)){&#xa;                    return;&#xa;                }&#xa;            }&#xa;            KeyWordView kwv = new KeyWordView(name, CreationCompoView.this);&#xa;            CreationCompoView.this.selectedKeyWords.add(kwv);&#xa;            CreationCompoView.this.keywordsScrollPane.setVisible(true);&#xa;            CreationCompoView.this.keyWordsHolder.add(kwv);&#xa;            CreationCompoView.this.keyWordsHolder.revalidate();&#xa;            CreationCompoView.this.updateModel();&#xa;        }&#xa;&#xa;        @Override&#xa;public void editingCanceled(ChangeEvent e) {&#xa;        }&#xa;        };&#xa;editor.addCellEditorListener(listener);&#xa;"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="this.keywordPicker = new SearchableJComboBox();"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="((SearchableJComboBox) this.keywordPicker).resetModel(KeyWords.getFullList());&#xa;ComboBoxCellEditor editor = new ComboBoxCellEditor(keywordPicker);&#xa;CellEditorListener listener = new CellEditorListener() {&#xa;        @Override&#xa;public void editingStopped(ChangeEvent e) {&#xa;            String name=(String)keywordPicker.getSelectedItem();&#xa;            // check wether the keyword is already selected.&#xa;            if (name == null){return;}&#xa;&#xa;            for (KeyWordView k : CreationCompoView.this.selectedKeyWords){&#xa;                if (k.getNameString().equals(name)){&#xa;                    return;&#xa;                }&#xa;            }&#xa;            KeyWordView kwv = new KeyWordView(name, CreationCompoView.this);&#xa;            CreationCompoView.this.selectedKeyWords.add(kwv);&#xa;            CreationCompoView.this.keywordsScrollPane.setVisible(true);&#xa;            CreationCompoView.this.keyWordsHolder.add(kwv);&#xa;            CreationCompoView.this.keyWordsHolder.revalidate();&#xa;            CreationCompoView.this.updateModel();&#xa;        }&#xa;&#xa;        @Override&#xa;public void editingCanceled(ChangeEvent e) {&#xa;        }&#xa;        };&#xa;editor.addCellEditorListener(listener);&#xa;"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
@@ -398,9 +396,6 @@
             </Component>
             <Component class="javax.swing.JComboBox" name="bpepKeywordPicker">
               <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="KeyWords.getMainComboBoxModelModel()" type="code"/>
-                </Property>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="null"/>
                 </Property>
@@ -411,11 +406,9 @@
                   <Connection code="&quot;hey hey my my ohoh Ohio !&quot;" type="code"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bpepKeywordPickerActionPerformed"/>
-              </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="AutoCompleteDecorator.decorate(bpepKeywordPicker); &#xa;"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="this.bpepKeywordPicker = new SearchableJComboBox();"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="((SearchableJComboBox) this.bpepKeywordPicker).resetModel(KeyWords.getMainList());&#xa;"/>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>

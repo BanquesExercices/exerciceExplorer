@@ -302,10 +302,10 @@ public class LatexTextEditor extends BaseTextEditor {
         provider.addCompletion(new TemplateCompletion(provider, "QR[", "QR[...]{...}{...}", "QR[ ${cursor} ]{\n\t\n}{\n\t\n}", "Question selon version", "Question selon version"));
         provider.addCompletion(new TemplateCompletion(provider, "enonce{", "enonce{...}", "enonce{\n\t ${cursor} \n}", "Enonce", "Enonce"));
         provider.addCompletion(new TemplateCompletion(provider, "tcols{", "tcols{0.49}{0.49}{...}{...}", "tcols{0.49}{0.49}{\n\t ${cursor} \n}{\n\t\n}", "Double colonne", "Double Colonne"));
-        provider.addCompletion(new TemplateCompletion(provider, "vectoriel", "vectoriel", "vectoriel", "produit vectoriel", "produit vectoriel"));
-        provider.addCompletion(new TemplateCompletion(provider, "scalaire", "scalaire", "scalaire", "produit scalaire", "produit scalaire"));
-
+        
         // maths & Latex accelerators templates
+        provider.addCompletion(new TemplateCompletion(provider, "qMath{", "qMath{...}", "qMath{${cursor}}", "qMath", "Texte en mode maths "));
+        provider.addCompletion(new TemplateCompletion(provider, "qqMath{", "qqMath{...}", "qqMath{${cursor}}", "qqMath", "Texte en mode maths (espaces plus grands)"));
         provider.addCompletion(new TemplateCompletion(provider, "left[", "left[...] -> pac{ }", "pac{ ${cursor} }", "Crochets", "Crochets"));
         provider.addCompletion(new TemplateCompletion(provider, "left(", "left(...) -> pa{ }", "pa{ ${cursor} }", "Parentheses", "Parentheses"));
         provider.addCompletion(new TemplateCompletion(provider, "frac{", "frac{...}{...}", "frac{ ${cursor} }{}", "Fraction", "Fraction"));

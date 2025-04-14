@@ -9,6 +9,7 @@ import Helper.OsRelated;
 import Helper.SavedVariables;
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
+
 /**
  *
  * @author mbrebion
@@ -24,25 +26,47 @@ import javax.swing.JComboBox;
 public class KeyWords {
 
     protected List<String> keywords;
+    protected List<String> mainKeywords;
+    protected List<String> full;
+    
     protected static KeyWords instance = null;
     protected static Set<JComboBox> jcbs = new HashSet<>();
     protected static String mainKeywordStart = "";
 
     public static void updateKeywordsList() {
         getInstance().rescanKeyWords();
-
     }
+    
+   
+        
+    public static Collection<String> getList() {
+        return getInstance().keywords;
+    }     
+    
+    public static Collection<String> getFullList() {
+        return getInstance().full;
+    }   
+    
+    public static Collection<String> getMainList() {
+        return getInstance().mainKeywords;
+    }     
+    
 
+    
+    /*
     public static DefaultComboBoxModel<String> getDefaultComboBoxModelModel(JComboBox jcb) {
         // add the jComboBox to the set of comboboxes which uses this model
         jcbs.add(jcb);
 
         // create the model
-        DefaultComboBoxModel<String> out = new DefaultComboBoxModel<>();
+        
+        // keywords in exercices
+        KeyWordsModel out = new KeyWordsModel();
         getInstance().keywords.stream().forEach((kw) -> {
             out.addElement(kw);
         });
         
+        // main keywords related to specific chapters
         for (String kw : OsRelated.readFile(SavedVariables.getMainGitDir()+"/fichiers_utiles/motsclesPrincipaux.txt")){
             out.addElement(kw);
         }
@@ -56,7 +80,7 @@ public class KeyWords {
     
     
     public static DefaultComboBoxModel<String> getMainComboBoxModelModel() {      
-        DefaultComboBoxModel<String> out = new DefaultComboBoxModel<>();
+        KeyWordsModel out = new KeyWordsModel();
         for (String kw : OsRelated.readFile(SavedVariables.getMainGitDir()+"/fichiers_utiles/motsclesPrincipaux.txt")){
             out.addElement(kw.split(":")[1]);
             mainKeywordStart=kw.split(":")[0]+":";
@@ -65,6 +89,7 @@ public class KeyWords {
         
         return out;
     }
+    */
 
     public static boolean exists(String key) {
         return getInstance().keywords.contains(key);
@@ -90,8 +115,10 @@ public class KeyWords {
     }
 
     private KeyWords() {
-         instance = this;
+        instance = this;
         this.keywords = new ArrayList<>();
+        this.mainKeywords = new ArrayList<>();
+        this.full = new ArrayList<>();
         this.rescanKeyWords();
 
     }
@@ -103,6 +130,7 @@ public class KeyWords {
         for (String key : keys) {
             if (!keywords.contains(key)) {
                 keywords.add(key);
+                full.add(key);
             }
         }
 
@@ -110,9 +138,9 @@ public class KeyWords {
         this.sortKeyWords();
 
         // update comboboxes
-        for (JComboBox jcb : jcbs) {
-            jcb.setModel(getDefaultComboBoxModelModel(jcb));
-        }
+        //for (JComboBox jcb : jcbs) {
+        //    jcb.setModel(getDefaultComboBoxModelModel(jcb));
+        //}
 
     }
 
@@ -120,7 +148,12 @@ public class KeyWords {
         Collator frCollator = Collator.getInstance(Locale.FRENCH);
         frCollator.setStrength(Collator.PRIMARY);
         Collections.sort(keywords, frCollator);
+        Collections.sort(full, frCollator);
+        Collections.sort(mainKeywords, frCollator);
+        
     }
+    
+    
 
     protected void rescanKeyWords() {
 
@@ -131,7 +164,9 @@ public class KeyWords {
         // we read all exercices and add every keywords once
         for (Exercice e : ExerciceFinder.getExercices()) {
             for (String kw : e.getKeywords()) {
+                if (!kw.contains("theme:")){
                 set.add(kw);
+                }
 
             }
         }
@@ -144,13 +179,24 @@ public class KeyWords {
         while (keywords.size()>0 && keywords.get(0).trim().isEmpty()) {
             keywords.remove(0);
         }
-
-         // update comboboxes
-        for (JComboBox jcb : jcbs) {
-            //jcb.setModel(getDefaultComboBoxModelModel(jcb));
-            DefaultComboBoxModel<String> model = getDefaultComboBoxModelModel(jcb);
-            jcb.setModel(model);
+        
+        this.mainKeywords.clear();
+        for (String kw : OsRelated.readFile(SavedVariables.getMainGitDir()+"/fichiers_utiles/motsclesPrincipaux.txt")){
+            this.mainKeywords.add(kw);
+            System.out.println(kw);
         }
+        
+        
+        this.full.clear();
+        this.full.addAll(mainKeywords);
+        this.full.addAll(keywords);
+
+        // update comboboxes
+        //for (JComboBox jcb : jcbs) {
+        //    //jcb.setModel(getDefaultComboBoxModelModel(jcb));
+        //    DefaultComboBoxModel<String> model = getDefaultComboBoxModelModel(jcb);
+        //    jcb.setModel(model);
+        //}
         
 
     }

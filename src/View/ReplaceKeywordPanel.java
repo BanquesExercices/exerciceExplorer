@@ -6,6 +6,7 @@
 package View;
 
 import Helper.FindAndReplace;
+import Helper.SearchableJComboBox;
 import exerciceexplorer.KeyWords;
 import java.util.List;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -33,9 +34,9 @@ public class ReplaceKeywordPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        keywordPicker = new javax.swing.JComboBox();
+        keywordPicker = this.keywordPicker = new SearchableJComboBox();
 
-        AutoCompleteDecorator.decorate(keywordPicker);
+        ((SearchableJComboBox) this.keywordPicker).resetModel(KeyWords.getList());
         ComboBoxCellEditor editor = new ComboBoxCellEditor(keywordPicker);
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -46,7 +47,6 @@ public class ReplaceKeywordPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
 
-        keywordPicker.setModel(KeyWords.getDefaultComboBoxModelModel(keywordPicker));
         keywordPicker.setMaximumSize(new java.awt.Dimension(300, 60));
         keywordPicker.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {

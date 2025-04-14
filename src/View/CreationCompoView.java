@@ -5,10 +5,10 @@
  */
 package View; 
 
-import Helper.GitWrapper;
 import Helper.ListTransferHandler;
 import Helper.OsRelated;
 import Helper.SavedVariables;
+import Helper.SearchableJComboBox;
 import Helper.Utils;
 import TexRessources.TexWriter;
 import exerciceexplorer.Exercice;
@@ -217,14 +217,16 @@ public class CreationCompoView extends javax.swing.JPanel {
         editButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox();
-        keywordPicker = new javax.swing.JComboBox();
-        AutoCompleteDecorator.decorate(keywordPicker);
+        keywordPicker = this.keywordPicker = new SearchableJComboBox();
+        ((SearchableJComboBox) this.keywordPicker).resetModel(KeyWords.getFullList());
         ComboBoxCellEditor editor = new ComboBoxCellEditor(keywordPicker);
         CellEditorListener listener = new CellEditorListener() {
             @Override
             public void editingStopped(ChangeEvent e) {
                 String name=(String)keywordPicker.getSelectedItem();
                 // check wether the keyword is already selected.
+                if (name == null){return;}
+
                 for (KeyWordView k : CreationCompoView.this.selectedKeyWords){
                     if (k.getNameString().equals(name)){
                         return;
@@ -265,8 +267,8 @@ public class CreationCompoView extends javax.swing.JPanel {
         cancelButton = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
-        bpepKeywordPicker = new javax.swing.JComboBox<>();
-        AutoCompleteDecorator.decorate(bpepKeywordPicker);
+        bpepKeywordPicker = this.bpepKeywordPicker = new SearchableJComboBox();
+        ((SearchableJComboBox) this.bpepKeywordPicker).resetModel(KeyWords.getMainList());
         jSeparator3 = new javax.swing.JSeparator();
 
         jLabel3.setText("jLabel3");
@@ -302,7 +304,6 @@ public class CreationCompoView extends javax.swing.JPanel {
             }
         });
 
-        keywordPicker.setModel(KeyWords.getDefaultComboBoxModelModel(keywordPicker));
         keywordPicker.setMaximumSize(null);
         keywordPicker.setMinimumSize(null);
         keywordPicker.setPreferredSize(null);
@@ -407,15 +408,9 @@ public class CreationCompoView extends javax.swing.JPanel {
         jLabel9.setText("Thème  :  ");
         jPanel3.add(jLabel9);
 
-        bpepKeywordPicker.setModel(KeyWords.getMainComboBoxModelModel());
         bpepKeywordPicker.setMaximumSize(null);
         bpepKeywordPicker.setPreferredSize(null);
         bpepKeywordPicker.setPrototypeDisplayValue("hey hey my my ohoh Ohio !");
-        bpepKeywordPicker.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bpepKeywordPickerActionPerformed(evt);
-            }
-        });
         jPanel3.add(bpepKeywordPicker);
 
         newExercicePane.add(jPanel3);
@@ -510,9 +505,6 @@ public class CreationCompoView extends javax.swing.JPanel {
         this.updateModel();
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
-    private void keywordPickerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keywordPickerActionPerformed
-    }//GEN-LAST:event_keywordPickerActionPerformed
-
     private void outputTypesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outputTypesActionPerformed
 
     }//GEN-LAST:event_outputTypesActionPerformed
@@ -526,7 +518,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         String title = Utils.stripAccents(this.newTitleTextField.getText()); // dir with accents causes trouble ...
         this.ef.createExercice((String) jComboBox3.getSelectedItem(), title);
         this.updateDataBase();
-        this.ef.getExercice(title).addKeyword(KeyWords.getMainKeywordStart() + bpepKeywordPicker.getSelectedItem());
+        this.ef.getExercice(title).addKeyword((String) bpepKeywordPicker.getSelectedItem());
         MainWindow.getInstance().setExerciceDisplay(this.ef.getExercice(title));
         this.newExercicePane.setVisible(false);
     }//GEN-LAST:event_createNewExoButtonActionPerformed
@@ -549,9 +541,9 @@ public class CreationCompoView extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_newTitleTextFieldActionPerformed
 
-    private void bpepKeywordPickerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bpepKeywordPickerActionPerformed
+    private void keywordPickerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keywordPickerActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_bpepKeywordPickerActionPerformed
+    }//GEN-LAST:event_keywordPickerActionPerformed
 
     public String getOutputType() {
         return (String) outputTypes.getSelectedItem();

@@ -5,6 +5,7 @@
  */
 package View;
 
+import Helper.SearchableJComboBox;
 import exerciceexplorer.Exercice;
 import exerciceexplorer.KeyWords;
 import java.util.ArrayList;
@@ -68,8 +69,8 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer,MenuB
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
-        keywordPicker = new javax.swing.JComboBox();
-        AutoCompleteDecorator.decorate(keywordPicker);
+        keywordPicker = this.keywordPicker = new SearchableJComboBox();
+        ((SearchableJComboBox) this.keywordPicker).resetModel(KeyWords.getList());
         ComboBoxCellEditor editor = new ComboBoxCellEditor(keywordPicker);
         keywordPicker.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
 
@@ -91,7 +92,6 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer,MenuB
 
         jButton1.setText("jButton1");
 
-        keywordPicker.setModel(KeyWords.getDefaultComboBoxModelModel(keywordPicker));
         keywordPicker.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 keywordPickerActionPerformed(evt);
