@@ -70,7 +70,7 @@ public class KeywordsEditor extends javax.swing.JPanel implements Observer,MenuB
 
         jButton1 = new javax.swing.JButton();
         keywordPicker = this.keywordPicker = new SearchableJComboBox();
-        ((SearchableJComboBox) this.keywordPicker).resetModel(KeyWords.getList());
+        ((SearchableJComboBox) this.keywordPicker).resetModel(KeyWords.getFullList());
         ComboBoxCellEditor editor = new ComboBoxCellEditor(keywordPicker);
         keywordPicker.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
 

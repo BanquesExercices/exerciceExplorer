@@ -19,9 +19,15 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -608,8 +614,15 @@ public final class MainWindow extends javax.swing.JFrame {
                     System.setProperty("apple.laf.useScreenMenuBar", "true");
                     System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Exercice Explorer");
                 }
-
-                //FlatLightLaf.install(); // nice flat look and feel
+                
+                /*
+                try {
+                    System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("log.txt"))));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                */
+                
                 javax.swing.ToolTipManager.sharedInstance().setDismissDelay(12000);
                 javax.swing.ToolTipManager.sharedInstance().setInitialDelay(400);
 

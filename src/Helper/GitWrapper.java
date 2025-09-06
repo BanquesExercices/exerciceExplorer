@@ -216,7 +216,11 @@ public class GitWrapper {
         try {
 
             // do fetch
-            FetchResult fst = git.fetch().setCredentialsProvider(new UsernamePasswordCredentialsProvider(login, decrypt(mdpEncrypted, login))).call();
+            //FetchResult fst = git.fetch().setCredentialsProvider(new UsernamePasswordCredentialsProvider(login, decrypt(mdpEncrypted, login))).call();
+            String tok = decrypt(mdpEncrypted, login);
+            System.out.println(tok);
+            
+            FetchResult fst = git.fetch().setCredentialsProvider(new UsernamePasswordCredentialsProvider(login,tok )).call();
             lastFetchTS = System.currentTimeMillis();
             // check whether local branch is equal or forward to remote branch
             RevWalk revWalk = new RevWalk(repository);

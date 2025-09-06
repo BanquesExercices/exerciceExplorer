@@ -27,7 +27,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
-import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ComboBoxCellEditor;
 
 /**
@@ -519,6 +518,7 @@ public class CreationCompoView extends javax.swing.JPanel {
         this.ef.createExercice((String) jComboBox3.getSelectedItem(), title);
         this.updateDataBase();
         this.ef.getExercice(title).addKeyword((String) bpepKeywordPicker.getSelectedItem());
+        
         MainWindow.getInstance().setExerciceDisplay(this.ef.getExercice(title));
         this.newExercicePane.setVisible(false);
     }//GEN-LAST:event_createNewExoButtonActionPerformed

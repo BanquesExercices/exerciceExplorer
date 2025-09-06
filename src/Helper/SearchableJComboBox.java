@@ -7,6 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
@@ -21,6 +27,9 @@ import javax.swing.text.JTextComponent;
  */
 public class SearchableJComboBox extends JComboBox {
 
+    protected long lastAsk = 0;
+    protected String lastPatternAsked;
+
     public SearchableJComboBox() {
         setEditable(true);
         Component c = getEditor().getEditorComponent();
@@ -31,13 +40,13 @@ public class SearchableJComboBox extends JComboBox {
             tc.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
-                    SearchableJComboBox.this.sort(tc.getText());
+                    SearchableJComboBox.this.askForSort(tc.getText());
 
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
-                    SearchableJComboBox.this.sort(tc.getText());
+                    SearchableJComboBox.this.askForSort(tc.getText());
                 }
 
                 @Override
@@ -73,22 +82,46 @@ public class SearchableJComboBox extends JComboBox {
             }
 
         });
+
     }
 
     public void resetModel(Collection c) {
         this.setModel(new SortedModel(c));
     }
 
-    public void sort(String pattern) {
+    public void askForSort(String pattern) {
+        this.lastPatternAsked = pattern;
+        long howLongToWait = 250;
+        this.lastAsk = System.currentTimeMillis();
 
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                ((SortedModel) SearchableJComboBox.this.getModel()).sortItems(pattern);
-                SearchableJComboBox.this.hidePopup();
-                SearchableJComboBox.this.showPopup();
+        new Thread(() -> {
+            try {
+                Thread.sleep(howLongToWait);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SearchableJComboBox.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if ((System.currentTimeMillis() - lastAsk) * 11 > howLongToWait * 10) {
+                System.out.println("do sort : " + pattern);
+                sort(SearchableJComboBox.this.lastPatternAsked);
+            } else {
+                System.out.println("prevent sort");
+
             }
 
+        }).start();
+
+    }
+
+    public void sort(String pattern) {
+
+        ((SortedModel) SearchableJComboBox.this.getModel()).sortItems(pattern);
+
+        SwingUtilities.invokeLater(() -> {
+            SearchableJComboBox.this.hidePopup();
+            SearchableJComboBox.this.showPopup();
+
         });
+
     }
 
 }
@@ -97,6 +130,7 @@ class SortedModel extends DefaultComboBoxModel {
 
     Collection<String> originalItems;
     ArrayList<String> items = new ArrayList<>();
+    Map<String,Double> map = new HashMap<>();
     ListDataListener[] ldls;
 
     public SortedModel(Collection c) {
@@ -120,23 +154,30 @@ class SortedModel extends DefaultComboBoxModel {
         }
     }
 
-    public void sortItems(String pattern) {
+    public  synchronized void sortItems(String pattern) {
         /**
          * String items of this current model according to pattern (first
          * elements are the ones closests to the pattern)
          */
+        String pat = pattern.toLowerCase();
         items.clear();
+        map.clear();
         items.addAll(this.originalItems);
+        for (int i = 0 ; i<items.size() ; i++){
+            map.put(items.get(i),DISTANCE(items.get(i).toLowerCase(),pat));
+        }
+        
+        Map<String,Double> topTwenty = map.entrySet().stream()
+            .sorted(Map.Entry.comparingByValue())
+            .limit(30)
+            .collect(Collectors.toMap(
+          Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        items.clear();
+        items.addAll(topTwenty.keySet());
+        
+        
 
-        Collections.sort(items, (Object o1, Object o2) -> {
-            if (DISTANCE((String) o1, pattern) == DISTANCE((String) o2, pattern)) {
-                return 0;
-            }
-            if (DISTANCE((String) o1, pattern) < DISTANCE((String) o2, pattern)) {
-                return -1;
-            }
-            return 1;
-        });
+        
 
         // listeners are removed temporarly to prevent event such as insertion or remove during modification of the model
         this.removeListeners();
@@ -147,37 +188,42 @@ class SortedModel extends DefaultComboBoxModel {
 
     }
 
-    final int DISTANCE(String word, String target) {
+    final double DISTANCE(String word, String target) {
         // compute distance between word and target
+        
+        // no distance if equality
         if (word.equals(target)) {
-            return 0;
+            return 0.;
         }
-
         
+        // second best choice if word begins with target
+        if (word.startsWith(target)){
+            return Math.max(0,word.length() - target.length())/20 +1 ;
+        }
+        
+        // third best choice if target is inside word, but not at begening
+        if (word.contains(target)){
+            return Math.max(0,word.length() - target.length())/20 + 3;
+        }
+        
+
+        // last choice if target isn't in word
         int dec = word.length() - target.length();
-        if (dec < 0) {
-            return smalletstDISTANCELevenshtein(target, word);
-        }else{
-            return smalletstDISTANCELevenshtein(word, target);
-        }
-        
-        // compute the minimal levenshtein distance between target and every substring of word of the same size
-        
 
-    }
-    
-    final int smalletstDISTANCELevenshtein(String x, String y){
-    int dist = 100000;
-    int dec = x.length() - y.length();
-        for (int j = 0; j <= dec; j++) {
-            int newDist = DISTANCELevenshtein((String) x.subSequence(j, y.length() + j), y);
-            if (newDist < dist) {
-                dist = newDist;
-            }
+        if (dec < 0) {
+            // word is smaller than target ; probably not releavant
+            return 10 + DISTANCELevenshtein(target, word) ;
+        } else {
+            // word bigger than target : maybe a tipo : should be kept
+            double dist = 5 + DISTANCELevenshtein(word, target) - dec*0.8 ;
+            System.out.println(word +" : " + dist);
+            return dist; // extra string cost is diminished
         }
-        return dist;
+
+        // compute the minimal levenshtein distance between target and every substring of word of the same size
     }
-    
+
+   
 
     final int DISTANCELevenshtein(String x, String y) {
         // code from https://www.baeldung.com/java-levenshtein-distance  (Levenshtein Distance)

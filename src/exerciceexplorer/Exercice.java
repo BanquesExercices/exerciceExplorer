@@ -420,9 +420,11 @@ public class Exercice implements Comparable<Exercice> {
     }
 
     public void addKeyword(String kw) {
-        List<String> kws = new ArrayList<>();
-        kws.add(kw);
-        OsRelated.appendToFile(kws, this.getKeywordsPath());
+        if (kw != null){
+            List<String> kws = new ArrayList<>();
+            kws.add(kw);
+            OsRelated.appendToFile(kws, this.getKeywordsPath());
+        }
     }
 
     public int getCountGiven() {
